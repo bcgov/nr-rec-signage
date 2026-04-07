@@ -14,7 +14,7 @@ FROM node:24.13.1-slim AS dependencies
 WORKDIR /app
 COPY . ./
 ENV PRISMA_CLI_BINARY_TARGETS=debian-openssl-3.0.x
-RUN npm ci --ignore-scripts --no-update-notifier --omit=dev
+RUN npm install --ignore-scripts --no-update-notifier --omit=dev
 
 # Deploy using minimal Distroless image
 FROM gcr.io/distroless/nodejs22-debian12:nonroot
