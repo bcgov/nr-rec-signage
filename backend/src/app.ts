@@ -5,7 +5,8 @@ import { customLogger } from "./common/logger.config";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import helmet from "helmet";
 import { VersioningType } from "@nestjs/common";
-import { metricsMiddleware } from "src/middleware/prom";
+import { metricsMiddleware } from "src/common/middleware/prom";
+import { CustomExceptionFilter } from "./common/filters/custom-exception.filter";
 
 /**
  *
@@ -15,6 +16,7 @@ export async function bootstrap() {
     await NestFactory.create<NestExpressApplication>(AppModule, {
       logger: customLogger,
     });
+  app.useGlobalFilters(new CustomExceptionFilter());
   app.use(helmet());
   app.enableCors();
   app.set("trust proxy", 1);

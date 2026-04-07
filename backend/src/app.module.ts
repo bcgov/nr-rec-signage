@@ -1,6 +1,7 @@
-import { MiddlewareConsumer, Module, RequestMethod } from "@nestjs/common";
-import { HTTPLoggerMiddleware } from "./middleware/req.res.logger";
-import { PrismaService } from "src/prisma.service";
+import { MiddlewareConsumer, Module } from "@nestjs/common";
+import { HTTPLoggerMiddleware } from "./common/middleware/req.res.logger";
+import { AuthMiddleware } from "./common/middleware/auth.middleware";
+import { PrismaService } from "./prisma/prisma.service";
 import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "./users/users.module";
 import { AppService } from "./app.service";
@@ -8,9 +9,27 @@ import { AppController } from "./app.controller";
 import { MetricsController } from "./metrics.controller";
 import { TerminusModule } from "@nestjs/terminus";
 import { HealthController } from "./health.controller";
+import { CacheModule } from '@nestjs/cache-manager';
+import { CategoriesModule } from "./categories/categories.module";
+import { SignsModule } from "./signs/signs.module";
+import { PictogramsModule } from "./pictograms/pictograms.module";
+import { DropdownValuesModule } from "./dropdown-values/dropdown-values.module";
 
 @Module({
-  imports: [ConfigModule.forRoot(), TerminusModule, UsersModule],
+  imports: [
+    ConfigModule.forRoot(),
+    TerminusModule,
+    UsersModule,
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 60 * 1000, // 60 seconds default TTL
+      max: 100, // maximum number of items in cache
+    }),
+    CategoriesModule,
+    SignsModule,
+    PictogramsModule,
+    DropdownValuesModule,
+  ],
   controllers: [AppController, MetricsController, HealthController],
   providers: [AppService, PrismaService],
 })
@@ -18,11 +37,8 @@ export class AppModule {
   // let's add a middleware on all routes
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(HTTPLoggerMiddleware)
-      .exclude(
-        { path: "metrics", method: RequestMethod.ALL },
-        { path: "health", method: RequestMethod.ALL },
-      )
-      .forRoutes("*");
+      .apply(HTTPLoggerMiddleware, AuthMiddleware)
+      .exclude('metrics', 'health')
+      .forRoutes('*');
   }
 }

@@ -9,8 +9,121 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  id    Decimal @id(map: "USER_PK") @default(dbgenerated("nextval('\"USER_SEQ\"'::regclass)")) @db.Decimal
-  name  String  @db.VarChar(200)
-  email String  @db.VarChar(200)
+model User {
+  id          Decimal @id @default(dbgenerated("nextval('sq_user')")) @db.Decimal
+  email       String  @db.VarChar(200)
+  display_name String @db.VarChar(200)
+  role        String  @db.VarChar(50)
+  signs       Sign[]
+
+  @@map("User")
+}
+
+model SignCategory {
+  id        Decimal        @id @db.Decimal
+  name      String         @db.VarChar(100)
+  slug      String         @db.VarChar(100)
+  preview_img String?       @db.VarChar(250)
+  fields    SignField[]
+  signs     Sign[]
+  metadata  SignMetadata[]
+  options   SignCategoryOption[]
+  @@map("sign_category")
+}
+
+model SignCategoryOption {
+  id          Decimal      @id @db.Decimal
+  id_category Decimal      @db.Decimal
+  name        String       @db.VarChar(100)
+  category    SignCategory @relation(fields: [id_category], references: [id])
+  signs       Sign[]
+  metadatas SignMetadata[]
+  @@map("sign_category_options")
+}
+
+model SignField {
+  id         Decimal                  @id @db.Decimal
+  id_category Decimal                 @db.Decimal
+  field_type String                   @db.VarChar(50)
+  slug       String                   @db.VarChar(50)
+  name       String                   @db.VarChar(100)
+  restriction Json?
+  category   SignCategory             @relation(fields: [id_category], references: [id])
+  values     SignValue[]
+  dropdownCategories DropdownValueCategory[]
+  @@map("sign_field")
+}
+
+model SignMetadata {
+  id          Decimal     @id @db.Decimal
+  meta_key    String      @db.VarChar(100)
+  meta_value  String      @db.VarChar(250)
+  id_category Decimal     @db.Decimal
+  id_options  Decimal?    @db.Decimal
+  human_label String      @db.VarChar(200)
+  modifiable  Boolean     @default(false)
+  option SignCategoryOption? @relation(fields: [id_options], references: [id])
+  category    SignCategory @relation(fields: [id_category], references: [id])
+  @@map("sign_metadata")
+}
+
+model SignPictogramCategory {
+  id   Decimal         @id @default(dbgenerated("nextval('Sq_sign_pictogram_category')")) @db.Decimal
+  name String          @db.VarChar(50)
+  pictograms SignPictogram[]
+  @@map("sign_pictogram_category")
+}
+
+model SignPictogram {
+  id         Decimal               @id @default(dbgenerated("nextval('sq_sign_pictogram')")) @db.Decimal
+  name       String                @db.VarChar(100)
+  id_category Decimal              @db.Decimal
+  link       String                @db.VarChar(250)
+  is_archived Boolean               @default(false)
+  category   SignPictogramCategory @relation(fields: [id_category], references: [id])
+  @@map("sign_pictogram")
+}
+
+model DropdownValueCategory {
+  id            Decimal         @id @default(dbgenerated("nextval('sq_dropdown_value_category')")) @db.Decimal
+  id_sign_field Decimal         @db.Decimal
+  category_name String          @db.VarChar(100)
+  field         SignField       @relation(fields: [id_sign_field], references: [id])
+  values        DropdownValue[]
+  @@map("dropdown_value_category")
+}
+
+model DropdownValue {
+  id         Decimal               @id @default(dbgenerated("nextval('sq_dropdown_value')")) @db.Decimal
+  id_category Decimal              @db.Decimal
+  value      String?               @db.VarChar(100) @map("text_value")
+  category   DropdownValueCategory @relation(fields: [id_category], references: [id])
+  @@map("dropdown_value")
+}
+
+model Sign {
+  id           Decimal     @id @default(dbgenerated("nextval('sq_sign')")) @db.Decimal
+  id_user      Decimal?    @db.Decimal
+  id_category  Decimal     @db.Decimal
+  id_options   Decimal?    @db.Decimal
+  date_created DateTime    @db.Timestamp
+  date_updated DateTime    @db.Timestamp
+  svg_version  String?     @db.Text
+  user         User?       @relation(fields: [id_user], references: [id])
+  category     SignCategory @relation(fields: [id_category], references: [id])
+  option       SignCategoryOption? @relation(fields: [id_options], references: [id])
+  values       SignValue[]
+
+  @@map("Sign")
+}
+
+model SignValue {
+  id      Decimal  @id @default(dbgenerated("nextval('sq_sign_value')")) @db.Decimal
+  id_sign Decimal  @db.Decimal
+  id_field Decimal @db.Decimal
+  value   String?  @db.VarChar(250) @map("text_value")
+  sign    Sign     @relation(fields: [id_sign], references: [id])
+  field   SignField @relation(fields: [id_field], references: [id])
+  @@unique([id_sign, id_field])
+  @@map("sign_value")
 }

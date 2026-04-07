@@ -1,3 +1,26 @@
+@font-face {
+  font-family: 'BC Sans';
+  src: url('./assets/fonts/2023_01_01_BCSans-Bold_2f.woff2') format('woff2'),
+       url('./assets/fonts/2023_01_01_BCSans-Bold_2f.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'BC Sans';
+  src: url('./assets/fonts/2023_01_01_BCSans-Regular_2f.woff2') format('woff2'),
+       url('./assets/fonts/2023_01_01_BCSans-Regular_2f.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'BC Sans', sans-serif;
+}
+
+@import "font-awesome/css/font-awesome.min.css";
+
 .MuiDrawer-paperAnchorLeft {
   margin-top: 4.2em !important;
 }
+

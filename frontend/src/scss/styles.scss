@@ -1,15 +1,199 @@
 // A custom theme for this app, see: https://getbootstrap.com/docs/5.3/customize/sass/#maps-and-loops
-$primary: #ffffff;
-$secondary: #385a8a;
+$primary: #234075;
+$secondary: #F5F5F5;
 $success: #234720;
 $warning: #81692c;
 $danger: #712024;
 
 // Import Bootstrap and Bootstrap Icons
 @import '~bootstrap/scss/bootstrap';
+@import "font-awesome/css/font-awesome.min.css";
 $bootstrap-icons-font-src:
   url('../../node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2')
     format('woff2'),
   url('../../node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff')
     format('woff');
 @import '../../node_modules/bootstrap-icons/font/bootstrap-icons.scss';
+
+.header-front-office{
+  padding-left: 5vw;
+  padding-right: 5vw;
+}
+
+.btn{
+  border-radius: 8px;
+  padding: 16px 32px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.btn-secondary{
+  color: $primary;
+}
+.buttons{
+  display: flex;
+  gap: 16px;
+}
+
+header .logo img {
+  width: 273px;
+}
+
+@font-face {
+  font-family: 'BC Sans';
+  src: url('../assets/fonts/2023_01_01_BCSans-Bold_2f.woff2') format('woff2'),
+       url('../assets/fonts/2023_01_01_BCSans-Bold_2f.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'BC Sans';
+  src: url('../assets/fonts/2023_01_01_BCSans-Regular_2f.woff2') format('woff2'),
+       url('../assets/fonts/2023_01_01_BCSans-Regular_2f.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'BC Sans', sans-serif;
+}
+
+.frontoffice-main{
+  height: 100vh;
+  position: relative;
+  width: 100vw;
+  overflow-y: scroll;
+  background-image: url("../assets/img/bc-background-img.png");
+  background-size: 100% 100%;
+}
+.frontoffice-main main{
+
+  min-height: calc(100vh  - 150px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.frontoffice-main *{
+  z-index: 2;
+}
+main{
+  position: relative;
+}
+.background-layer{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(40px);
+}
+
+.text-big{
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.centered-container{
+  width: 814px;
+}
+
+.centered-l-container{
+  width: min(1440px, 90%);
+}
+
+.blue-heading-container{
+  width: 100%;
+  border-radius: 8px!important;
+  overflow: hidden;
+}
+.blue-heading-container .blue-heading{
+  background-color: $primary;
+  color: white;
+  padding: 32px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.blue-heading-container .blue-heading p{
+  margin-bottom: 0px;
+  text-align: center  ;
+}
+
+.container-content{
+  background-color: white;
+  padding: 40px;
+
+}
+p{
+  margin-bottom: 0px;
+  font-size: 20px;
+  font-weight: bold ;
+}
+.c-row{
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.action-card i{
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.action-card:hover, .sign-card:hover{
+  border: 2px solid $primary;
+  cursor: pointer;
+}
+.action-card, .sign-card{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 32px;
+  padding-bottom: 32px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 8px;
+  background-color: #F5F5F5;
+}
+.action-card{
+  width: calc(50% - 20px);
+}
+
+.sign-card{
+  width: calc((100% - (40px * 3)) / 4);
+}
+.sign-card{
+  text-align: center;
+}
+
+.gx-120{
+  gap: 120px;
+}
+
+.form-input label{
+  font-weight: bold;
+  font-size: 20px;
+  color: #1C1C1C;
+  margin-bottom: 10px;
+}
+
+.form-input input{
+  width: 100%;
+  border: 1px solid #d9d9d9;
+  min-height: 56px;
+  border-radius: 8px;
+}
+
+.form-input-container{
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
