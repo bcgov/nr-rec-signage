@@ -4,9 +4,11 @@ import logo from '../../assets/img/RST_logo-BQZ01OOE.svg';
 import { useInchScale } from '../../utils/SignUtils';
 interface BladeSignProps {
   fields: Map<string, FieldDto>;
+  metadata?: Map<string, string>;
+  isRealSize?: boolean;
 }
 
-const BladeSign: React.FC<BladeSignProps> = ({ fields }) => {
+const BladeSign: React.FC<BladeSignProps> = ({ fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const inch = useInchScale(bannerRef, 48);
 

@@ -5,6 +5,7 @@ import Welcome from './pages/Welcome';
 import ActionChoice from './pages/ActionChoice';
 import NewSign from './pages/NewSign';
 import SignConfiguration from './pages/SignConfiguration';
+import SignExport from './pages/SignExport';
 import FrontofficeLayout from './layouts/FrontofficeLayout';
 
 const App: React.FC = () => {
@@ -16,6 +17,7 @@ const App: React.FC = () => {
           <Route path="/action-choice" element={<ActionChoice />} />
           <Route path="/new-sign" element={<NewSign />} />
           <Route path="/sign-configuration/:id" element={<SignConfiguration />} />
+          <Route path="/export/:id" element={<SignExport />} />
         </Routes>
       </FrontofficeLayout>
     </AuthProvider>

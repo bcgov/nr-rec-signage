@@ -1,10 +1,10 @@
 import { useAuth } from '../providers/AuthProvider';
-import SignPictogramDto from '../interfaces/SignPictogramDto';
+import PictogramSearchDto from '../interfaces/PictogramSearchDto';
 
 export const usePictogramService = () => {
   const { apiFetch } = useAuth();
 
-  const getPictograms = async (limit: number = 20, search?: string, category?: string): Promise<SignPictogramDto[]> => {
+  const getPictograms = async (limit: number = 20, search?: string, category?: string): Promise<PictogramSearchDto> => {
     const params = new URLSearchParams();
     params.append('limit', limit.toString());
     if (search) params.append('search', search);
