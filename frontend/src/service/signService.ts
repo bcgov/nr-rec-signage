@@ -24,6 +24,14 @@ export const useSignService = () => {
     return response.json();
   };
 
+  const getSigns = async (limit: number = 20): Promise<SignDto[]> => {
+    const response = await apiFetch(`/signs?limit=${limit}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch signs');
+    }
+    return response.json();
+  };
+
   const updateSign = async (
     id: string,
     id_category: number,
@@ -40,5 +48,5 @@ export const useSignService = () => {
     }
   };
 
-  return { createSign, getSign, updateSign };
+  return { createSign, getSign, getSigns, updateSign };
 };

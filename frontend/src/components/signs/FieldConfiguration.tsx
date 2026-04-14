@@ -68,7 +68,7 @@ const FieldConfiguration: React.FC<FieldConfigurationProps> = ({ update, fields,
             {Array.from(fields.values()).map(renderField)}
           </div>
           <div className="d-flex justify-content-between mt-4">
-            <button className="btn btn-secondary" type="button" onClick={() => navigate(-1)}>
+            <button className="btn btn-secondary" type="button" onClick={() => navigate(`/action-choice`)}>
               Back
             </button>
             <button className="btn btn-primary" type="button" onClick={handleNext} disabled={saving}>

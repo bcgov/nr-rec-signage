@@ -10,12 +10,18 @@ import opentype from "opentype.js";
 import { createRoot } from 'react-dom/client';
 import InformationSign from '@/components/signs/InformationSign';
 import RegulatorySign from '@/components/signs/RegulatorySign';
-const renderSignMarkup = (
+import NumberPost from '@/components/signs/NumberPost';
+export const renderSignMarkup = (
   sign: SignDto,
   fields: Map<string, FieldDto>,
-  metadata: Map<string, string>
+  metadata: Map<string, string>,
+  isRealSize = false
 ) => {
   const slug = sign.category.slug?.toLowerCase();
+
+    if(slug?.includes('camp-sign-number-post')) {
+      return <NumberPost fields={fields} metadata={metadata} />;
+    }
 
   if(slug?.includes('regulatory')) {
     return <RegulatorySign fields={fields} metadata={metadata} isRealSize />;
@@ -79,14 +85,13 @@ export const InlineSVG = ({
     fetch(src,{ method: "GET", mode: "cors"})
       .then((res) => res.text())
       .then((data) => {
-        console.log(`Fetched SVG from ${src}:`, data);
         const parser = new DOMParser();
         const doc = parser.parseFromString(data, "image/svg+xml");
         const svgEl = doc.querySelector("svg");
 
         if (svgEl) {
-          if (width) svgEl.setAttribute("width", String(width));
-          if (height) svgEl.setAttribute("height", String(height));
+          if (width) svgEl.setAttribute("width", '100%');
+          if (height) svgEl.setAttribute("height", '100%');
 
           // Ensure viewBox exists
           if (!svgEl.getAttribute("viewBox")) {
@@ -104,7 +109,7 @@ export const InlineSVG = ({
   return (
     <span
         className='svg-container'
-      style={{width, height }}
+      style={{width, height}}
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
@@ -132,7 +137,7 @@ export const exportToSvg = async (
   // 2. Mount REAL React tree (NOT static markup)
   const root = createRoot(element);
 
-  root.render(renderSignMarkup(sign, fields, metadata));
+  root.render(renderSignMarkup(sign, fields, metadata,true));
 
   // 3. Wait for browser paint + async SVG injections
   await new Promise((resolve) => requestAnimationFrame(resolve));

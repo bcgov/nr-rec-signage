@@ -12,13 +12,17 @@ interface InformationSignProps {
 
 const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
-  const pictogramCount = fields.get('icon')?.value ? fields.get('icon')?.value.split(";").length : 0;
-  const inch = isRealSize ? 300: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
+  const pictogramCount = fields.get('main_pictogram')?.value ? fields.get('main_pictogram')?.value.split(";").length : 0;
+  const partnershipLogoCount = fields.get('partnership_logos')?.value ? fields.get('partnership_logos')?.value.split(";").length : 0;
+  const inch = isRealSize ? 40: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
   const titleFontSize = metadata.get('title_font_size') ? parseFloat(metadata.get('title_font_size')!) : 104;
   const subtitleFontSize = metadata.get('subtitle_font_size') ? parseFloat(metadata.get('subtitle_font_size')!) : 44;
   const iconWidth = pictogramCount > 1 ? `48%` : '100%';
+  const partnershipLogoWidth = partnershipLogoCount > 2 ? `${100 / partnershipLogoCount - 5}%` : partnershipLogoCount === 2 ? '45%' : '100%';
   const width = metadata.get('width') ? parseFloat(metadata.get('width')!) : 16;
-
+  const scale = (width: number, value: number) =>{
+    return width * value / 16;
+  }
   return (
     <div ref={bannerRef} className="recreation-site-boundary-sign w-80
      d-flex flex-column align-items-center justify-content-center">
@@ -40,14 +44,14 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                 borderRadius: `${inch * (width / 22)}px`,
 
                 display: 'flex',
-                paddingTop: `${inch * 0.75}px`,
-                paddingBottom: `${inch * 0.2}px`,
-                paddingLeft: `${inch * 0.1}px`,
-                paddingRight: `${inch * 0.1}px`,
+                paddingTop: `${inch * scale(width, 0.75)}px`,
+                paddingBottom: `${inch * scale(width, 0.2)}px`,
+                paddingLeft: `${inch * scale(width, 0.1)}px`,
+                paddingRight: `${inch * scale(width, 0.1)}px`,
                 flexDirection: 'column',
                 alignItems: 'center',
                 color: '#1D252C',
-                gap: `${inch * 0.5}px`
+                gap: `${inch * scale(width, 0.5)}px`
             }}>
                 <p style={{
                     fontSize: `${inch * (titleFontSize / 72)}px`,
@@ -63,11 +67,12 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                     flexWrap: 'wrap',
                     flex: "1 1 0",
                     minWidth: 0,
+                    position: 'relative',
                     height: '20%',
                     justifyContent: 'center',
                     alignItems: 'center',
                     width: '90%',
-                    gap: `${inch * 0.05}px`
+                    gap: `${inch * scale(width, 0.05)}px`
                 }}>
                     {fields.get('main_pictogram')?.value?.split(";").map((link: string, index: number) => {
                         return <InlineSVG key={`icon-information-${index}`} src={link} width={iconWidth} height="100%" />;
@@ -78,7 +83,7 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                     <p style={{
                         fontSize: `${inch * (subtitleFontSize / 72)}px`,
                         fontWeight: 'bold',
-                        marginTop: `-${inch * 0.25}px`,
+                        marginTop: `-${inch * scale(width, 0.25)}px`,
                         textAlign: 'center',
                         lineHeight: 1.3,
                         letterSpacing: 0
@@ -88,6 +93,7 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                 )}
                 <div style={{
                     width: '100%',
+                    height: '15%',
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
@@ -96,10 +102,10 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                     <div style={{
                         width: '40%',
                         display: 'flex',
-                        gap: `${inch * 0.05}px`
+                        gap: `${inch * scale(width, 0.05)}px`
                     }}>
                         {fields.get('partnership_logos')?.value?.split(";").map((link: string, index: number) => {
-                            return <InlineSVG key={`icon-logos-${index}`} src={link} height="100%" />;
+                            return <InlineSVG key={`icon-logos-${index}`} width={partnershipLogoWidth} src={link} height="auto" />;
                         })}
                     </div>
                     <div style={{

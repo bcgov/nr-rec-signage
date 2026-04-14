@@ -34,6 +34,7 @@
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/testing": "^11.0.0",
     "@prisma/client": "^6.1.0",
+    "jose": "^5.2.0",
     "express-prom-bundle": "^8.0.0",
     "helmet": "^8.0.0",
     "nest-winston": "^1.9.7",

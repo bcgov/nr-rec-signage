@@ -19,7 +19,9 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
   const regulationFontSize = metadata.get('regulation_font_size') ? parseFloat(metadata.get('regulation_font_size')!) : 26;
   const iconWidth = pictogramCount > 1 ? `48%` : '100%';
   const width = metadata.get('width') ? parseFloat(metadata.get('width')!) : 16;
-
+  const scale = (width: number, value: number) =>{
+    return width * value / 16;
+  }
   return (
     <div ref={bannerRef} className="recreation-site-boundary-sign w-80
      d-flex flex-column align-items-center justify-content-center">
@@ -39,16 +41,15 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                 width: '95%',
                 height: '95%',
                 borderRadius: `${inch * (width / 22)}px`,
-
                 display: 'flex',
-                paddingTop: `${inch * 0.75}px`,
-                paddingBottom: `${inch * 0.2}px`,
-                paddingLeft: `${inch * 0.2}px`,
-                paddingRight: `${inch * 0.2}px`,
+                paddingTop: `${inch * scale(width, 0.75)}px`,
+                paddingBottom: `${inch * scale(width, 0.2)}px`,
+                paddingLeft: `${inch * scale(width, 0.2)}px`,
+                paddingRight: `${inch * scale(width, 0.2)}px`,
                 flexDirection: 'column',
                 alignItems: 'center',
                 color: '#1D252C',
-                gap: `${inch * 0.5}px`
+                gap: `${inch * scale(width, 0.5)}px`
             }}>
                 <p style={{
                     fontSize: `${inch * (titleFontSize / 72)}px`,
@@ -66,7 +67,7 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                         fontSize: `${inch * (subtitleFontSize / 72)}px`,
                         fontWeight: 'bold',
                         textTransform: 'uppercase',
-                        marginTop: `-${inch * 0.25}px`,
+                        marginTop: `-${inch * scale(width, 0.25)}px`,
                         textAlign: 'center',
                         lineHeight: 1.3,
                         letterSpacing: 0
@@ -83,7 +84,7 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                     justifyContent: 'center',
                     alignItems: 'center',
                     width: '90%',
-                    gap: `${inch * 0.05}px`
+                    gap: `${inch * scale(width, 0.05)}px`
                 }}>
                     {fields.get('icon')?.value?.split(";").map((link: string, index: number) => {
                         return <InlineSVG key={`icon-regulatory-${index}`} src={link} width={iconWidth} height="100%" />;
@@ -95,7 +96,7 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                         fontSize: `${inch * (subtitleFontSize / 72)}px`,
                         fontWeight: 'bold',
                         textTransform: 'uppercase',
-                        marginTop: `-${inch * 0.25}px`,
+                        marginTop: `-${inch * scale(width, 0.25)}px`,
                         textAlign: 'center',
                         lineHeight: 1.3,
                         letterSpacing: 0

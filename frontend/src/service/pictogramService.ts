@@ -6,11 +6,13 @@ import PictogramUpdateDto from '../interfaces/PictogramUpdateDto';
 export const usePictogramService = () => {
   const { apiFetch } = useAuth();
 
-  const getPictograms = async (limit: number = 20, search?: string, category?: string): Promise<PictogramSearchDto> => {
+  const getPictograms = async (limit: number = 20, search?: string, category: string[] = []): Promise<PictogramSearchDto> => {
     const params = new URLSearchParams();
     params.append('limit', limit.toString());
     if (search) params.append('search', search);
-    if (category) params.append('category', category);
+    if (category) {
+        params.append('category', category.join(';')); // Join multiple categories with a delimiter (e.g., ';')
+    }
 
     const response = await apiFetch(`/pictograms?${params}`);
     if (!response.ok) {
@@ -19,12 +21,14 @@ export const usePictogramService = () => {
     return response.json();
   };
 
-  const create = async (file: File, name: string, description?: string, idCategory: string): Promise<PictogramDto> => {
+  const create = async (file: File, name: string, description?: string, idCategory?: string): Promise<PictogramDto> => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('name', name);
     if (description) formData.append('description', description);
-    formData.append('id_category', idCategory);
+    if(idCategory){
+        formData.append('id_category', idCategory);
+    }
 
     const response = await apiFetch('/pictograms', {
       method: 'POST',

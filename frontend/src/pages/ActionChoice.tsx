@@ -9,7 +9,7 @@ const ActionChoice: React.FC = () => {
   };
 
   const handleEditExisting = () => {
-    navigate('/sign-selection' );
+    navigate('/existing-signs' );
   };
 
   return (

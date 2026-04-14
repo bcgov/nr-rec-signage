@@ -5,8 +5,10 @@ import { SignUpdateDto } from '../dto/sign-update.dto';
 import { CategoryMapper } from '../../categories/mapper/category.mapper';
 
 export class SignMapper {
-  static toSign(dto: SignCreationDto) {
+  static toSign(dto: SignCreationDto, idirUserGuid: string, displayName: string) {
     return {
+      idir_user_guid: idirUserGuid,
+      author_display_name: displayName,
       id_category: dto.id_category,
       id_options: dto.id_options,
       date_created: new Date(),
@@ -25,7 +27,11 @@ export class SignMapper {
 
   static toSignDetailsDto(sign: any): SignDetailsDto {
     return {
+        id: sign.id.toNumber(),
       id_category: sign.id_category.toNumber(),
+      id_options: sign.id_options?.toNumber() || null,
+      authorDisplayName: sign.author_display_name,
+      dateCreated: sign.date_created.toISOString(),
       category: CategoryMapper.toCategoryDto(sign.category),
       fields: sign.values.map((v: any) => ({
         id: v.field.id.toNumber(),

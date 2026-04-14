@@ -4,11 +4,11 @@ import PictogramSearchDto from '../../interfaces/PictogramSearchDto';
 import Pictogram from '../../components/Pictogram';
 import PictogramDto from '../../interfaces/PictogramDto';
 
-export default function SignList() {
+export default function PictogramList() {
     const [data, setData] = useState<PictogramSearchDto | null>(null);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState([] as string[]);
     const [showModal, setShowModal] = useState(false);
     const [selectedPictogram, setSelectedPictogram] = useState<PictogramDto | undefined>(undefined);
     const { getPictograms } = usePictogramService();
@@ -57,7 +57,7 @@ export default function SignList() {
                 <div className="col-md-12">
                     <div className="search-form form-input d-flex flex-column">
                         <input id="search" type="text" placeholder='Search here...' value={search} onChange={(e) => setSearch(e.target.value)} />
-                        <select id="category-filter" className="category-filter-absolute" value={category} onChange={(e) => setCategory(e.target.value)}>
+                        <select id="category-filter" className="category-filter-absolute" value={category} onChange={(e) => setCategory([e.target.value])}>
                             <option value="">Categories</option>
                             {data?.categories.map((cat) => (
                                 <option key={cat.id} value={cat.id}>{cat.name}</option>

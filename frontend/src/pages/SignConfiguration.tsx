@@ -12,6 +12,7 @@ import RecreationSiteBoundarySign from '@/components/signs/RecreationSiteBoundar
 import WelcomeSign from '@/components/signs/WelcomeSign';
 import RegulatorySign from '@/components/signs/RegulatorySign';
 import InformationSign from '@/components/signs/InformationSign';
+import NumberPost from '@/components/signs/NumberPost';
 
 const SignConfiguration: React.FC = () => {
   const { id } = useParams();
@@ -64,6 +65,10 @@ const SignConfiguration: React.FC = () => {
   const renderPreview = () => {
     if (!signDetails) return null;
     const slug = signDetails.category.slug?.toLowerCase();
+
+    if(slug?.includes('camp-sign-number-post')) {
+      return <NumberPost fields={fields} metadata={metadata} />;
+    }
 
     if(slug?.includes('regulatory')) {
       return <RegulatorySign fields={fields} metadata={metadata} />;

@@ -9,7 +9,7 @@ interface WelcomeSignProps {
 
 const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
-  const inch = isRealSize ? 40 : useInchScale(bannerRef, 32);
+  const inch = useInchScale(bannerRef, 32);
 
   return (
     <div ref={bannerRef} className="recreation-site-boundary-sign w-50

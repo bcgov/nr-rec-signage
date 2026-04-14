@@ -8,7 +8,7 @@ export class PictogramsService {
 
   async getAll(
     search?: string,
-    category?: string,
+    category?: string[],
   ): Promise<{ categories: any[]; results: PictogramDto[] }> {
     // Get all categories
     const categories = await this.prisma.signPictogramCategory.findMany({
@@ -29,9 +29,11 @@ export class PictogramsService {
         mode: 'insensitive',
       };
     }
-
-    if (category) {
-      where.id_category = Number.parseInt(category);
+    const filteredCategories = category?.filter(c => !!c).map(Number.parseInt);
+    if (filteredCategories && filteredCategories.length > 0) {
+      where.id_category = {
+        in: filteredCategories,
+      };
     }
 
     // Get filtered pictograms

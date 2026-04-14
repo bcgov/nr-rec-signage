@@ -12,7 +12,7 @@ const Welcome: React.FC = () => {
     <div className="centered-container d-flex flex-column align-items-center justify-content-center w-30">
         <img src={logo} alt="BC Parks Logo" className="mb-4" style={{ width: '33%' }} />
       <p className="text-center text-big text-primary">Welcome to the RST Signage App. Complete the questionnaire below to generate a sign and download print-ready files.</p>
-      <button className="btn btn-primary" onClick={handleStart}>
+      <button className="mt-4 btn btn-primary" onClick={handleStart}>
         Begin <i className="bi bi-arrow-right"></i>
       </button>
     </div>

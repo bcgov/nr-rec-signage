@@ -20,7 +20,7 @@ export class PictogramsController {
     @Query('search') search?: string,
     @Query('category') category?: string,
   ): Promise<PictogramSearchDto> {
-    return this.pictogramsService.getAll(search, category);
+    return this.pictogramsService.getAll(search, category.split(';'));
   }
 
   @Post()

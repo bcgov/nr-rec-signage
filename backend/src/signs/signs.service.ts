@@ -19,6 +19,8 @@ type SignWithRelations = Prisma.SignGetPayload<{
 }>;
 
 type SignCreateInput = {
+  idir_user_guid: string;
+  author_display_name: string;
   id_category: number;
   id_options?: number;
   date_created: Date;
@@ -70,6 +72,35 @@ async getSign(id: number): Promise<SignWithRelations | null> {
     category,
   } as SignWithRelations;
 }
+
+  async getAll(idUserGuid: string, limit: number): Promise<SignWithRelations[]> {
+    const signs = await this.prisma.sign.findMany({
+      where: { idir_user_guid: idUserGuid },
+      orderBy: { date_created: 'desc' },
+      take: limit,
+      include: {
+        category: {
+          include: {
+            metadata: true,
+          },
+        },
+        option: true,
+        values: {
+          include: {
+            field: true,
+          },
+        },
+      },
+    });
+
+    return signs.map(sign => ({
+      ...sign,
+      category: {
+        ...sign.category,
+        metadata: sign.category.metadata.filter(m => m.id_options === sign.id_options || !m.id_options),
+      },
+    })) as SignWithRelations[];
+  }
 
   async insert(sign: SignCreateInput) {
     const created = await this.prisma.sign.create({

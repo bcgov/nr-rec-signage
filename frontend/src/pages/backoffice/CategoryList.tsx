@@ -46,7 +46,7 @@ export default function CategoryList() {
       </div>
       <div className="d-flex flex-wrap gap-3">
         {categories.map((category) => (
-            <div key={category.id} className="sign-card" onClick={() => navigate(`/backoffice/signs/${category.id}`)}>
+            <div key={category.id} className="sign-card" onClick={() => navigate(`/backoffice/categories/${category.id}`)}>
                 {category.preview_img && <img src={'/' + category.preview_img} alt={category.name} style={{ maxWidth: '100px' }} />}
                 <p>{category.name}</p>
                 </div>

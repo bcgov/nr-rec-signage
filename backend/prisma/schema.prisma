@@ -9,15 +9,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id          Decimal @id @default(dbgenerated("nextval('sq_user')")) @db.Decimal
-  email       String  @db.VarChar(200)
-  display_name String @db.VarChar(200)
-  role        String  @db.VarChar(50)
-  signs       Sign[]
-
-  @@map("User")
-}
 
 model SignCategory {
   id        Decimal        @id @db.Decimal
@@ -104,17 +95,17 @@ model DropdownValue {
 }
 
 model Sign {
-  id           Decimal     @id @default(dbgenerated("nextval('sq_sign')")) @db.Decimal
-  id_user      Decimal?    @db.Decimal
-  id_category  Decimal     @db.Decimal
-  id_options   Decimal?    @db.Decimal
-  date_created DateTime    @db.Timestamp
-  date_updated DateTime    @db.Timestamp
-  svg_version  String?     @db.Text
-  user         User?       @relation(fields: [id_user], references: [id])
-  category     SignCategory @relation(fields: [id_category], references: [id])
-  option       SignCategoryOption? @relation(fields: [id_options], references: [id])
-  values       SignValue[]
+  id                   Decimal     @id @default(dbgenerated("nextval('sq_sign')")) @db.Decimal
+  idir_user_guid       String      @db.VarChar(100)
+  author_display_name  String      @db.VarChar(200)
+  id_category          Decimal     @db.Decimal
+  id_options           Decimal?    @db.Decimal
+  date_created         DateTime    @db.Timestamp
+  date_updated         DateTime    @db.Timestamp
+  svg_version          String?     @db.Text
+  category             SignCategory @relation(fields: [id_category], references: [id])
+  option               SignCategoryOption? @relation(fields: [id_options], references: [id])
+  values               SignValue[]
 
   @@map("Sign")
 }
