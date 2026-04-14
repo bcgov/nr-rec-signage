@@ -1,6 +1,3 @@
-# -------------------------------------------------------------------
-# Database Module (First)
-# -------------------------------------------------------------------
 module "database" {
   source = "./modules/database"
 
@@ -42,6 +39,9 @@ module "api" {
   postgres_pool_size        = var.postgres_pool_size
   repo_name                 = var.repo_name
   target_env                = var.target_env
+  sso_auth_server_url       = var.sso_auth_server_url
+  sso_realm                 = var.sso_realm
+  sso_client_id             = var.sso_client_id
 
   providers = {
     aws.us-east-1 = aws.us-east-1
