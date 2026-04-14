@@ -1,0 +1,1 @@
+ALTER TABLE sign_metadata ADD COLUMN unit varchar(20);

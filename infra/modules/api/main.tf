@@ -144,7 +144,6 @@ module "waf_api" {
   }
 }
 
-
 # -------------------------
 # RESOURCES (alphabetical)
 # -------------------------
@@ -398,9 +397,9 @@ resource "aws_ecs_task_definition" "flyway_task" {
         fi
         echo "Waiting for Flyway task to complete..."
         aws ecs wait tasks-stopped --cluster ${aws_ecs_cluster.ecs_cluster.id} --tasks $task_arn
-        
+
         echo "Flyway task completed, at $(date)."
-        
+
         task_status=$(aws ecs describe-tasks --cluster ${aws_ecs_cluster.ecs_cluster.id} --tasks $task_arn --query 'tasks[0].lastStatus' --output text)
         echo "Flyway task status: $task_status at $(date)."
         log_stream_name=$(aws logs describe-log-streams \
@@ -453,7 +452,12 @@ resource "aws_ecs_task_definition" "node_api_task" {
       { name = "POSTGRES_DATABASE", value = var.db_name },
       { name = "POSTGRES_SCHEMA", value = var.db_schema },
       { name = "POSTGRES_POOL_SIZE", value = tostring(var.postgres_pool_size) },
-      { name = "PORT", value = "3000" }
+      { name = "PORT", value = "3000" },
+      { name = "S3_BUCKET", value = aws_s3_bucket.uploads.bucket },
+      { name = "AWS_REGION", value = var.aws_region },
+      { name = "SSO_AUTH_SERVER_URL", value = var.sso_auth_server_url },
+      { name = "SSO_REALM", value = var.sso_realm },
+      { name = "SSO_CLIENT_ID", value = var.sso_client_id }
     ]
     portMappings = [{
       protocol      = "tcp"
@@ -566,4 +570,69 @@ resource "aws_iam_role_policy_attachment" "rdsAttach" {
 resource "terraform_data" "trigger_flyway" {
   count = var.db_cluster_name != "" ? 1 : 0
   input = timestamp()
+}
+
+resource "aws_s3_bucket" "uploads" {
+  bucket = "${var.app_name}-uploads-${var.target_env}"
+
+  tags = module.common.common_tags
+}
+
+resource "aws_s3_bucket_public_access_block" "uploads" {
+  bucket = aws_s3_bucket.uploads.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_cors_configuration" "uploads" {
+  bucket = aws_s3_bucket.uploads.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = ["*"] # or restrict later
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
+}
+
+resource "aws_s3_bucket_policy" "uploads_public" {
+  bucket = aws_s3_bucket.uploads.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = "*"
+        Action = [
+          "s3:GetObject"
+        ]
+        Resource = "${aws_s3_bucket.uploads.arn}/*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "app_container_s3" {
+  name = "${var.app_name}_container_s3"
+  role = aws_iam_role.app_container_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject"
+        ]
+        Resource = "${aws_s3_bucket.uploads.arn}/*"
+      }
+    ]
+  })
 }

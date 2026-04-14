@@ -110,7 +110,6 @@ main{
 .blue-heading-container{
   width: 100%;
   border-radius: 8px!important;
-  overflow: hidden;
 }
 .blue-heading-container .blue-heading{
   background-color: $primary;
@@ -118,6 +117,7 @@ main{
   padding: 32px;
   font-size: 24px;
   font-weight: bold;
+  border-radius: 8px 8px 0 0;
 }
 
 .blue-heading-container .blue-heading p{
@@ -128,6 +128,7 @@ main{
 .container-content{
   background-color: white;
   padding: 40px;
+  border-radius: 0 0 8px 8px;
 
 }
 p{
@@ -184,16 +185,283 @@ p{
   color: #1C1C1C;
   margin-bottom: 10px;
 }
-
-.form-input input{
+.form-input select{
+  appearance: none;
+  cursor: pointer;
+  padding-right: 30px;
+  background:
+    url("/assets/icons/chevron-down.svg")
+    no-repeat right 4px center;
+  background-size: 45px;
+}
+.form-input input[type="text"],.form-input input[type="number"], .form-input select{
   width: 100%;
+  padding: 10px;
   border: 1px solid #d9d9d9;
   min-height: 56px;
   border-radius: 8px;
 }
 
+label.checkbox-label{
+  font-weight: normal;
+}
+.checkbox-label input[type="checkbox"]{
+  margin-right: 4px;
+  width: 20px;
+  height: 20px;
+}
 .form-input-container{
   display: flex;
   flex-direction: column;
   gap: 32px;
+}
+.icon-field{
+  position: relative;
+}
+.popup{
+  position: absolute;
+  top: -250px;
+  right: -20vw;
+  width: 450px;
+  z-index: 10000;
+}
+
+.icon-picker-header{
+  display: flex;
+  justify-content: space-between;
+  background-color: $primary;
+  border-radius: 8px 8px 0px 0px;
+  color: white;
+  align-items: center;
+  padding: 16px;
+}
+
+.icon-picker-body{
+  height: 350px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 0px 0px 8px 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.btn-transparent{
+  background: transparent;
+  border: none;
+  padding: 0px;
+}
+.btn-white-text{
+  color: white;
+}
+
+.btn-input{
+padding: 13px 22px;
+border-radius: 8px;
+border: none;
+}
+.btn-gray{
+  color: #1C1C1C;
+  background-color: #F5F5F5;
+  font-weight: dark;
+}
+
+.icon-picker-trigger{
+  position: absolute;
+  right: 5px;
+  top: 42px;
+}
+
+.upload-trigger{
+  position: absolute;
+  right: 68px;
+  top: 42px;
+  background-color: #234075;
+  color: white;
+}
+.selected-icon{
+  margin-top: 30px;
+  position: relative;
+  display: inline-block;
+}
+.delete-icon{
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: $primary;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.h-100{
+  min-height: 100vh;
+}
+
+.backoffice-sidebar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px;
+  background-color: $primary;
+  color: white;
+  padding: 32px 24px;
+}
+
+.menu-item{
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+}
+.menu-item.no-border{
+  border-bottom: none;
+}
+.menu-item a{
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+}
+.main-container{
+  margin-left: 250px;
+  padding: 32px;
+}
+
+.backoffice-logo{
+  filter: brightness(0) invert(1);
+}
+
+.grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+
+  gap: 30px;
+}
+
+.pictogram-card{
+  position: relative;
+  background-color: #F5F5F5;
+  padding: 32px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.pictogram-card::before{
+  position: absolute;
+  content: "";
+  width: 30px;
+  height: 30px;
+  top: 8px;
+  right: 8px;
+  background: url('../assets/img/Pencil.svg') no-repeat center;
+  background-size: contain;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.pictogram-card:hover::before{
+  opacity: 1;
+}
+.pictogram-card:hover{
+  border: 2px solid $primary;
+  cursor: pointer;
+}
+
+.pictogram-card img{
+  width: 50%;
+  height: auto;
+}
+.pictogram-card p{
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+}
+
+.category-filter-absolute{
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-radius: 0 8px 8px 0!important;
+  width: 200px!important;
+  background-color: $primary!important;
+  color: white!important;
+}
+
+.category-filter-absolute option{
+  background-color: white;
+  color: black;
+}
+
+.search-form{
+  width: 60%;
+}
+.search-form{
+  position: relative;
+}
+
+.modal{
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-dialog{
+  width: 800px;
+  max-width: 800px!important;
+  margin-top: 15vh;
+}
+.modal-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sign-modal-image{
+  width: 40%;
+  background-color: #F5F5F5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sign-modal-image .image-wrapper{
+  width: 80px;
+  height: 80px;
+}
+
+.icon-upload{
+  cursor: pointer;
+
+}
+
+.modal-background{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.modal-content{
+  z-index: 100;
+}
+
+.form-subtitle{
+  font-size: 18px;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding-bottom: 16px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid #d9d9d9;
+}
+
+label.small-label{
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.w-80{
+  width: 80%;
 }

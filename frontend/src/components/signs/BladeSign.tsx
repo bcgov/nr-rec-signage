@@ -2,17 +2,20 @@ import React, { useRef } from 'react';
 import FieldDto from '../../interfaces/FieldDto';
 import logo from '../../assets/img/RST_logo-BQZ01OOE.svg';
 import { useInchScale } from '../../utils/SignUtils';
+import { InlineSVG } from '@/utils/SvgUtils';
 interface BladeSignProps {
   fields: Map<string, FieldDto>;
+  metadata?: Map<string, string>;
+  isRealSize?: boolean;
 }
 
-const BladeSign: React.FC<BladeSignProps> = ({ fields }) => {
+const BladeSign: React.FC<BladeSignProps> = ({ fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
-  const inch = useInchScale(bannerRef, 48);
+  const inch = isRealSize? 40 : useInchScale(bannerRef, 48);
 
   return (
     <div ref={bannerRef} className="blade-sign w-100 d-flex flex-column align-items-center justify-content-center">
-        <div style={{aspectRatio: `48 / 5.5`,width: '100%', backgroundColor: '#4E3629', borderRadius: `${inch * 0.5}px`,
+        <div  style={{aspectRatio: `48 / 5.5`,width: '100%', backgroundColor: '#4E3629', borderRadius: `${inch * 0.5}px`,
             fontSize: `${inch * 3}px`,display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textAlign: 'center', textTransform: 'uppercase',letterSpacing: `${inch * 0.5}px`
         }}
         >
@@ -28,7 +31,7 @@ const BladeSign: React.FC<BladeSignProps> = ({ fields }) => {
             padding: `${inch * 1}px`, fontSize: `${inch * 3}px`,display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textAlign: 'center', textTransform: 'uppercase',letterSpacing: `${inch * 0.5}px`
         }}
         >
-            <img height={`${inch * 6}px`} src={logo} alt="RST Logo" />
+            <InlineSVG src={logo} width={`${inch * 30}px`} height="auto" />
         </div>
     </div>
   );

@@ -19,6 +19,8 @@ type SignWithRelations = Prisma.SignGetPayload<{
 }>;
 
 type SignCreateInput = {
+  idir_user_guid: string;
+  author_display_name: string;
   id_category: number;
   id_options?: number;
   date_created: Date;
@@ -39,9 +41,43 @@ type SignUpdateInput = {
 export class SignsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getSign(id: number): Promise<SignWithRelations | null> {
-    return this.prisma.sign.findUnique({
-      where: { id },
+async getSign(id: number): Promise<SignWithRelations | null> {
+  const sign = await this.prisma.sign.findUnique({
+    where: { id },
+    include: {
+      option: true,
+      values: {
+        include: {
+          field: true,
+        },
+      },
+    },
+  });
+
+  if (!sign) return null;
+
+  const category = await this.prisma.signCategory.findUnique({
+    where: { id: sign.id_category },
+    include: {
+      metadata: {
+        where: {
+          id_options: sign.id_options,
+        },
+      },
+    },
+  });
+
+  return {
+    ...sign,
+    category,
+  } as SignWithRelations;
+}
+
+  async getAll(idUserGuid: string, limit: number): Promise<SignWithRelations[]> {
+    const signs = await this.prisma.sign.findMany({
+      where: { idir_user_guid: idUserGuid },
+      orderBy: { date_created: 'desc' },
+      take: limit,
       include: {
         category: {
           include: {
@@ -55,7 +91,15 @@ export class SignsService {
           },
         },
       },
-    }) as Promise<SignWithRelations | null>;
+    });
+
+    return signs.map(sign => ({
+      ...sign,
+      category: {
+        ...sign.category,
+        metadata: sign.category.metadata.filter(m => m.id_options === sign.id_options || !m.id_options),
+      },
+    })) as SignWithRelations[];
   }
 
   async insert(sign: SignCreateInput) {

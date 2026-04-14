@@ -159,3 +159,24 @@ variable "target_env" {
   nullable    = false
 }
 
+
+variable "sso_auth_server_url" {
+  description = "Authentication Server for IDIR"
+  type        = string
+  nullable    = false
+}
+
+
+variable "sso_realm" {
+  description = "Realm For IDIR"
+  type        = string
+  nullable    = false
+}
+
+
+variable "sso_client_id" {
+  description = "Realm For IDIR"
+  type        = string
+  nullable    = false
+}
+

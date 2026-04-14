@@ -29,7 +29,7 @@ on:
         type: string
         description: 'The stack prefix to use for the resources'
     outputs:
-      API_GW_URL: 
+      API_GW_URL:
         value: ${{ jobs.infra.outputs.API_GW_URL }}
       S3_BUCKET_ARN:
         value: ${{ jobs.infra.outputs.S3_BUCKET_ARN }}
@@ -84,7 +84,7 @@ jobs:
         FLYWAY_IMAGE="${{ steps.ecr-check.outputs.ecr-registry }}/${{ github.repository }}:migrations-${{ inputs.tag }}"
         echo "api-image=$API_IMAGE" >> $GITHUB_OUTPUT
         echo "flyway-image=$FLYWAY_IMAGE" >> $GITHUB_OUTPUT
-    
+
     - name: Setup Terragrunt
       uses: autero1/action-terragrunt@aefb0a43c4f5503a91fefb307745c4d51c26ed0e # v3
       with:
@@ -94,6 +94,9 @@ jobs:
       working-directory: terragrunt/${{ inputs.environment_name }}
       env:
         target_env: ${{ inputs.environment_name }}
+        sso_auth_server_url: ${{ secrets.SSO_AUTH_SERVER_URL }}
+        sso_realm: ${{ secrets.SSO_REALM }}
+        sso_client_id: ${{ secrets.SSO_CLIENT_ID }}
         aws_license_plate: ${{ secrets.AWS_LICENSE_PLATE }}
         api_image: ${{ steps.image-tags.outputs.api-image }}
         flyway_image: ${{ steps.image-tags.outputs.flyway-image }}
@@ -113,4 +116,3 @@ jobs:
         echo "CF_DOMAIN=$(jq -r .cloudfront.value.domain_name outputs.json)" >> $GITHUB_OUTPUT
         echo "CF_DISTRIBUTION_ID=$(jq -r .cloudfront.value.distribution_id outputs.json)" >> $GITHUB_OUTPUT
         echo "API_GW_URL=$(jq -r .apigw_url.value outputs.json)" >> $GITHUB_OUTPUT
-        
