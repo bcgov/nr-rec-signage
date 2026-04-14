@@ -457,7 +457,8 @@ resource "aws_ecs_task_definition" "node_api_task" {
       { name = "AWS_REGION", value = var.aws_region },
       { name = "SSO_AUTH_SERVER_URL", value = var.sso_auth_server_url },
       { name = "SSO_REALM", value = var.sso_realm },
-      { name = "SSO_CLIENT_ID", value = var.sso_client_id }
+      { name = "SSO_CLIENT_ID", value = var.sso_client_id },
+      { name = "S3_PUBLIC_URL", value = aws_cloudfront_distribution.uploads.domain_name }
     ]
     portMappings = [{
       protocol      = "tcp"
@@ -599,24 +600,6 @@ resource "aws_s3_bucket_cors_configuration" "uploads" {
   }
 }
 
-resource "aws_s3_bucket_policy" "uploads_public" {
-  bucket = aws_s3_bucket.uploads.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = "*"
-        Action = [
-          "s3:GetObject"
-        ]
-        Resource = "${aws_s3_bucket.uploads.arn}/*"
-      }
-    ]
-  })
-}
-
 resource "aws_iam_role_policy" "app_container_s3" {
   name = "${var.app_name}_container_s3"
   role = aws_iam_role.app_container_role.id
@@ -636,3 +619,74 @@ resource "aws_iam_role_policy" "app_container_s3" {
     ]
   })
 }
+
+resource "aws_cloudfront_origin_access_control" "uploads" {
+  name                              = "${var.app_name}-uploads-oac"
+  description                       = "OAC for uploads bucket"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+resource "aws_cloudfront_distribution" "uploads" {
+  enabled = true
+
+  origin {
+    domain_name              = aws_s3_bucket.uploads.bucket_regional_domain_name
+    origin_id                = "uploads-s3"
+    origin_access_control_id = aws_cloudfront_origin_access_control.uploads.id
+  }
+
+  default_cache_behavior {
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD"]
+
+    target_origin_id = "uploads-s3"
+
+    viewer_protocol_policy = "redirect-to-https"
+
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
+  }
+
+  tags = module.common.common_tags
+}
+
+resource "aws_s3_bucket_policy" "uploads_cf" {
+  bucket = aws_s3_bucket.uploads.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "cloudfront.amazonaws.com"
+        }
+        Action = "s3:GetObject"
+        Resource = "${aws_s3_bucket.uploads.arn}/*"
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = aws_cloudfront_distribution.uploads.arn
+          }
+        }
+      }
+    ]
+  })
+}
+
