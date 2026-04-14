@@ -1,67 +1,71 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { Controller, Get, Post, Put, Query, Body, UseInterceptors, UploadedFile, Param } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Multer } from 'multer';
+import { PictogramsService } from './pictograms.service';
+import { UploadService } from '../uploads/upload.service';
 import { PictogramSearchDto } from './dto/pictogram-search.dto';
+import { PictogramCreateDto } from './dto/pictogram-create.dto';
+import { PictogramUpdateDto } from './dto/pictogram-update.dto';
+import { PictogramDto } from './dto/pictogram.dto';
 
 @Controller('pictograms')
 export class PictogramsController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly pictogramsService: PictogramsService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   @Get()
   async getAll(
     @Query('search') search?: string,
     @Query('category') category?: string,
   ): Promise<PictogramSearchDto> {
-    // Get all categories
-    const categories = await this.prisma.signPictogramCategory.findMany({
-      select: {
-        id: true,
-        name: true,
-      },
+    return this.pictogramsService.getAll(search, category);
+  }
+
+  @Post()
+  @UseInterceptors(FileInterceptor('file'))
+  async create(
+    @UploadedFile() file: Multer.File,
+    @Body() dto: PictogramCreateDto,
+  ): Promise<PictogramDto> {
+    // Upload SVG to S3
+    const uploadResult = await this.uploadService.uploadSvg(file);
+
+    // Create pictogram record in database
+    const pictogram = await this.pictogramsService.create({
+      name: dto.name,
+      description: dto.description,
+      id_category: BigInt(dto.id_category),
+      link: uploadResult.url,
     });
 
-    // Build where clause for pictograms
-    const where: any = {
-      is_archived: false,
-    };
+    return pictogram;
+  }
 
-    if (search) {
-      where.name = {
-        contains: search,
-        mode: 'insensitive',
-      };
+  @Put(':id')
+  @UseInterceptors(FileInterceptor('file'))
+  async update(
+    @Param('id') id: string,
+    @UploadedFile() file: Multer.File | undefined,
+    @Body() dto: PictogramUpdateDto,
+  ): Promise<PictogramDto> {
+    let link = dto.link;
+    if (file) {
+      // Upload new SVG to S3
+      const uploadResult = await this.uploadService.uploadSvg(file);
+      link = uploadResult.url;
     }
 
-    if (category) {
-      where.id_category = parseInt(category);
-    }
-
-    // Get filtered pictograms
-    const pictograms = await this.prisma.signPictogram.findMany({
-      where,
-      include: {
-        category: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+    // Update pictogram record in database
+    const pictogram = await this.pictogramsService.update(Number(id), {
+      name: dto.name,
+      description: dto.description,
+      id_category: dto.id_category,
+      link,
+      is_archived: dto.is_archived === 'true'
     });
 
-    return {
-      categories: categories.map(cat => ({
-        id: Number(cat.id),
-        name: cat.name,
-      })),
-      results: pictograms.map(pic => ({
-        id: Number(pic.id),
-        name: pic.name,
-        link: pic.link,
-        category: {
-          id: Number(pic.category.id),
-          name: pic.category.name,
-        },
-      })),
-    };
+    return pictogram;
   }
 }

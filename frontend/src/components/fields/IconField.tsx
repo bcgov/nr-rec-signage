@@ -3,8 +3,14 @@ import { FieldProps } from '../../interfaces/FieldProps';
 import { usePictogramService } from '../../service/pictogramService';
 import PictogramSearchDto from '../../interfaces/PictogramSearchDto';
 import PictogramDto from '../../interfaces/PictogramDto';
+import CategoryDto from '@/interfaces/CategoryDto';
+import PictogramCategoryDto from '@/interfaces/PictogramCategoryDto';
 
+interface IconFieldRestrictions {
+    categories?: number[]; // Optional list of category IDs to filter pictograms
+}
 const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
+    const restrictions: IconFieldRestrictions = field.restriction || {};
   const [showPopup, setShowPopup] = useState(false);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
@@ -18,6 +24,10 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
     }
   }, [showPopup, search, category]);
 
+  const restrictCategory = (categories: PictogramCategoryDto[], allowedIds: number[]) => {
+    if(allowedIds.length === 0) return categories; // No restrictions, return all
+    return categories.filter(cat => allowedIds.includes(cat.id));
+  };
   const fetchPictograms = async () => {
     setLoading(true);
     try {
@@ -71,7 +81,7 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
               <input type="text" className="form-control mb-2" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
                 <select className="form-control mb-2 w-50" value={category} onChange={(e) => setCategory(e.target.value)}>
                     <option value="">All Categories</option>
-                    {pictogramData?.categories.map((cat) => (
+                    {restrictCategory(pictogramData?.categories || [], restrictions.categories || []).map((cat) => (
                       <option key={cat.id} value={cat.id.toString()}>{cat.name}</option>
                     ))}
                 </select>

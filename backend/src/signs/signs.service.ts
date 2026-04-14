@@ -39,24 +39,37 @@ type SignUpdateInput = {
 export class SignsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getSign(id: number): Promise<SignWithRelations | null> {
-    return this.prisma.sign.findUnique({
-      where: { id },
-      include: {
-        category: {
-          include: {
-            metadata: true,
-          },
-        },
-        option: true,
-        values: {
-          include: {
-            field: true,
-          },
+async getSign(id: number): Promise<SignWithRelations | null> {
+  const sign = await this.prisma.sign.findUnique({
+    where: { id },
+    include: {
+      option: true,
+      values: {
+        include: {
+          field: true,
         },
       },
-    }) as Promise<SignWithRelations | null>;
-  }
+    },
+  });
+
+  if (!sign) return null;
+
+  const category = await this.prisma.signCategory.findUnique({
+    where: { id: sign.id_category },
+    include: {
+      metadata: {
+        where: {
+          id_options: sign.id_options,
+        },
+      },
+    },
+  });
+
+  return {
+    ...sign,
+    category,
+  } as SignWithRelations;
+}
 
   async insert(sign: SignCreateInput) {
     const created = await this.prisma.sign.create({

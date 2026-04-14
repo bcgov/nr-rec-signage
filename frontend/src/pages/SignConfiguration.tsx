@@ -10,6 +10,8 @@ import BladeSign from '@/components/signs/BladeSign';
 import CautionarySign from '@/components/signs/CautionarySign';
 import RecreationSiteBoundarySign from '@/components/signs/RecreationSiteBoundarySign';
 import WelcomeSign from '@/components/signs/WelcomeSign';
+import RegulatorySign from '@/components/signs/RegulatorySign';
+import InformationSign from '@/components/signs/InformationSign';
 
 const SignConfiguration: React.FC = () => {
   const { id } = useParams();
@@ -63,6 +65,13 @@ const SignConfiguration: React.FC = () => {
     if (!signDetails) return null;
     const slug = signDetails.category.slug?.toLowerCase();
 
+    if(slug?.includes('regulatory')) {
+      return <RegulatorySign fields={fields} metadata={metadata} />;
+    }
+
+    if(slug?.includes('information')) {
+      return <InformationSign fields={fields} metadata={metadata} />;
+    }
     if (slug.includes('blade')) {
       return <BladeSign fields={fields} metadata={metadata} />;
     }

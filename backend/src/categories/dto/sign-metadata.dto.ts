@@ -1,4 +1,4 @@
-export default interface SignMetadataDto {
+export class SignMetadataDto {
   id?: number;
   meta_key: string;
   meta_value: string;

@@ -1,22 +1,21 @@
 import React, { useRef } from 'react';
 import FieldDto from '../../interfaces/FieldDto';
 import { useInchScale } from '@/utils/SignUtils';
-import logo from '../../assets/img/RST_logo-Yellow.svg';
+import logo from '../../assets/img/RST_logo-blue.svg';
 import { ReactSVG } from 'react-svg';
 import { InlineSVG } from '@/utils/SvgUtils';
-interface CautionarySignProps {
+interface InformationSignProps {
   fields: Map<string, FieldDto>;
   metadata: Map<string, string>;
  isRealSize?: boolean;
 }
 
-const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isRealSize }) => {
+const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const pictogramCount = fields.get('icon')?.value ? fields.get('icon')?.value.split(";").length : 0;
   const inch = isRealSize ? 300: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
   const titleFontSize = metadata.get('title_font_size') ? parseFloat(metadata.get('title_font_size')!) : 104;
   const subtitleFontSize = metadata.get('subtitle_font_size') ? parseFloat(metadata.get('subtitle_font_size')!) : 44;
-  const regulationFontSize = metadata.get('regulation_font_size') ? parseFloat(metadata.get('regulation_font_size')!) : 26;
   const iconWidth = pictogramCount > 1 ? `48%` : '100%';
   const width = metadata.get('width') ? parseFloat(metadata.get('width')!) : 16;
 
@@ -24,7 +23,7 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
     <div ref={bannerRef} className="recreation-site-boundary-sign w-80
      d-flex flex-column align-items-center justify-content-center">
         <div className="exportable" style={{
-            backgroundColor: '#FFD100',
+            backgroundColor: '#FFFFFF',
             width: `${inch * parseFloat(metadata.get('width') || "16")}px`,
             borderRadius: `${inch * (width / 32)}px`,
             height: `${inch * parseFloat(metadata.get('height') || "16")}px`,
@@ -43,36 +42,22 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                 display: 'flex',
                 paddingTop: `${inch * 0.75}px`,
                 paddingBottom: `${inch * 0.2}px`,
-                paddingLeft: `${inch * 0.2}px`,
-                paddingRight: `${inch * 0.2}px`,
+                paddingLeft: `${inch * 0.1}px`,
+                paddingRight: `${inch * 0.1}px`,
                 flexDirection: 'column',
                 alignItems: 'center',
-                color: '#2D2926',
+                color: '#1D252C',
                 gap: `${inch * 0.5}px`
             }}>
                 <p style={{
                     fontSize: `${inch * (titleFontSize / 72)}px`,
                     fontWeight: 'bold',
-                    textTransform: 'uppercase',
                     textAlign: 'center',
                     lineHeight: 1,
                     letterSpacing: 0
                 }}>
-                    {fields.get('title')?.value || 'Caution'}
+                    {fields.get('title')?.value}
                 </p>
-                {fields.get('header_sub_text')?.value && (
-                    <p style={{
-                        fontSize: `${inch * (subtitleFontSize / 72)}px`,
-                        fontWeight: 'bold',
-                        textTransform: 'uppercase',
-                        marginTop: `-${inch * 0.25}px`,
-                        textAlign: 'center',
-                        lineHeight: 1.3,
-                        letterSpacing: 0
-                    }}>
-                        {fields.get('header_sub_text')?.value}
-                    </p>
-                )}
                 <div style={{
                     display: 'flex',
                     flexWrap: 'wrap',
@@ -84,41 +69,43 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                     width: '90%',
                     gap: `${inch * 0.05}px`
                 }}>
-                    {fields.get('icon')?.value?.split(";").map((link: string, index: number) => {
-                        return <InlineSVG key={`icon-cautionary-${index}`} src={link} width={iconWidth} height="100%" />;
+                    {fields.get('main_pictogram')?.value?.split(";").map((link: string, index: number) => {
+                        return <InlineSVG key={`icon-information-${index}`} src={link} width={iconWidth} height="100%" />;
                     })}
                 </div>
 
-                {fields.get('sub_text')?.value && (
+                {fields.get('header_sub_text')?.value && (
                     <p style={{
                         fontSize: `${inch * (subtitleFontSize / 72)}px`,
                         fontWeight: 'bold',
-                        textTransform: 'uppercase',
                         marginTop: `-${inch * 0.25}px`,
                         textAlign: 'center',
                         lineHeight: 1.3,
                         letterSpacing: 0
                     }}>
-                        {fields.get('sub_text')?.value}
+                        {fields.get('header_sub_text')?.value}
                     </p>
                 )}
                 <div style={{
+                    width: '100%',
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
                     justifySelf: "end",
-                    lineHeight: 1.1,
                 }}>
                     <div style={{
-                        fontSize: `${inch * (regulationFontSize / 72)}px`,
-                        width: '40%'
+                        width: '40%',
+                        display: 'flex',
+                        gap: `${inch * 0.05}px`
                     }}>
-                    Forest and Range Practices Act Forest Recreation Regulation Section {fields.get("regulations")?.value || 'XX(XX)'}
+                        {fields.get('partnership_logos')?.value?.split(";").map((link: string, index: number) => {
+                            return <InlineSVG key={`icon-logos-${index}`} src={link} height="100%" />;
+                        })}
                     </div>
                     <div style={{
-                        width: '40%'
+                        width: '45%'
                     }}>
-                        <InlineSVG src={logo} width={'100%'} height="auto" />
+                        <InlineSVG src={logo} width="100%"  />
                     </div>
                 </div>
             </div>
@@ -127,4 +114,4 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
   );
 };
 
-export default CautionarySign;
+export default InformationSign;

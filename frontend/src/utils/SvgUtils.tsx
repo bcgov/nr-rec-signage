@@ -1,5 +1,4 @@
-import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import React, { useEffect, useState } from 'react';
 import SignDto from '../interfaces/SignDto';
 import FieldDto from '../interfaces/FieldDto';
 import BladeSign from '../components/signs/BladeSign';
@@ -8,6 +7,9 @@ import RecreationSiteBoundarySign from '../components/signs/RecreationSiteBounda
 import WelcomeSign from '../components/signs/WelcomeSign';
 import {elementToSVG} from 'dom-to-svg';
 import opentype from "opentype.js";
+import { createRoot } from 'react-dom/client';
+import InformationSign from '@/components/signs/InformationSign';
+import RegulatorySign from '@/components/signs/RegulatorySign';
 const renderSignMarkup = (
   sign: SignDto,
   fields: Map<string, FieldDto>,
@@ -15,6 +17,13 @@ const renderSignMarkup = (
 ) => {
   const slug = sign.category.slug?.toLowerCase();
 
+  if(slug?.includes('regulatory')) {
+    return <RegulatorySign fields={fields} metadata={metadata} isRealSize />;
+  }
+
+  if(slug?.includes('information')) {
+    return <InformationSign fields={fields} metadata={metadata} isRealSize />;
+  }
   if (slug.includes('blade')) {
     return <BladeSign fields={fields} metadata={metadata} isRealSize />;
   }
@@ -33,41 +42,123 @@ const renderSignMarkup = (
 
   return <div>Unsupported sign type</div>;
 };
+const waitForAllSvgs = (root: HTMLElement) => {
+  return new Promise<void>((resolve) => {
+    const interval = setInterval(() => {
+      const containers = root.querySelectorAll(".svg-container");
+      const loaded = root.querySelectorAll(".svg-container svg");
+
+      console.log(
+        `SVG containers: ${containers.length}, Loaded SVGs: ${loaded.length}`
+      );
+
+      if (
+        containers.length > 0 &&
+        containers.length === loaded.length
+      ) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, 50);
+  });
+};
+export const InlineSVG = ({
+  src,
+  width,
+  height,
+  className,
+}: {
+  src: string;
+  width?: number | string;
+  height?: number | string;
+  className?: string;
+}) => {
+  const [svg, setSvg] = useState("");
+
+  useEffect(() => {
+    fetch(src,{ method: "GET", mode: "cors"})
+      .then((res) => res.text())
+      .then((data) => {
+        console.log(`Fetched SVG from ${src}:`, data);
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, "image/svg+xml");
+        const svgEl = doc.querySelector("svg");
+
+        if (svgEl) {
+          if (width) svgEl.setAttribute("width", String(width));
+          if (height) svgEl.setAttribute("height", String(height));
+
+          // Ensure viewBox exists
+          if (!svgEl.getAttribute("viewBox")) {
+            const w = svgEl.getAttribute("width");
+            const h = svgEl.getAttribute("height");
+            if (w && h) {
+              svgEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
+            }
+          }
+        }
+        setSvg(svgEl?.outerHTML || data);
+      });
+  }, [src]);
+
+  return (
+    <span
+        className='svg-container'
+      style={{width, height }}
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
+  );
+};
+export const loadSvg = async (src: string) => {
+  const res = await fetch(src);
+  return await res.text();
+};
 export const exportToSvg = async (
   sign: SignDto,
   fields: Map<string, FieldDto>,
   metadata: Map<string, string>,
   name: string
 ) => {
-  // Create hidden container
+  // 1. Create real DOM container
   const element = document.createElement("div");
+
   element.style.position = "fixed";
-  element.style.left = "-99999px";
+  element.style.left = "0";
   element.style.top = "0";
   element.style.width = "10000px";
 
-  element.innerHTML = renderToStaticMarkup(
-    renderSignMarkup(sign, fields, metadata)
-  );
-
   document.body.appendChild(element);
 
-  // Target exportable element
+  // 2. Mount REAL React tree (NOT static markup)
+  const root = createRoot(element);
+
+  root.render(renderSignMarkup(sign, fields, metadata));
+
+  // 3. Wait for browser paint + async SVG injections
+  await new Promise((resolve) => requestAnimationFrame(resolve));
+
+  // (optional but more stable)
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  // 4. Now DOM is real → SVGs can exist
   const exportElement =
-    document.querySelector(".exportable") || element;
+    element.querySelector(".exportable") || element;
 
-  // Convert DOM → SVG
-  const svg = elementToSVG(exportElement);
+  if (!exportElement) {
+    throw new Error("Export element not found");
+  }
 
-  // Convert text → vector paths (important for print)
+  // 5. Convert DOM → SVG
+  const svg = elementToSVG(exportElement as HTMLElement);
+
+  // 6. Convert text → paths
   await convertTextToPaths(svg as unknown as SVGElement);
-  //await convertTextToPaths(svg, "/fonts/2023_01_01_BCSans-Regular_2f.woff");
 
-  // Serialize SVG
+  // 7. Serialize SVG
   const serializer = new XMLSerializer();
   const svgString = serializer.serializeToString(svg);
 
-  // Download
+  // 8. Download
   const blob = new Blob([svgString], {
     type: "image/svg+xml;charset=utf-8",
   });
@@ -77,11 +168,15 @@ export const exportToSvg = async (
   const link = document.createElement("a");
   link.href = url;
   link.download = `${name || "sign"}.svg`;
+
   document.body.appendChild(link);
   link.click();
 
   link.remove();
   URL.revokeObjectURL(url);
+
+  // 9. Cleanup React + DOM
+  root.unmount();
   document.body.removeChild(element);
 };
 

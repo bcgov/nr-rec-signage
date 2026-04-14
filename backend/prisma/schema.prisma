@@ -62,6 +62,7 @@ model SignMetadata {
   id_options  Decimal?    @db.Decimal
   human_label String      @db.VarChar(200)
   modifiable  Boolean     @default(false)
+  unit        String?     @db.VarChar(20)
   option SignCategoryOption? @relation(fields: [id_options], references: [id])
   category    SignCategory @relation(fields: [id_category], references: [id])
   @@map("sign_metadata")
@@ -77,6 +78,7 @@ model SignPictogramCategory {
 model SignPictogram {
   id         Decimal               @id @default(dbgenerated("nextval('sq_sign_pictogram')")) @db.Decimal
   name       String                @db.VarChar(100)
+  description String?              @db.VarChar(255)
   id_category Decimal              @db.Decimal
   link       String                @db.VarChar(250)
   is_archived Boolean               @default(false)

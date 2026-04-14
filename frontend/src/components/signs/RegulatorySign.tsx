@@ -1,16 +1,16 @@
 import React, { useRef } from 'react';
 import FieldDto from '../../interfaces/FieldDto';
 import { useInchScale } from '@/utils/SignUtils';
-import logo from '../../assets/img/RST_logo-Yellow.svg';
+import logo from '../../assets/img/RST_logo-blue.svg';
 import { ReactSVG } from 'react-svg';
 import { InlineSVG } from '@/utils/SvgUtils';
-interface CautionarySignProps {
+interface RegulatorySignProps {
   fields: Map<string, FieldDto>;
   metadata: Map<string, string>;
  isRealSize?: boolean;
 }
 
-const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isRealSize }) => {
+const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const pictogramCount = fields.get('icon')?.value ? fields.get('icon')?.value.split(";").length : 0;
   const inch = isRealSize ? 300: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
@@ -24,7 +24,7 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
     <div ref={bannerRef} className="recreation-site-boundary-sign w-80
      d-flex flex-column align-items-center justify-content-center">
         <div className="exportable" style={{
-            backgroundColor: '#FFD100',
+            backgroundColor: '#FFFFFF',
             width: `${inch * parseFloat(metadata.get('width') || "16")}px`,
             borderRadius: `${inch * (width / 32)}px`,
             height: `${inch * parseFloat(metadata.get('height') || "16")}px`,
@@ -35,7 +35,7 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
             color: '#2D2926'
         }}>
             <div style={{
-                border: `${inch * (width / 36)}px solid #2D2926`,
+                border: `${inch * (width / 36)}px solid #D5004A`,
                 width: '95%',
                 height: '95%',
                 borderRadius: `${inch * (width / 22)}px`,
@@ -47,7 +47,7 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                 paddingRight: `${inch * 0.2}px`,
                 flexDirection: 'column',
                 alignItems: 'center',
-                color: '#2D2926',
+                color: '#1D252C',
                 gap: `${inch * 0.5}px`
             }}>
                 <p style={{
@@ -56,9 +56,10 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                     textTransform: 'uppercase',
                     textAlign: 'center',
                     lineHeight: 1,
+                    color: '#D5004A',
                     letterSpacing: 0
                 }}>
-                    {fields.get('title')?.value || 'Caution'}
+                    {fields.get('title')?.value}
                 </p>
                 {fields.get('header_sub_text')?.value && (
                     <p style={{
@@ -85,7 +86,7 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                     gap: `${inch * 0.05}px`
                 }}>
                     {fields.get('icon')?.value?.split(";").map((link: string, index: number) => {
-                        return <InlineSVG key={`icon-cautionary-${index}`} src={link} width={iconWidth} height="100%" />;
+                        return <InlineSVG key={`icon-regulatory-${index}`} src={link} width={iconWidth} height="100%" />;
                     })}
                 </div>
 
@@ -127,4 +128,4 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
   );
 };
 
-export default CautionarySign;
+export default RegulatorySign;

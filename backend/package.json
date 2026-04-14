@@ -21,6 +21,8 @@
     "test:e2e": "vitest --dir test"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1030.0",
+    "@aws-sdk/s3-request-presigner": "^3.1030.0",
     "@nestjs/cache-manager": "^3.1.0",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/common": "^11.0.0",
@@ -42,6 +44,7 @@
     "reflect-metadata": "^0.2.2",
     "rimraf": "^6.0.1",
     "swagger-ui-express": "^5.0.1",
+    "uuid": "^13.0.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
