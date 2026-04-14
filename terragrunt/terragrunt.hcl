@@ -9,13 +9,16 @@ locals {
   command                = get_env("terragrunt_command")
   db_cluster_name        = local.command == "plan" ? "" : "${local.stack_prefix}-aurora-${local.rds_app_env}"
   flyway_image           = get_env("flyway_image")
-  rds_app_env            = (contains(["dev", "test", "prod"], "${local.app_env}") ? "${local.app_env}" : "dev") # if app_env is not dev, test, or prod, default to dev 
+  rds_app_env            = (contains(["dev", "test", "prod"], "${local.app_env}") ? "${local.app_env}" : "dev") # if app_env is not dev, test, or prod, default to dev
   region                 = "ca-central-1"
   repo_name              = get_env("repo_name")
   stack_prefix           = get_env("stack_prefix")
   statefile_bucket_name  = "${local.tf_remote_state_prefix}-${local.aws_license_plate}-${local.target_env}"
   statefile_key          = "${local.stack_prefix}/${local.app_env}/terraform.tfstate"
   target_env             = get_env("target_env")
+  sso_auth_server_url    = get_env("sso_auth_server_url")
+  sso_realm              = get_env("sso_realm")
+  sso_client_id          = get_env("sso_client_id")
   tf_remote_state_prefix = "terraform-remote-state" # Do not change this, given by cloud.pathfinder.
 }
 
