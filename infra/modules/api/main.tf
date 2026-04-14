@@ -454,7 +454,10 @@ resource "aws_ecs_task_definition" "node_api_task" {
       { name = "POSTGRES_POOL_SIZE", value = tostring(var.postgres_pool_size) },
       { name = "PORT", value = "3000" },
       { name = "S3_BUCKET", value = aws_s3_bucket.uploads.bucket },
-      { name = "AWS_REGION", value = var.aws_region }
+      { name = "AWS_REGION", value = var.aws_region },
+      { name = "SSO_AUTH_SERVER_URL", value = var.sso_auth_server_url },
+      { name = "SSO_REALM", value = var.sso_realm },
+      { name = "SSO_CLIENT_ID", value = var.sso_client_id }
     ]
     portMappings = [{
       protocol      = "tcp"

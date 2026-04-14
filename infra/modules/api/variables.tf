@@ -85,12 +85,12 @@ variable "max_capacity" {
   nullable    = false
   description = <<EOT
     The maximum number of tasks to run, please consider,
-    connection pooling and other factors when setting this value, 
+    connection pooling and other factors when setting this value,
     also depends on aurora v2 scaling params
-    follow this link, 
+    follow this link,
     https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.setting-capacity.html#aurora-serverless-v2.parameter-groups
     The max_connections value for Aurora Serverless v2DB instances is based on the memory size
-    derived from the maximum ACUs. 
+    derived from the maximum ACUs.
     However, when you specify a minimum capacity of 0 or 0.5 ACUs on PostgreSQL-compatible DB instances,
     the maximum value of max_connections is capped at 2,000.
 
@@ -124,3 +124,20 @@ variable "target_env" {
   nullable    = false
 }
 
+variable "sso_auth_server_url" {
+  description = "Authentication Server for IDIR"
+  type        = string
+  nullable    = false
+}
+
+variable "sso_realm" {
+  description = "Realm For IDIR"
+  type        = string
+  nullable    = false
+}
+
+variable "sso_client_id" {
+  description = "Realm For IDIR"
+  type        = string
+  nullable    = false
+}
