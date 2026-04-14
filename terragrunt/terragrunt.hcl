@@ -51,6 +51,9 @@ generate "tfvars" {
   flyway_image="${local.flyway_image}"
   repo_name = "${get_env("repo_name")}"
   target_env="${local.target_env}"
+  sso_auth_server_url="${local.sso_auth_server_url}"
+  sso_realm="${local.sso_realm}"
+  sso_client_id="${local.sso_client_id}"
   common_tags = {
       "AppEnv"      = "${local.app_env}"
       "AppName"     = "${local.stack_prefix}-node-api-${local.app_env}"
