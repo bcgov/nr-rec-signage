@@ -46,6 +46,10 @@ data "aws_secretsmanager_secret_version" "db_master_creds_version" {
   secret_id = data.aws_secretsmanager_secret.db_master_creds[0].id
 }
 
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
+
 # -------------------------
 # LOCALS (alphabetical)
 # -------------------------
@@ -97,6 +101,8 @@ module "cloudfront_api" {
   cache_max_ttl                      = 60
   cache_forward_query_string         = true
   cache_forward_cookies              = "all"
+  origin_request_policy_id           = aws_cloudfront_origin_request_policy.api_headers.id
+  cache_policy_id                    = data.aws_cloudfront_cache_policy.caching_disabled.id
   geo_restriction_type               = "none"
   use_cloudfront_default_certificate = true
   tags                               = module.common.common_tags
@@ -645,6 +651,8 @@ resource "aws_cloudfront_distribution" "uploads" {
 
     viewer_protocol_policy = "redirect-to-https"
 
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.uploads_cors.id
+
     forwarded_values {
       query_string = false
 
@@ -690,3 +698,47 @@ resource "aws_s3_bucket_policy" "uploads_cf" {
   })
 }
 
+resource "aws_cloudfront_response_headers_policy" "uploads_cors" {
+  name = "${var.app_name}-uploads-cors"
+
+  cors_config {
+    access_control_allow_credentials = false
+
+    access_control_allow_headers {
+      items = ["*"]
+    }
+
+    access_control_allow_methods {
+      items = ["GET", "HEAD", "OPTIONS"]
+    }
+
+    access_control_allow_origins {
+      items = ["*"]
+    }
+
+    origin_override = true
+  }
+}
+
+resource "aws_cloudfront_origin_request_policy" "api_headers" {
+  name = "${var.app_name}-api-headers"
+
+  headers_config {
+    header_behavior = "whitelist"
+
+    headers {
+      items = [
+        "Authorization",
+        "Content-Type"
+      ]
+    }
+  }
+
+  cookies_config {
+    cookie_behavior = "all"
+  }
+
+  query_strings_config {
+    query_string_behavior = "all"
+  }
+}
