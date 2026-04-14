@@ -46,7 +46,7 @@ export class UploadService {
     await this.s3Client.send(command);
 
     // Generate URL
-    const url = `https://${bucket}.s3.${region}.amazonaws.com/${uniqueFileName}`;
+    const url = `${process.env.S3_PUBLIC_URL}/${uniqueFileName}`;
 
     return {
       fileKey: uniqueFileName,
