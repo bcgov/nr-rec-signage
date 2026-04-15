@@ -256,7 +256,7 @@ variable "origin_request_policy_id" {
   default     = null
 }
 
-response_headers_policy_id
+
 variable "response_headers_policy_id" {
   description = "Response Headers Policy for CORS"
   type        = string
