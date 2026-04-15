@@ -55,7 +55,7 @@ data "aws_cloudfront_origin_request_policy" "all_viewer_except_host_header" {
 }
 
 data "aws_cloudfront_response_headers_policy" "cors_with_preflight_and_security" {
-  name = "Managed-CORS-With-Preflight-And-SecurityHeadersPolicy"
+  name = "Managed-CORS-with-preflight-and-SecurityHeadersPolicy"
 }
 # -------------------------
 # LOCALS (alphabetical)
