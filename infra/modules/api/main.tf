@@ -79,7 +79,7 @@ module "api_gateway" {
 
 module "cloudfront_api" {
   count                              = var.is_public_api ? 1 : 0
-  source                             = "git::https://github.com/bcgov/quickstart-aws-helpers.git//terraform/modules/cloudfront?ref=v0.2.0"
+  source                             = "../cloudfront"
   app_name                           = var.app_name
   repo_name                          = var.repo_name
   distribution_type                  = "api"
