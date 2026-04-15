@@ -50,6 +50,9 @@ data "aws_cloudfront_cache_policy" "caching_disabled" {
   name = "Managed-CachingDisabled"
 }
 
+data "aws_cloudfront_origin_request_policy" "api_headers" {
+  name = "Managed-AllViewer"
+}
 # -------------------------
 # LOCALS (alphabetical)
 # -------------------------
@@ -101,7 +104,7 @@ module "cloudfront_api" {
   cache_max_ttl                      = 60
   cache_forward_query_string         = true
   cache_forward_cookies              = "all"
-  origin_request_policy_id           = aws_cloudfront_origin_request_policy.api_headers.id
+  origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer.id
   cache_policy_id                    = data.aws_cloudfront_cache_policy.caching_disabled.id
   geo_restriction_type               = "none"
   use_cloudfront_default_certificate = true
@@ -717,28 +720,5 @@ resource "aws_cloudfront_response_headers_policy" "uploads_cors" {
     }
 
     origin_override = true
-  }
-}
-
-resource "aws_cloudfront_origin_request_policy" "api_headers" {
-  name = "${var.app_name}-api-headers"
-
-  headers_config {
-    header_behavior = "whitelist"
-
-    headers {
-      items = [
-        "Authorization",
-        "Content-Type"
-      ]
-    }
-  }
-
-  cookies_config {
-    cookie_behavior = "all"
-  }
-
-  query_strings_config {
-    query_string_behavior = "all"
   }
 }
