@@ -78,7 +78,7 @@ const ExistingSign: React.FC = () => {
   };
 
   const handleBack = () => {
-    navigate('/welcome');
+    navigate('/');
   };
 
   if (loading) {

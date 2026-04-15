@@ -146,39 +146,41 @@ export const exportToSvg = async (
   await new Promise((resolve) => setTimeout(resolve, 100));
 
   // 4. Now DOM is real → SVGs can exist
-  const exportElement =
-    element.querySelector(".exportable") || element;
+  const exportElements = element.querySelectorAll(".exportable");
 
-  if (!exportElement) {
+  if (!exportElements.length) {
     throw new Error("Export element not found");
   }
 
-  // 5. Convert DOM → SVG
-  const svg = elementToSVG(exportElement as HTMLElement);
-
-  // 6. Convert text → paths
-  await convertTextToPaths(svg as unknown as SVGElement);
-
-  // 7. Serialize SVG
   const serializer = new XMLSerializer();
-  const svgString = serializer.serializeToString(svg);
 
-  // 8. Download
-  const blob = new Blob([svgString], {
-    type: "image/svg+xml;charset=utf-8",
-  });
+  for (let index = 0; index < exportElements.length; index += 1) {
+    const exportElement = exportElements[index] as HTMLElement;
 
-  const url = URL.createObjectURL(blob);
+    // 5. Convert DOM → SVG
+    const svg = elementToSVG(exportElement);
 
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${name || "sign"}.svg`;
+    // 6. Convert text → paths
+    await convertTextToPaths(svg as unknown as SVGElement);
 
-  document.body.appendChild(link);
-  link.click();
+    // 7. Serialize SVG
+    const svgString = serializer.serializeToString(svg);
 
-  link.remove();
-  URL.revokeObjectURL(url);
+    // 8. Download
+    const blob = new Blob([svgString], {
+      type: "image/svg+xml;charset=utf-8",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${name || "sign"}${exportElements.length > 1 ? `-${index + 1}` : ""}.svg`;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
 
   // 9. Cleanup React + DOM
   root.unmount();

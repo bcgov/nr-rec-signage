@@ -6,4 +6,5 @@ export class PictogramDto {
   description?: string;
   link: string;
   category: CategoryDto;
+  isArchived: boolean;
 }

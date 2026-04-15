@@ -54,7 +54,7 @@ resource "aws_cloudfront_distribution" "this" {
     target_origin_id = var.distribution_type == "s3" ? var.s3_origin_id : var.api_origin_id
 
     viewer_protocol_policy = var.cache_viewer_protocol_policy
-
+    response_headers_policy_id = var.response_headers_policy_id
     cache_policy_id          = var.cache_policy_id
     origin_request_policy_id = var.origin_request_policy_id
   }
