@@ -25,7 +25,7 @@ const Pictogram: React.FC<PictogramProps> = ({ categories, onClose, pictogram })
       setName(pictogram.name);
       setDescription(pictogram.description || '');
       setIdCategory(pictogram.category.id.toString());
-      setIsArchived(false);
+      setIsArchived(pictogram.isArchived);
     }
   }, [pictogram]);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +34,7 @@ const Pictogram: React.FC<PictogramProps> = ({ categories, onClose, pictogram })
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = async (isArchivedParam: boolean = false) => {
     if (!name || !idCategory) {
       alert('Please fill all required fields');
       return;
@@ -51,7 +51,7 @@ const Pictogram: React.FC<PictogramProps> = ({ categories, onClose, pictogram })
           description: description || undefined,
           id_category: Number(idCategory),
           link: pictogram.link,
-          is_archived: isArchived,
+          is_archived: isArchivedParam,
         };
         await update(pictogram.id, updateData, file || undefined);
       } else {
@@ -67,6 +67,7 @@ const Pictogram: React.FC<PictogramProps> = ({ categories, onClose, pictogram })
   };
 
   const handleArchive = () => {
+    handleSave(!isArchived);
     setIsArchived(!isArchived);
   };
 
@@ -83,7 +84,7 @@ const Pictogram: React.FC<PictogramProps> = ({ categories, onClose, pictogram })
           <div className="modal-header bg-primary text-white" style={{ borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
             <p className="modal-title fw-bold">{isUpdate ? 'Update Pictogram' : 'New Pictogram'}</p>
             <div>
-              {isUpdate && (
+              {isUpdate && !loading && (
                 <button type="button" className="btn btn-secondary me-2" onClick={handleArchive}>
                   {isArchived ? 'Unarchive' : 'Archive'}
                 </button>

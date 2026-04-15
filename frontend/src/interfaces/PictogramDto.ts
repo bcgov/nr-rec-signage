@@ -6,4 +6,5 @@ export default interface PictogramDto {
   description?: string;
   link: string;
   category: PictogramCategoryDto;
+  isArchived: boolean;
 }

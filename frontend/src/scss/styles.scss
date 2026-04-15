@@ -269,7 +269,9 @@ border: none;
   right: 5px;
   top: 42px;
 }
-
+.menu-item{
+  cursor: pointer;
+}
 .upload-trigger{
   position: absolute;
   right: 68px;
@@ -464,4 +466,15 @@ label.small-label{
 
 .w-80{
   width: 80%;
+}
+
+label.archived-filter-label{
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.archived-filter-label{
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
 }
