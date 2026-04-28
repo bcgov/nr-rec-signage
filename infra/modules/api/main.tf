@@ -50,6 +50,13 @@ data "aws_cloudfront_cache_policy" "caching_disabled" {
   name = "Managed-CachingDisabled"
 }
 
+data "aws_cloudfront_origin_request_policy" "all_viewer_except_host_header" {
+  name = "Managed-AllViewerExceptHostHeader"
+}
+
+data "aws_cloudfront_response_headers_policy" "cors_with_preflight_and_security" {
+  name = "Managed-CORS-with-preflight-and-SecurityHeadersPolicy"
+}
 # -------------------------
 # LOCALS (alphabetical)
 # -------------------------
@@ -79,7 +86,7 @@ module "api_gateway" {
 
 module "cloudfront_api" {
   count                              = var.is_public_api ? 1 : 0
-  source                             = "git::https://github.com/bcgov/quickstart-aws-helpers.git//terraform/modules/cloudfront?ref=v0.2.0"
+  source                             = "../cloudfront"
   app_name                           = var.app_name
   repo_name                          = var.repo_name
   distribution_type                  = "api"
@@ -101,8 +108,9 @@ module "cloudfront_api" {
   cache_max_ttl                      = 60
   cache_forward_query_string         = true
   cache_forward_cookies              = "all"
-  origin_request_policy_id           = aws_cloudfront_origin_request_policy.api_headers.id
+  origin_request_policy_id           = data.aws_cloudfront_origin_request_policy.all_viewer_except_host_header.id
   cache_policy_id                    = data.aws_cloudfront_cache_policy.caching_disabled.id
+  response_headers_policy_id         = data.aws_cloudfront_response_headers_policy.cors_with_preflight_and_security.id
   geo_restriction_type               = "none"
   use_cloudfront_default_certificate = true
   tags                               = module.common.common_tags
@@ -717,28 +725,5 @@ resource "aws_cloudfront_response_headers_policy" "uploads_cors" {
     }
 
     origin_override = true
-  }
-}
-
-resource "aws_cloudfront_origin_request_policy" "api_headers" {
-  name = "${var.app_name}-api-headers"
-
-  headers_config {
-    header_behavior = "whitelist"
-
-    headers {
-      items = [
-        "Authorization",
-        "Content-Type"
-      ]
-    }
-  }
-
-  cookies_config {
-    cookie_behavior = "all"
-  }
-
-  query_strings_config {
-    query_string_behavior = "all"
   }
 }

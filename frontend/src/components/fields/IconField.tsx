@@ -14,7 +14,7 @@ import type PictogramDto from "../../interfaces/PictogramDto";
 import type PictogramCategoryDto from "@/interfaces/PictogramCategoryDto";
 
 interface IconFieldRestrictions {
-  categories?: number[];
+  categories?: String[];
   can_upload?: boolean;
 }
 
@@ -37,7 +37,7 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
     setLoading(true);
     try {
       const categoryIds = category.length> 0 ? category : (restrictions.categories?.map(String) || []);
-      const data = await getPictograms(20, search, categoryIds);
+      const data = await getPictograms(1000, search, categoryIds);
       setPictogramData(data);
     } catch (err) {
       console.error("Failed to fetch pictograms", err);
@@ -50,14 +50,16 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
     if (showPopup) {
       fetchPictograms();
     }
-  }, [showPopup]);
+  }, [showPopup,search,category]);
 
   const restrictCategory = (
     categories: PictogramCategoryDto[],
-    allowedIds: number[],
+    allowedIds: String[],
   ) => {
     if (allowedIds.length === 0) return categories;
-    return categories.filter((cat) => allowedIds.includes(cat.id));
+    return categories.filter((cat) =>{
+      return allowedIds.includes(cat.id.toString());
+    });
   };
 
   const handleSelect = (pictogram: PictogramDto) => {
@@ -191,7 +193,7 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
               className="btn btn-transparent btn-white-text"
               onClick={() => setShowPopup(false)}
             >
-              &times;
+              x
             </button>
           </div>
           <div className="icon-picker-body">

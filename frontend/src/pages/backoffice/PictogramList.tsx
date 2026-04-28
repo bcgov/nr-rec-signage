@@ -10,13 +10,14 @@ export default function PictogramList() {
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState([] as string[]);
     const [showModal, setShowModal] = useState(false);
+    const [showArchived, setShowArchived] = useState(false);
     const [selectedPictogram, setSelectedPictogram] = useState<PictogramDto | undefined>(undefined);
     const { getPictograms } = usePictogramService();
 
     const fetchPictograms = async () => {
         setLoading(true);
         try {
-            const result = await getPictograms(20, search, category);
+            const result = await getPictograms(20, search, category,showArchived);
             setData(result);
         } catch (error) {
             console.error('Failed to fetch pictograms', error);
@@ -27,7 +28,7 @@ export default function PictogramList() {
 
     useEffect(() => {
         fetchPictograms();
-    }, [search, category]);
+    }, [search, category, showArchived]);
 
     const handleNewClick = () => {
         setSelectedPictogram(undefined);
@@ -63,6 +64,12 @@ export default function PictogramList() {
                                 <option key={cat.id} value={cat.id}>{cat.name}</option>
                             ))}
                         </select>
+                        <label htmlFor="archived-filter" className="archived-filter-label">
+                            Show Archived
+                            <input type="checkbox" id="archived-filter" className="archived-filter" onChange={(e) => {
+                                setShowArchived(e.target.checked);
+                            }} />
+                        </label>
                     </div>
                 </div>
             </div>

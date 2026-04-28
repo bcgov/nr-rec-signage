@@ -65,7 +65,7 @@ const NewSign: React.FC = () => {
       setSelectedCategory(null);
     }
     else {
-        navigate('/welcome');
+        navigate('/');
     }
   }
   if (loading) {

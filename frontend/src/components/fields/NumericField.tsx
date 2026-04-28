@@ -3,7 +3,7 @@ import { FieldProps } from '../../interfaces/FieldProps';
 
 const NumericField: React.FC<FieldProps> = ({ field, updateCallback }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateCallback(Number(e.target.value));
+    updateCallback(e.target.value.toString());
   };
 
   return (

@@ -6,10 +6,12 @@ import PictogramUpdateDto from '../interfaces/PictogramUpdateDto';
 export const usePictogramService = () => {
   const { apiFetch } = useAuth();
 
-  const getPictograms = async (limit: number = 20, search?: string, category: string[] = []): Promise<PictogramSearchDto> => {
+  const getPictograms = async (limit: number = 20, search?: string, category: string[] = [], showArchived: boolean = false): Promise<PictogramSearchDto> => {
     const params = new URLSearchParams();
     params.append('limit', limit.toString());
     if (search) params.append('search', search);
+    console.log(showArchived)
+    if(showArchived) params.append('archived', 'true');
     if (category) {
         params.append('category', category.join(';')); // Join multiple categories with a delimiter (e.g., ';')
     }

@@ -9,6 +9,7 @@ export class PictogramsService {
   async getAll(
     search?: string,
     category?: string[],
+    showArchived: boolean = false
   ): Promise<{ categories: any[]; results: PictogramDto[] }> {
     // Get all categories
     const categories = await this.prisma.signPictogramCategory.findMany({
@@ -20,7 +21,7 @@ export class PictogramsService {
 
     // Build where clause for pictograms
     const where: any = {
-      is_archived: false,
+      is_archived: showArchived,
     };
 
     if (search) {
@@ -58,6 +59,7 @@ export class PictogramsService {
         id: Number(pic.id),
         name: pic.name,
        description: pic.description,
+       isArchived: pic.is_archived,
         link: pic.link,
         category: {
           id: Number(pic.category.id),
@@ -102,6 +104,7 @@ export class PictogramsService {
         id: Number(result.category.id),
         name: result.category.name,
       },
+      isArchived: result.is_archived,
     };
   }
 
@@ -145,6 +148,7 @@ export class PictogramsService {
         id: Number(result.category.id),
         name: result.category.name,
       },
+      isArchived: result.is_archived,
     };
   }
 }
