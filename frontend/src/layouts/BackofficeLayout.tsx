@@ -11,13 +11,13 @@ const BackofficeLayout= () => {
         <div className='col-2 backoffice-sidebar bg-primary'>
             <img src={logo} alt="Logo" className='backoffice-logo mb-4' width={'100%'} />
             <div className='menu-item'>
-                <a onClick={() => navigate('backoffice/pictograms')} className='text-white'>Pictogram Library Management</a>
+                <a onClick={() => navigate('/backoffice/pictograms')} className='text-white'>Pictogram Library Management</a>
             </div>
             <div className='menu-item'>
-                <a onClick={() => navigate('backoffice/categories')} className='text-white'>Sign Categories</a>
+                <a onClick={() => navigate('/backoffice/categories')} className='text-white'>Sign Categories</a>
             </div>
             <div className='menu-item'>
-                <a onClick={() => navigate('backoffice/signs')} className='text-white'>Sign Creation History</a>
+                <a onClick={() => navigate('/backoffice/signs')} className='text-white'>Sign Creation History</a>
             </div>
 
             <div className='menu-item no-border'>

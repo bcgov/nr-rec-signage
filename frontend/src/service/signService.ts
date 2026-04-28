@@ -1,5 +1,7 @@
 import { useAuth } from '../providers/AuthProvider';
 import SignDto from '../interfaces/SignDto';
+import SignApprovalDto from '../interfaces/SignApprovalDto';
+import SignListDto from '../interfaces/SignListDto';
 
 export const useSignService = () => {
   const { apiFetch } = useAuth();
@@ -24,12 +26,55 @@ export const useSignService = () => {
     return response.json();
   };
 
-  const getSigns = async (limit: number = 20): Promise<SignDto[]> => {
+  const getSigns = async (limit: number = 20): Promise<SignListDto> => {
     const response = await apiFetch(`/signs?limit=${limit}`);
     if (!response.ok) {
       throw new Error('Failed to fetch signs');
     }
     return response.json();
+  };
+
+  const getAllAdmin = async (
+    limit: number = 20,
+    page: number = 1,
+    dateStart?: string,
+    dateEnd?: string,
+    categoryIds?: number[]
+  ): Promise<SignListDto> => {
+    const params = new URLSearchParams();
+    params.set('view', 'admin_view');
+    params.set('limit', String(limit));
+    params.set('page', String(page));
+
+    if (dateStart) params.set('dateStart', dateStart);
+    if (dateEnd) params.set('dateEnd', dateEnd);
+    if (categoryIds?.length) params.set('categoryId', categoryIds.join(','));
+
+    const response = await apiFetch(`/signs?${params.toString()}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch admin signs');
+    }
+    return response.json();
+  };
+
+  const approve = async (approvals: SignApprovalDto[]): Promise<void> => {
+    const response = await apiFetch('/signs/approve', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(approvals),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to approve signs');
+    }
+  };
+
+  const deleteSign = async (id: number): Promise<void> => {
+    const response = await apiFetch(`/signs/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete sign');
+    }
   };
 
   const updateSign = async (
@@ -41,12 +86,12 @@ export const useSignService = () => {
     const response = await apiFetch(`/signs/`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, id_category, id_options,values }),
+      body: JSON.stringify({ id, id_category, id_options, values }),
     });
     if (!response.ok) {
       throw new Error('Failed to update sign');
     }
   };
 
-  return { createSign, getSign, getSigns, updateSign };
+  return { createSign, getSign, getSigns, getAllAdmin, approve, deleteSign, updateSign };
 };
