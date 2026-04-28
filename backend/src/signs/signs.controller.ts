@@ -87,6 +87,16 @@ export class SignsController {
     return { status: 200 };
   }
 
+  @Post(':id/save-library')
+  async saveToLibrary(@Param('id') id: string, @Req() req: any) {
+    const idirUserGuid = req.user?.idir_user_guid;
+    if (!idirUserGuid) {
+      throw new Error('User GUID not found in token');
+    }
+    await this.signsService.saveToLibrary(+id);
+    return { status: 200 };
+  }
+
   @Put()
   async update(@Body() dto: SignUpdateDto) {
     const sign = SignMapper.toSignUpdate(dto);

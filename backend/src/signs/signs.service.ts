@@ -86,7 +86,9 @@ export class SignsService {
     dateEnd?: string,
     categoryIds?: number[]
   ): Promise<{ total: number; signs: SignWithRelations[] }> {
-    const whereFilters: Prisma.Enumerable<Prisma.SignWhereInput> = [];
+    const whereFilters: any[] = [];
+
+    whereFilters.push({ is_saved_to_library: true });
 
     if (idUserGuid) {
       whereFilters.push({
@@ -214,10 +216,17 @@ export class SignsService {
       signs.map(sign =>
         this.prisma.sign.update({
           where: { id: sign.id },
-          data: { is_approved: sign.is_approved },
+          data: { is_approved: sign.is_approved } as any,
         })
       )
     );
+  }
+
+  async saveToLibrary(id: number): Promise<void> {
+    await this.prisma.sign.update({
+      where: { id },
+      data: { is_saved_to_library: true } as any,
+    });
   }
 
   async delete(id: number): Promise<void> {

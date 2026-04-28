@@ -78,7 +78,7 @@ const FieldConfiguration: React.FC<FieldConfigurationProps> = ({ update, fields,
                   Saving...
                 </>
               ) : (
-                'Next'
+                'Preview'
               )}
             </button>
           </div>

@@ -77,6 +77,15 @@ export const useSignService = () => {
     }
   };
 
+  const saveToLibrary = async (id: number): Promise<void> => {
+    const response = await apiFetch(`/signs/${id}/save-library`, {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to save sign to library');
+    }
+  };
+
   const updateSign = async (
     id: string,
     id_category: number,
@@ -93,5 +102,5 @@ export const useSignService = () => {
     }
   };
 
-  return { createSign, getSign, getSigns, getAllAdmin, approve, deleteSign, updateSign };
+  return { createSign, getSign, getSigns, getAllAdmin, approve, deleteSign, saveToLibrary, updateSign };
 };
