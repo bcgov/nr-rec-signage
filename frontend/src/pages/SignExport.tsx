@@ -12,6 +12,7 @@ import WelcomeSign from '../components/signs/WelcomeSign';
 import RegulatorySign from '@/components/signs/RegulatorySign';
 import InformationSign from '@/components/signs/InformationSign';
 import NumberPost from '@/components/signs/NumberPost';
+import FacilitySign from '@/components/signs/FacilitySign';
 
 
 const SignExport: React.FC = () => {
@@ -73,6 +74,10 @@ const SignExport: React.FC = () => {
     }
     if (slug.includes('welcome')) {
       return <WelcomeSign fields={fields} metadata={metadata} />;
+    }
+    if(slug.includes('facility'))
+    {
+      return <FacilitySign fields={fields} metadata={metadata} />;
     }
 
     return <div>Unsupported sign type</div>;

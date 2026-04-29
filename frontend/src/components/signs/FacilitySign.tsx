@@ -1,48 +1,24 @@
 import React, { useRef } from 'react';
 import FieldDto from '../../interfaces/FieldDto';
 import { useInchScale } from '@/utils/SignUtils';
-import logo from '../../assets/img/RST_logo-Yellow.svg';
+import logo from '../../assets/img/RST_logo-White.svg';
 import { ReactSVG } from 'react-svg';
 import { InlineSVG } from '@/utils/SvgUtils';
-interface CautionarySignProps {
+interface FacilitySignProps {
   fields: Map<string, FieldDto>;
   metadata: Map<string, string>;
  isRealSize?: boolean;
 }
 
-const getIconWidth = (pictogramCount: number) =>{
-    if(pictogramCount < 3){
-        return '100%';
-    }
-    else if(pictogramCount < 5){
-        return '48%';
-    }
-    else{
-        return '33%';
-    }
-};
-const getIconHeight = (pictogramCount: number) => {
-    if(pictogramCount < 3){
-        return 100/pictogramCount;
-    }
-    else if(pictogramCount < 5){
-        return 50;
-    }
-    else{
-        return 100/Math.ceil(pictogramCount / 3);
-    }
-}
-const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isRealSize }) => {
+const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const pictogramCount = fields.get('icon')?.value ? fields.get('icon')?.value.split(";").length : 0;
   const inch = isRealSize ? 40: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
   const titleFontSize = metadata.get('title_font_size') ? parseFloat(metadata.get('title_font_size')!) : 104;
   const subtitleFontSize = metadata.get('subtitle_font_size') ? parseFloat(metadata.get('subtitle_font_size')!) : 44;
   const regulationFontSize = metadata.get('regulation_font_size') ? parseFloat(metadata.get('regulation_font_size')!) : 26;
-  const iconWidth = getIconWidth(pictogramCount);
-  const iconHeight = getIconHeight(pictogramCount);
+  const iconWidth = pictogramCount > 1 ? `48%` : '100%';
   const width = metadata.get('width') ? parseFloat(metadata.get('width')!) : 16;
-  const containerWidth = parseFloat(metadata.get('width') || "16");
   const scale = (width: number, value: number) =>{
     return width * value / 16;
   }
@@ -50,30 +26,22 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
     <div ref={bannerRef} className="recreation-site-boundary-sign w-80
      d-flex flex-column align-items-center justify-content-center">
         <div className="exportable" style={{
-            backgroundColor: '#FFD100',
+            backgroundColor: '#4E3629',
             width: `${inch * parseFloat(metadata.get('width') || "16")}px`,
             borderRadius: `${inch * (width / 32)}px`,
             height: `${inch * parseFloat(metadata.get('height') || "16")}px`,
             aspectRatio: `${metadata.get('width')} / ${metadata.get('height')}`,
-            color: '#2D2926'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#FFFFFF'
         }}>
             <div style={{
-                borderRadius: `${inch * scale(width, 0.5)}px`,
-                marginTop: `${inch * (parseFloat(metadata.get('width') || "16") * 0.025)}px`,
-                marginLeft: `${inch * (parseFloat(metadata.get('width') || "16") * 0.025)}px`,
-                width: `${inch * (parseFloat(metadata.get('width') || "16") * 0.95)}px`,
-                height: `${inch * (parseFloat(metadata.get('height') || "16") - (containerWidth * 0.025 * 2))}px`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#2D2926'
-            }}>
+                border: `${inch * (width / 36)}px solid #FFFFFF`,
+                width: '95%',
+                height: '95%',
+                borderRadius: `${inch * (width / 22)}px`,
 
-            <div style={{
-                backgroundColor: '#FFD100',
-                borderRadius: `${inch * scale(width, 0.5)}px`,
-                width: `${inch * (parseFloat(metadata.get('width') || "16")*0.95 - (parseFloat(metadata.get('border-width') || "0.42")*2))}px`,
-                height: `${inch * (parseFloat(metadata.get('height') || "16") - (containerWidth * 0.025 * 2) - (parseFloat(metadata.get('border-width') || "0.42")*2))}px`,
                 display: 'flex',
                 paddingTop: `${inch * scale(width, 0.75)}px`,
                 paddingBottom: `${inch * scale(width, 0.2)}px`,
@@ -81,24 +49,24 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                 paddingRight: `${inch * scale(width, 0.2)}px`,
                 flexDirection: 'column',
                 alignItems: 'center',
-                color: '#2D2926',
+                color: '#FFFFFF',
                 gap: `${inch * scale(width, 0.5)}px`
             }}>
                 <p style={{
                     fontSize: `${inch * (titleFontSize / 72)}px`,
                     fontWeight: 'bold',
-                    textTransform: 'capitalize',
+                    textTransform: 'uppercase',
                     textAlign: 'center',
                     lineHeight: 1,
                     letterSpacing: 0
                 }}>
-                    {fields.get('title')?.value || 'Caution'}
+                    {fields.get('title')?.value}
                 </p>
                 {fields.get('header_sub_text')?.value && (
                     <p style={{
                         fontSize: `${inch * (subtitleFontSize / 72)}px`,
                         fontWeight: 'bold',
-                        textTransform: 'capitalize',
+                        textTransform: 'uppercase',
                         marginTop: `-${inch * scale(width, 0.25)}px`,
                         textAlign: 'center',
                         lineHeight: 1.3,
@@ -119,7 +87,7 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                     gap: `${inch * scale(width, 0.05)}px`
                 }}>
                     {fields.get('icon')?.value?.split(";").map((link: string, index: number) => {
-                        return <InlineSVG key={`icon-cautionary-${index}`} src={link} width={iconWidth} height={`${iconHeight}%`} />;
+                        return <InlineSVG key={`icon-cautionary-${index}`} src={link} width={iconWidth} height="100%" />;
                     })}
                 </div>
 
@@ -127,7 +95,7 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                     <p style={{
                         fontSize: `${inch * (subtitleFontSize / 72)}px`,
                         fontWeight: 'bold',
-                        textTransform: 'capitalize',
+                        textTransform: 'uppercase',
                         marginTop: `-${inch * 0.25}px`,
                         textAlign: 'center',
                         lineHeight: 1.3,
@@ -138,28 +106,27 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                 )}
                 <div style={{
                     display: "flex",
-                    justifyContent: "end",
+                    justifyContent: "space-between",
                     alignItems: "center",
                     justifySelf: "end",
                     lineHeight: 1.1,
-                    width: '100%'
                 }}>
                     <div style={{
                         fontSize: `${inch * (regulationFontSize / 72)}px`,
                         width: '40%'
                     }}>
+                    Forest and Range Practices Act Forest Recreation Regulation Section {fields.get("regulations")?.value || 'XX(XX)'}
                     </div>
                     <div style={{
-                        width: '32%'
+                        width: '40%'
                     }}>
                         <InlineSVG src={logo} width={'100%'} height="auto" />
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>
   );
 };
 
-export default CautionarySign;
+export default FacilitySign;

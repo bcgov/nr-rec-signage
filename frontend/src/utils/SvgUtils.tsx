@@ -11,6 +11,7 @@ import { createRoot } from 'react-dom/client';
 import InformationSign from '@/components/signs/InformationSign';
 import RegulatorySign from '@/components/signs/RegulatorySign';
 import NumberPost from '@/components/signs/NumberPost';
+import FacilitySign from '@/components/signs/FacilitySign';
 export const renderSignMarkup = (
   sign: SignDto,
   fields: Map<string, FieldDto>,
@@ -44,6 +45,9 @@ export const renderSignMarkup = (
 
   if (slug.includes('welcome')) {
     return <WelcomeSign fields={fields} metadata={metadata} isRealSize />;
+  }
+  if(slug.includes('facility')){
+    return <FacilitySign fields={fields} metadata={metadata} isRealSize />
   }
 
   return <div>Unsupported sign type</div>;

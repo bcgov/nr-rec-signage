@@ -188,7 +188,7 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
       {showPopup && (
         <div className="popup">
           <div className="icon-picker-header">
-            <p>Select Icon</p>
+            <p>Select Pictogram</p>
             <button
               className="btn btn-transparent btn-white-text"
               onClick={() => setShowPopup(false)}
