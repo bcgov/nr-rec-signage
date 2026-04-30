@@ -101,7 +101,7 @@ const FieldConfiguration: React.FC<FieldConfigurationProps> = ({ update, fields,
             <button className="btn btn-secondary" type="button" onClick={handleStartOver} disabled={saving}>
                 Start Over
             </button>
-            <button className="btn btn-primary" type="button" onClick={handleNext} disabled={saving}>
+            <button className="btn btn-primary" style={{zIndex: 1}} type="button" onClick={handleNext} disabled={saving}>
               {saving ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
