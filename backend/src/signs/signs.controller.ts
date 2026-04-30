@@ -97,6 +97,25 @@ export class SignsController {
     return { status: 200 };
   }
 
+  @Post('duplicate/:id')
+  async duplicate(@Param('id') id: string, @Req() req: any) {
+    const idirUserGuid = req.user?.idir_user_guid;
+    const displayName = req.user?.name || req.user?.preferred_username || 'Unknown';
+    if (!idirUserGuid) {
+      throw new Error('User GUID not found in token');
+    }
+    return this.signsService.duplicate(+id, idirUserGuid, displayName);
+  }
+
+  @Post('reset/:id')
+  async reset(@Param('id') id: string, @Req() req: any) {
+    const idirUserGuid = req.user?.idir_user_guid;
+    if (!idirUserGuid) {
+      throw new Error('User GUID not found in token');
+    }
+    return this.signsService.reset(+id,idirUserGuid);
+  }
+
   @Put()
   async update(@Body() dto: SignUpdateDto) {
     const sign = SignMapper.toSignUpdate(dto);

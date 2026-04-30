@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
 import FieldDto from '../../interfaces/FieldDto';
 import { useInchScale } from '@/utils/SignUtils';
-import logo from '../../assets/img/RST_logo-White.svg';
+import logo from '../../assets/img/RST_logo-white.svg';
 import { ReactSVG } from 'react-svg';
 import { InlineSVG } from '@/utils/SvgUtils';
+import { getIconHeight, getIconWidth } from '@/utils/ImageUtils';
 interface FacilitySignProps {
   fields: Map<string, FieldDto>;
   metadata: Map<string, string>;
@@ -13,12 +14,14 @@ interface FacilitySignProps {
 const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const pictogramCount = fields.get('icon')?.value ? fields.get('icon')?.value.split(";").length : 0;
-  const inch = isRealSize ? 40: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
+  const inch = isRealSize ? 300: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
   const titleFontSize = metadata.get('title_font_size') ? parseFloat(metadata.get('title_font_size')!) : 104;
   const subtitleFontSize = metadata.get('subtitle_font_size') ? parseFloat(metadata.get('subtitle_font_size')!) : 44;
   const regulationFontSize = metadata.get('regulation_font_size') ? parseFloat(metadata.get('regulation_font_size')!) : 26;
-  const iconWidth = pictogramCount > 1 ? `48%` : '100%';
+  const iconWidth = getIconWidth(pictogramCount);
+  const iconHeight = getIconHeight(pictogramCount);
   const width = metadata.get('width') ? parseFloat(metadata.get('width')!) : 16;
+  const containerWidth = parseFloat(metadata.get('width') || "16");
   const scale = (width: number, value: number) =>{
     return width * value / 16;
   }
@@ -31,96 +34,100 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
             borderRadius: `${inch * (width / 32)}px`,
             height: `${inch * parseFloat(metadata.get('height') || "16")}px`,
             aspectRatio: `${metadata.get('width')} / ${metadata.get('height')}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#FFFFFF'
         }}>
             <div style={{
-                border: `${inch * (width / 36)}px solid #FFFFFF`,
-                width: '95%',
-                height: '95%',
-                borderRadius: `${inch * (width / 22)}px`,
-
+                backgroundColor: '#FFF',
+                borderRadius: `${inch * scale(width, 0.5)}px`,
+                marginTop: `${inch * (parseFloat(metadata.get('width') || "16") * 0.025)}px`,
+                marginLeft: `${inch * (parseFloat(metadata.get('width') || "16") * 0.025)}px`,
+                width: `${inch * (parseFloat(metadata.get('width') || "16") * 0.95)}px`,
+                height: `${inch * (parseFloat(metadata.get('height') || "16") - (containerWidth * 0.025 * 2))}px`,
                 display: 'flex',
-                paddingTop: `${inch * scale(width, 0.75)}px`,
-                paddingBottom: `${inch * scale(width, 0.2)}px`,
-                paddingLeft: `${inch * scale(width, 0.2)}px`,
-                paddingRight: `${inch * scale(width, 0.2)}px`,
-                flexDirection: 'column',
                 alignItems: 'center',
-                color: '#FFFFFF',
-                gap: `${inch * scale(width, 0.5)}px`
+                justifyContent: 'center',
             }}>
-                <p style={{
-                    fontSize: `${inch * (titleFontSize / 72)}px`,
-                    fontWeight: 'bold',
-                    textTransform: 'uppercase',
-                    textAlign: 'center',
-                    lineHeight: 1,
-                    letterSpacing: 0
-                }}>
-                    {fields.get('title')?.value}
-                </p>
-                {fields.get('header_sub_text')?.value && (
-                    <p style={{
-                        fontSize: `${inch * (subtitleFontSize / 72)}px`,
-                        fontWeight: 'bold',
-                        textTransform: 'uppercase',
-                        marginTop: `-${inch * scale(width, 0.25)}px`,
-                        textAlign: 'center',
-                        lineHeight: 1.3,
-                        letterSpacing: 0
-                    }}>
-                        {fields.get('header_sub_text')?.value}
-                    </p>
-                )}
                 <div style={{
+                    backgroundColor: '#4E3629',
+                    borderRadius: `${inch * scale(width, 0.5)}px`,
+                    width: `${inch * (parseFloat(metadata.get('width') || "16")*0.95 - (parseFloat(metadata.get('border-width') || "0.42")*2))}px`,
+                    height: `${inch * (parseFloat(metadata.get('height') || "16") - (containerWidth * 0.025 * 2) - (parseFloat(metadata.get('border-width') || "0.42")*2))}px`,
                     display: 'flex',
-                    flexWrap: 'wrap',
-                    flex: "1 1 0",
-                    minWidth: 0,
-                    height: '20%',
-                    justifyContent: 'center',
+                    paddingTop: `${inch * scale(width, 0.75)}px`,
+                    paddingBottom: `${inch * scale(width, 0.2)}px`,
+                    paddingLeft: `${inch * scale(width, 0.2)}px`,
+                    paddingRight: `${inch * scale(width, 0.2)}px`,
+                    flexDirection: 'column',
                     alignItems: 'center',
-                    width: '90%',
-                    gap: `${inch * scale(width, 0.05)}px`
+                    color: '#FFF',
+                    gap: `${inch * scale(width, 0.5)}px`
                 }}>
-                    {fields.get('icon')?.value?.split(";").map((link: string, index: number) => {
-                        return <InlineSVG key={`icon-cautionary-${index}`} src={link} width={iconWidth} height="100%" />;
-                    })}
-                </div>
-
-                {fields.get('sub_text')?.value && (
                     <p style={{
-                        fontSize: `${inch * (subtitleFontSize / 72)}px`,
+                        fontSize: `${inch * (titleFontSize / 72)}px`,
                         fontWeight: 'bold',
-                        textTransform: 'uppercase',
-                        marginTop: `-${inch * 0.25}px`,
+                        textTransform: 'capitalize',
                         textAlign: 'center',
-                        lineHeight: 1.3,
+                        lineHeight: 1,
+                        color: '#FFF',
                         letterSpacing: 0
                     }}>
-                        {fields.get('sub_text')?.value}
+                        {fields.get('title')?.value}
                     </p>
-                )}
-                <div style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    justifySelf: "end",
-                    lineHeight: 1.1,
-                }}>
+                    {fields.get('header_sub_text')?.value && (
+                        <p style={{
+                            fontSize: `${inch * (subtitleFontSize / 72)}px`,
+                            fontWeight: 'bold',
+                            textTransform: 'capitalize',
+                            marginTop: `-${inch * scale(width, 0.25)}px`,
+                            textAlign: 'center',
+                            lineHeight: 1.3,
+                            letterSpacing: 0
+                        }}>
+                            {fields.get('header_sub_text')?.value}
+                        </p>
+                    )}
                     <div style={{
-                        fontSize: `${inch * (regulationFontSize / 72)}px`,
-                        width: '40%'
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        flex: "1 1 0",
+                        minWidth: 0,
+                        height: '20%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '90%',
+                        gap: `${inch * scale(width, 0.05)}px`
                     }}>
-                    Forest and Range Practices Act Forest Recreation Regulation Section {fields.get("regulations")?.value || 'XX(XX)'}
+                        {fields.get('icon')?.value?.split(";").map((link: string, index: number) => {
+                            return <InlineSVG key={`icon-regulatory-${index}`} src={link} width={iconWidth} height={`${iconHeight}%`} />;
+                        })}
                     </div>
+
+                    {fields.get('sub_text')?.value && (
+                        <p style={{
+                            fontSize: `${inch * (subtitleFontSize / 72)}px`,
+                            fontWeight: 'bold',
+                            textTransform: 'capitalize',
+                            marginTop: `-${inch * scale(width, 0.25)}px`,
+                            textAlign: 'center',
+                            lineHeight: 1.3,
+                            letterSpacing: 0
+                        }}>
+                            {fields.get('sub_text')?.value}
+                        </p>
+                    )}
                     <div style={{
-                        width: '40%'
+                        display: "flex",
+                        width: '100%',
+                        justifyContent: "end",
+                        alignItems: "end",
+                        justifySelf: "end",
                     }}>
-                        <InlineSVG src={logo} width={'100%'} height="auto" />
+                        <div style={{
+                            width: '30%',
+                            marginBottom: `${inch * 0.2}px`,
+                            alignSelf: 'end'
+                        }}>
+                            <InlineSVG src={logo} width={'100%'} height="auto" />
+                        </div>
                     </div>
                 </div>
             </div>

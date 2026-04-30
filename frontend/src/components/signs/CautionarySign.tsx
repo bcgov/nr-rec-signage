@@ -4,34 +4,14 @@ import { useInchScale } from '@/utils/SignUtils';
 import logo from '../../assets/img/RST_logo-Yellow.svg';
 import { ReactSVG } from 'react-svg';
 import { InlineSVG } from '@/utils/SvgUtils';
+import { getIconHeight, getIconWidth } from '@/utils/ImageUtils';
 interface CautionarySignProps {
   fields: Map<string, FieldDto>;
   metadata: Map<string, string>;
  isRealSize?: boolean;
 }
 
-const getIconWidth = (pictogramCount: number) =>{
-    if(pictogramCount < 3){
-        return '100%';
-    }
-    else if(pictogramCount < 5){
-        return '48%';
-    }
-    else{
-        return '33%';
-    }
-};
-const getIconHeight = (pictogramCount: number) => {
-    if(pictogramCount < 3){
-        return 100/pictogramCount;
-    }
-    else if(pictogramCount < 5){
-        return 50;
-    }
-    else{
-        return 100/Math.ceil(pictogramCount / 3);
-    }
-}
+
 const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const pictogramCount = fields.get('icon')?.value ? fields.get('icon')?.value.split(";").length : 0;
@@ -137,12 +117,11 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                     </p>
                 )}
                 <div style={{
-                    display: "flex",
-                    justifyContent: "end",
-                    alignItems: "center",
-                    justifySelf: "end",
-                    lineHeight: 1.1,
-                    width: '100%'
+                        display: "flex",
+                        justifyContent: "end",
+                        alignItems: "center",
+                        justifySelf: "end",
+                        lineHeight: 1.1,
                 }}>
                     <div style={{
                         fontSize: `${inch * (regulationFontSize / 72)}px`,
@@ -150,7 +129,9 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                     }}>
                     </div>
                     <div style={{
-                        width: '32%'
+                        width: '30%',
+                        marginBottom: `${inch * 0.2}px`,
+                        alignSelf: 'end'
                     }}>
                         <InlineSVG src={logo} width={'100%'} height="auto" />
                     </div>

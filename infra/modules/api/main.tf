@@ -140,7 +140,7 @@ module "networking" {
 
 module "waf_api" {
   count                = var.is_public_api ? 1 : 0
-  source               = "git::https://github.com/bcgov/quickstart-aws-helpers.git//terraform/modules/waf?ref=v0.2.0"
+  source               = "../waf"
   name                 = "${var.app_name}-api-cf-waf"
   description          = "API CloudFront WAF Rules"
   scope                = "CLOUDFRONT"

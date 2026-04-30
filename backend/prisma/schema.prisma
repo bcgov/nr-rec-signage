@@ -62,6 +62,7 @@ model SignMetadata {
 model SignPictogramCategory {
   id   Decimal         @id @default(dbgenerated("nextval('Sq_sign_pictogram_category')")) @db.Decimal
   name String          @db.VarChar(50)
+  code String          @db.VarChar(5)
   pictograms SignPictogram[]
   @@map("sign_pictogram_category")
 }

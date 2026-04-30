@@ -42,6 +42,7 @@ export class SignMapper {
       is_saved_to_library: sign.is_saved_to_library,
       dateCreated: sign.date_created.toISOString(),
       category: CategoryMapper.toCategoryDto(sign.category),
+      option: sign.option?CategoryMapper.toSignCategoryOptionDto(sign.option):undefined,
       fields: sign.values.map((v: any) => ({
         id: v.field.id.toNumber(),
         id_category: v.field.id_category.toNumber(),

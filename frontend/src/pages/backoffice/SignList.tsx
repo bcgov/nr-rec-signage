@@ -138,7 +138,7 @@ const SignList: React.FC = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1>List of Created Signs</h1>
+                <h1>Sign Library Management</h1>
       </div>
 
       <div className="d-flex gap-3 flex-wrap mb-5">

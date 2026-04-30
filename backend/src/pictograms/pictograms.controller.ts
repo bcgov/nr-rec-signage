@@ -21,7 +21,7 @@ export class PictogramsController {
     @Query('category') category?: string,
     @Query('archived') archived?: string
   ): Promise<PictogramSearchDto> {
-    return this.pictogramsService.getAll(search, category?.split(';'), archived === 'true');
+    return this.pictogramsService.getAll(search, category?.trim().split(';'), archived === 'true');
   }
 
   @Post()

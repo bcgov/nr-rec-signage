@@ -24,6 +24,7 @@ const SignConfiguration: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { getSign } = useSignService();
 
+
   useEffect(() => {
     const fetchSign = async () => {
       try {

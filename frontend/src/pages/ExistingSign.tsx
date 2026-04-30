@@ -5,13 +5,15 @@ import { useAuth } from '../providers/AuthProvider';
 import RefreshPage from '../components/RefreshPage';
 import SignDto from '../interfaces/SignDto';
 import { renderSignPreview } from '../utils/SignPreview';
+import { autoGenerateName } from '@/utils/NameUtils';
+import { sign } from 'crypto';
 
 const ExistingSign: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [signs, setSigns] = useState<SignDto[]>([]);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
-  const { getSigns } = useSignService();
+  const { getSigns, duplicate } = useSignService();
   const { userInfo } = useAuth();
 
   useEffect(() => {
@@ -35,8 +37,15 @@ const ExistingSign: React.FC = () => {
     fetchSigns();
   }, []);
 
-  const handleSignClick = (sign: SignDto) => {
-    navigate(`/sign-configuration/${sign.id}`);
+  const handleSignClick = async (sign: SignDto) => {
+    setLoading(true);
+    try{
+      const newSign: SignDto = await duplicate(sign.id);
+      navigate(`/sign-configuration/${newSign.id}`);
+    }
+    catch(err){
+
+    }
   };
 
   const handleBack = () => {
@@ -55,10 +64,13 @@ const ExistingSign: React.FC = () => {
     <div className="centered-l-container d-flex flex-column align-items-center justify-content-center mt-5">
       <div className="blue-heading-container mb-4">
         <div className='blue-heading'>
-          <p>Your Existing Signs:</p>
+          <p>Existing signs you can start with:</p>
         </div>
         <div className="container-content">
           <div className='c-row'>
+            {signs.length == 0 &&<div className="mt-5 mb-5 d-flex align-items-center justify-content-center">
+               <p>No existing sign to start off with for now. Create a sign and save it to the library to make it available on this tab.</p>
+            </div>}
             {signs.map((sign) => {
               const fieldsMap = new Map(sign.fields.map(f => [f.slug, f]));
               const metadataMap = new Map(sign.category.metadata?.map(m => [m.meta_key, m.meta_value]) || []);
@@ -75,10 +87,10 @@ const ExistingSign: React.FC = () => {
                     }
                   }}
                 >
-                  <div style={{ width: '150px', height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                  <div style={{ width: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                     {renderSignPreview(sign, fieldsMap, metadataMap)}
                   </div>
-                  <p>Sign-{new Date(sign.dateCreated).toLocaleDateString()}</p>
+                  <p>{autoGenerateName(sign)}</p>
                 </div>
               );
             })}

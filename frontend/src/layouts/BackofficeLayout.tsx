@@ -14,10 +14,10 @@ const BackofficeLayout= () => {
                 <a onClick={() => navigate('/backoffice/pictograms')} className='text-white'>Pictogram Library Management</a>
             </div>
             <div className='menu-item'>
-                <a onClick={() => navigate('/backoffice/categories')} className='text-white'>Sign Categories</a>
+                <a onClick={() => navigate('/backoffice/categories')} className='text-white'>Sign Category Management</a>
             </div>
             <div className='menu-item'>
-                <a onClick={() => navigate('/backoffice/signs')} className='text-white'>Sign Creation History</a>
+                <a onClick={() => navigate('/backoffice/signs')} className='text-white'>Sign Library Management</a>
             </div>
 
             <div className='menu-item no-border'>

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import { CustomException } from 'src/common/exceptions/custom.exception';
 
 type SignWithRelations = Prisma.SignGetPayload<{
   include: {
@@ -227,6 +228,67 @@ export class SignsService {
       where: { id },
       data: { is_saved_to_library: true } as any,
     });
+  }
+
+  async reset(id: number, idirUserGuid: string){
+    const sign = await this.prisma.sign.findUnique({
+      where: {
+        id,
+        idir_user_guid: idirUserGuid
+      },
+    });
+    if(!sign){
+      throw new CustomException("This sign does not exist or does not belong to the current user.",400);
+    }
+    await this.prisma.signValue.updateMany({
+      where: {
+        id_sign: id
+      },
+      data: {
+        value: null
+      }
+    });
+    return true;
+  }
+
+  async duplicate(id: number, idirUserGuid: string, displayName: string) {
+    const original = await this.prisma.sign.findUnique({
+      where: { id },
+      include: { values: true },
+    });
+
+    if (!original) {
+      throw new Error('Sign not found');
+    }
+
+    if (!(original as any).is_approved && original.idir_user_guid !== idirUserGuid) {
+      throw new Error('Unauthorized');
+    }
+
+    const newSign = await this.prisma.sign.create({
+      data: {
+        idir_user_guid: idirUserGuid,
+        author_display_name: displayName,
+        id_category: original.id_category,
+        id_options: original.id_options,
+        is_approved: false,
+        is_saved_to_library: false,
+        date_created: new Date(),
+        date_updated: new Date(),
+      },
+    });
+
+    const values = original.values.map(v => ({
+      id_sign: newSign.id,
+      id_field: v.id_field,
+      value: v.value,
+    }));
+
+    await this.prisma.signValue.createMany({
+      data: values,
+    });
+
+    return newSign;
   }
 
   async delete(id: number): Promise<void> {

@@ -16,7 +16,7 @@ const NumberPost: React.FC<BladeSignProps> = ({ fields, metadata, isRealSize }) 
   const inch = isRealSize? 40 : useInchScale(bannerRef,width);
 
   return (
-    <div ref={bannerRef} className="blade-sign w-50 d-flex flex-column align-items-center justify-content-center">
+    <div ref={bannerRef} className="blade-sign w-60 d-flex flex-column align-items-center justify-content-center">
         <div className='exportable' style={{
             width: `${inch * width}px`,
             height: `${inch * height}px`,
@@ -26,7 +26,7 @@ const NumberPost: React.FC<BladeSignProps> = ({ fields, metadata, isRealSize }) 
             backgroundColor: '#4E3629',
         }}>
             <p style={{
-              fontSize: `${inch * ((width)*0.60)}px`,
+              fontSize: `${inch * parseFloat(metadata?.get('font-size') ??(width * 0.6).toString())/72}px`,
               color: 'white'
             }}>{fields.get('camp_number')?.value || '1'}</p>
         </div>

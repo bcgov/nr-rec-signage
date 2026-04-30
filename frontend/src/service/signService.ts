@@ -18,6 +18,24 @@ export const useSignService = () => {
     return response.json();
   };
 
+   const duplicate= async (id: number): Promise<SignDto> => {
+    const response = await apiFetch('/signs/duplicate/'+id, {
+      method: 'POST'
+    });
+    if (!response.ok) {
+      throw new Error('Failed to duplicate sign');
+    }
+    return response.json();
+  }
+  const reset= async (id: number): Promise<boolean> => {
+    const response = await apiFetch('/signs/reset/'+id, {
+      method: 'POST'
+    });
+    if (!response.ok) {
+      throw new Error('Failed to reset sign');
+    }
+    return true;
+  }
   const getSign = async (id: number): Promise<SignDto> => {
     const response = await apiFetch(`/signs/${id}`);
     if (!response.ok) {
@@ -102,5 +120,5 @@ export const useSignService = () => {
     }
   };
 
-  return { createSign, getSign, getSigns, getAllAdmin, approve, deleteSign, saveToLibrary, updateSign };
+  return { reset,duplicate,createSign, getSign, getSigns, getAllAdmin, approve, deleteSign, saveToLibrary, updateSign };
 };

@@ -13,7 +13,8 @@ const IconPickerField: React.FC<IconPickerFieldProps> = ({ field, updateCallback
   const [availableCategories, setAvailableCategories] = useState<PictogramCategoryDto[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>(field.restriction?.categories ?? []);
   const [canUpload, setCanUpload] = useState<boolean>(field.restriction?.can_upload ?? false);
-
+  const [iconLabel, setIconLabel] = useState<string>(field.restriction?.icon_label ?? 'pictogram');
+  const [canOpenLibrary, setCanOpenLibrary] = useState(field.restriction?.can_open_library !== undefined ?field.restriction?.can_open_library:true);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -33,18 +34,21 @@ const IconPickerField: React.FC<IconPickerFieldProps> = ({ field, updateCallback
   useEffect(() => {
     setSelectedCategories(field.restriction?.categories ?? []);
     setCanUpload(field.restriction?.can_upload ?? false);
-  }, [field]);
+  }, []);
 
-  const updateRestriction = (newCategories: number[], newCanUpload?: boolean) => {
+  useEffect(()=>{
     updateCallback({
       ...field,
       restriction: {
         ...(field.restriction || {}),
-        categories: newCategories,
-        ...(newCanUpload !== undefined ? { can_upload: newCanUpload } : {}),
+        categories: selectedCategories,
+        ...(canUpload !== undefined ? { can_upload: canUpload } : {}),
+        icon_label: iconLabel,
+        can_open_library: canOpenLibrary
       },
     });
-  };
+  },[canUpload,selectedCategories,iconLabel, canOpenLibrary]);
+
 
   const handleCategoryToggle = (id: number) => {
     const nextCategories = selectedCategories.includes(id)
@@ -52,12 +56,11 @@ const IconPickerField: React.FC<IconPickerFieldProps> = ({ field, updateCallback
       : [...selectedCategories, id];
 
     setSelectedCategories(nextCategories);
-    updateRestriction(nextCategories, canUpload);
   };
+
 
   const handleUploadToggle = (enabled: boolean) => {
     setCanUpload(enabled);
-    updateRestriction(selectedCategories, enabled);
   };
 
   return (
@@ -74,7 +77,19 @@ const IconPickerField: React.FC<IconPickerFieldProps> = ({ field, updateCallback
           />
           Allow upload
         </label>
-        <div className="d-flex flex-column gap-1">
+        <div className='d-flex align-items-center gap-3'>
+            <label className='small-label'>Alternative Label</label>
+            <input style={{width: '500px'}} type="text" value={iconLabel} onChange={(e)=> setIconLabel(e.target.value)} />
+        </div>
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            checked={canOpenLibrary}
+            onChange={(e) => setCanOpenLibrary(e.target.checked)}
+          />
+          Can Open Pictogram Library
+        </label>
+        {canOpenLibrary && <div className="d-flex flex-column gap-1">
           <label className="small-label">Categories</label>
           <div className="d-flex gap-3 flex-wrap">
             {availableCategories.map((category) => (
@@ -88,7 +103,7 @@ const IconPickerField: React.FC<IconPickerFieldProps> = ({ field, updateCallback
               </label>
             ))}
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );
