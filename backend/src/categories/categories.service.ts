@@ -37,7 +37,11 @@ export class CategoriesService {
       include: {
         options: {
           include: {
-            metadatas: true,
+            metadatas: {
+              orderBy: {
+                id: 'asc',
+              },
+            }
           },
         },
         metadata: true,
@@ -57,7 +61,11 @@ export class CategoriesService {
       include: {
         options: {
           include: {
-            metadatas: true,
+            metadatas: {
+              orderBy: {
+                id: 'asc',
+              },
+            },
           },
         },
         metadata: true,

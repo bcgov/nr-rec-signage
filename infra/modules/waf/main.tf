@@ -24,7 +24,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = 1
 
       action {
-        block {}
+        count {}
       }
 
       statement {
@@ -86,6 +86,38 @@ resource "aws_wafv2_web_acl" "this" {
 
           rule_action_override {
             name = "SizeRestrictions_BODY"
+
+            action_to_use {
+              allow {}
+            }
+          }
+
+          rule_action_override {
+            name = "EC2MetaDataSSRF_BODY"
+
+            action_to_use {
+              allow {}
+            }
+          }
+
+          rule_action_override {
+            name = "GenericLFI_BODY"
+
+            action_to_use {
+              allow {}
+            }
+          }
+
+          rule_action_override {
+            name = "GenericRFI_BODY"
+
+            action_to_use {
+              allow {}
+            }
+          }
+
+          rule_action_override {
+            name = "CrossSiteScripting_BODY"
 
             action_to_use {
               allow {}
