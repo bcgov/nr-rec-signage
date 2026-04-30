@@ -23,6 +23,23 @@ export const usePictogramService = () => {
     return response.json();
   };
 
+  const bulkCreate = async (files: FileList | File[])=>{
+      const formData = new FormData();
+      Array.from(files).forEach((file) => {
+        formData.append('files', file); // IMPORTANT: same key "files"
+      });
+
+      const res = await apiFetch('/pictograms/bulk', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error('Upload failed');
+      }
+
+      return await res.json();
+  }
   const create = async (file: File, name: string, description?: string, idCategory?: string): Promise<PictogramDto> => {
     const formData = new FormData();
     formData.append('file', file);
@@ -61,5 +78,5 @@ export const usePictogramService = () => {
     return response.json();
   };
 
-  return { getPictograms, create, update };
+  return { bulkCreate, getPictograms, create, update };
 };

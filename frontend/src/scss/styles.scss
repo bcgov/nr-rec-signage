@@ -350,7 +350,8 @@ border: none;
 
 .grid{
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  width: 100%;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 
   gap: 30px;
 }
@@ -386,12 +387,15 @@ border: none;
 }
 
 .pictogram-card img{
-  width: 50%;
-  height: auto;
+  width: 40%;
+  height: 100px;
+  object-fit: contain;
 }
 .pictogram-card p{
+  max-width: 80%;
   font-weight: 700;
-  font-size: 16px;
+  word-break: break-all;
+  font-size: 14px;
   text-align: center;
 }
 

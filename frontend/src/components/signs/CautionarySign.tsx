@@ -122,6 +122,7 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                         alignItems: "center",
                         justifySelf: "end",
                         lineHeight: 1.1,
+                        width: '100%'
                 }}>
                     <div style={{
                         fontSize: `${inch * (regulationFontSize / 72)}px`,

@@ -12,8 +12,9 @@ export default function PictogramList() {
     const [showModal, setShowModal] = useState(false);
     const [showArchived, setShowArchived] = useState(false);
     const [selectedPictogram, setSelectedPictogram] = useState<PictogramDto | undefined>(undefined);
-    const { getPictograms } = usePictogramService();
-
+    const { getPictograms, bulkCreate } = usePictogramService();
+    const [files, setFiles] = useState<FileList | null>(null);
+    const [bulkLoading, setBulkLoading] = useState(false);
     const fetchPictograms = async () => {
         setLoading(true);
         try {
@@ -46,10 +47,26 @@ export default function PictogramList() {
         fetchPictograms(); // Refresh after creating/updating
     };
 
+    const handleUpload = async () => {
+        if (!files) return;
+        setBulkLoading(true);
+        await bulkCreate(files);
+    }
     return (
         <div className="container mt-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1>Pictogram Library Management</h1>
+                <div>
+                <input
+                    type="file"
+                    multiple
+                    accept=".svg"
+                    onChange={(e) => setFiles(e.target.files)}
+                />
+                <button className="btn btn-primary" onClick={handleUpload} disabled={bulkLoading}>
+                    {bulkLoading ? "Uploading..." : "Bulk Upload"}
+                </button>
+                </div>
                 <button className="btn btn-primary" onClick={handleNewClick}>
                     <i className="bi bi-plus"></i> New
                 </button>
@@ -79,13 +96,18 @@ export default function PictogramList() {
                     <span className="ms-2">Loading...</span>
                 </div>
             ) : (
-                <div className="grid">
-                    {data?.results.map((pictogram) => (
-                        <div key={pictogram.id} className="pictogram-card" onClick={() => handlePictogramClick(pictogram)}>
-                            <img src={pictogram.link} className="card-img-top" alt={pictogram.name} />
-                            <p className="card-title">{pictogram.name}</p>
-                        </div>
-                    ))}
+                <div style={{
+                    width: '100%',
+                    position: 'relative'
+                }}>
+                    <div className="grid">
+                        {data?.results.map((pictogram) => (
+                            <div key={pictogram.id} className="pictogram-card" onClick={() => handlePictogramClick(pictogram)}>
+                                <img src={pictogram.link}  className="card-img-top" alt={pictogram.name} />
+                                <p className="card-title">{pictogram.name}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
             {showModal && data && (

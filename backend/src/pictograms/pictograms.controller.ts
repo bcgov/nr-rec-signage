@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Put, Query, Body, UseInterceptors, UploadedFile, Param } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, Post, Put, Query, Body, UseInterceptors, UploadedFile, Param, UploadedFiles } from '@nestjs/common';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { Multer } from 'multer';
 import { PictogramsService } from './pictograms.service';
 import { UploadService } from '../uploads/upload.service';
@@ -43,6 +43,44 @@ export class PictogramsController {
 
     return pictogram;
   }
+
+  @Post('bulk')
+@UseInterceptors(FilesInterceptor('files'))
+async createBulk(
+  @UploadedFiles() files: Multer.File[],
+): Promise<PictogramDto[]> {
+  const results: PictogramDto[] = [];
+  for (const file of files) {
+    // Example filename: 01_02_01_Attention!.svg
+    const parsed = this.pictogramsService.parseFilename(file.originalname);
+
+    if (!parsed) continue; // or throw if you want strict validation
+
+    const { categoryCode, descriptionCode, name } = parsed;
+
+    // 1. Upload file
+    const uploadResult = await this.uploadService.uploadSvg(file);
+
+    // 2. Get category ID
+    const category = await this.pictogramsService.getCategory(categoryCode);
+    if (!category) continue;
+
+    // 3. Map description
+    const description = this.pictogramsService.mapDescription(descriptionCode);
+
+    // 4. Create pictogram
+    const pictogram = await this.pictogramsService.create({
+      name,
+      description,
+      id_category: category.id.toNumber(),
+      link: uploadResult.url,
+    });
+
+    results.push(pictogram);
+  }
+
+  return results;
+}
 
   @Put(':id')
   @UseInterceptors(FileInterceptor('file'))
