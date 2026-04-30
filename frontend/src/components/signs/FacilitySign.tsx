@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import FieldDto from '../../interfaces/FieldDto';
 import { useInchScale } from '@/utils/SignUtils';
-import logo from '../../assets/img/RST_logo-white.svg';
+import logo from '../../assets/img/RST_logo-White.svg';
 import { ReactSVG } from 'react-svg';
 import { InlineSVG } from '@/utils/SvgUtils';
 import { getIconHeight, getIconWidth } from '@/utils/ImageUtils';
