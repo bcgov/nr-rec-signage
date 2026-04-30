@@ -8,6 +8,8 @@ export default interface SignDto {
   id_category: number;
   id_options: number | null;
   authorDisplayName: string;
+  is_approved: boolean;
+  is_saved_to_library: boolean;
   dateCreated: string;
   category: CategoryDto;
   option: SignCategoryOptionDto | null;

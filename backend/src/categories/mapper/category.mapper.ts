@@ -1,5 +1,6 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, SignCategoryOption } from '@prisma/client';
 import { CategoryDto } from '../dto/category.dto';
+import { SignCategoryOptionDto } from '../dto/sign-category-option.dto';
 
 type SignCategoryWithRelations = Prisma.SignCategoryGetPayload<{
   include: {
@@ -18,6 +19,13 @@ export class CategoryMapper {
     return categories.map(cat => this.toCategoryDto(cat));
   }
 
+  static toSignCategoryOptionDto(categoryOptions: SignCategoryOption): SignCategoryOptionDto{
+    return {
+      id: categoryOptions.id.toNumber(),
+      id_category: categoryOptions.id_category.toNumber(),
+      name: categoryOptions.name
+    }
+  }
   static toCategoryDto(category: SignCategoryWithRelations): CategoryDto {
     return {
       id: category.id.toNumber(),

@@ -29,15 +29,15 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
           width: `${inch * 0.3}px`,
           height: `${inch * 0.3}px`,
           backgroundColor: 'white',
-          marginTop: `${inch * 0.4}px`,
+          marginTop: `${inch * 0.42}px`,
         }}
       />
-      <p style={{ width: `calc(100% - ${inch * 0.6}px)`, fontWeight: 'normal', fontSize: `${inch * (66/72)}px`,margin: 0, lineHeight: 1.2 }}>{children}</p>
+      <p style={{ width: `calc(100% - ${inch * 0.6}px)`, fontWeight: 'normal', fontSize: `${inch * (58/72)}px`,margin: 0, lineHeight: 1.2 }}>{children}</p>
     </div>
   );
 
   return (
-    <div ref={bannerRef} className="recreation-site-boundary-sign w-50
+    <div ref={bannerRef} className="recreation-site-boundary-sign w-60
      d-flex flex-column align-items-center justify-content-center">
         <div className='exportable' style={{
             backgroundColor: '#4E3629',
@@ -53,34 +53,34 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
                 width: '50%',
                 fontSize: `${inch * (132/72)}px`,
                 fontWeight: 'bold',
-                lineHeight: 1,
+                lineHeight: 1.3,
                 textAlign: 'center',
                 marginBottom: `${inch * 0.75}px`,
             }}>Welcome to your Recreation Site
             </p>
             <div style={{
-                height: `${inch * 0.01}px`,
+                height: `${inch * 0.025}px`,
                 width: '60%',
                 backgroundColor: 'white',
-                marginBottom: `${inch * 1}px`,
+                marginBottom: `${inch * 0.75}px`,
             }}></div>
             <div style={{
                 width: '90%',
                 display: 'flex',
                 justifyContent: 'center',
                 letterSpacing: `-5`,
-                lineHeight: 1,
-                 gap: `${inch * 0.5}px`,
+                lineHeight: 1.3,
+                 gap: `${inch * 1.23}px`,
                  marginBottom: `${inch * 0.3}px`,
             }}>
                 <p style={{
                     fontSize: `${inch * (72/72)}px`,
                     fontWeight: 'bold',
-                    width: '23%'
+                    width: '26%'
                 }}>Please Select A Campsite</p>
                 <div style={{
                     width: '77%',
-                    fontSize: `${inch * (66/72)}px`,
+                    fontSize: `${inch * (58/72)}px`,
                     marginBottom: `${inch * 0.25}px`,
                     }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -97,23 +97,26 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
                 display: 'flex',
                 justifyContent: 'center',
                 letterSpacing: `-5`,
-                lineHeight: 1,
-                gap: `${inch * 0.5}px`,
+                lineHeight: 1.3,
+                gap: `${inch * 1.23}px`,
                 marginBottom: `${inch * 0.6}px`,
             }}>
                 <p style={{
                     fontSize: `${inch * (72/72)}px`,
                     fontWeight: 'bold',
-                    width: '23%'
+                    width: '26%'
                 }}>Daily Camping Fee</p>
                 <div style={{
                     width: '77%',
-                    fontSize: `${inch * (66/72)}px`,
+                    fontSize: `${inch * (58/72)}px`,
                     marginBottom: `${inch * 0.4}px`,
                     }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <BulletItem>
-                        ${fields.get("daily_camping_fee")?.value} /party
+                        ${fields.get("daily_camping_fee")?.value ??10}/party
+                      </BulletItem>
+                      <BulletItem>
+                        ${parseFloat(fields.get("daily_camping_fee")?.value??10)*0.5}/party for seniors 65+ and persons with disabilities
                       </BulletItem>
                     </div>
                 </div>
@@ -123,18 +126,18 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
                 display: 'flex',
                 justifyContent: 'center',
                 letterSpacing: `-5`,
-                lineHeight: 1,
-                 gap: `${inch * 0.5}px`,
+                lineHeight: 1.3,
+                 gap: `${inch * 1.23}px`,
                  marginBottom: `${inch * 0.3}px`,
             }}>
                 <p style={{
                     fontSize: `${inch * (72/72)}px`,
                     fontWeight: 'bold',
-                    width: '23%'
+                    width: '26%'
                 }}>Maximum Party Size</p>
                 <div style={{
                     width: '77%',
-                    fontSize: `${inch * (66/72)}px`,
+                    fontSize: `${inch * (58/72)}px`,
                     marginBottom: `${inch * 0.4}px`,
                     }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -152,18 +155,18 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
                 display: 'flex',
                 justifyContent: 'center',
                 letterSpacing: `-5`,
-                lineHeight: 1,
-                gap: `${inch * 0.5}px`,
+                lineHeight: 1.3,
+                gap: `${inch * 1.23}px`,
                 marginBottom: `${inch * 0.3}px`,
             }}>
                 <p style={{
                     fontSize: `${inch * (72/72)}px`,
                     fontWeight: 'bold',
-                    width: '23%'
-                }}>Vehicle Policy</p>
+                    width: '26%'
+                }}>Vehicle <br/> Policy</p>
                 <div style={{
                     width: '77%',
-                    fontSize: `${inch * (66/72)}px`,
+                    fontSize: `${inch * (58/72)}px`,
                     marginBottom: `${inch * 0.4}px`,
                     }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -184,18 +187,18 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
                 display: 'flex',
                 justifyContent: 'center',
                 letterSpacing: `-5`,
-                lineHeight: 1,
-                gap: `${inch * 0.5}px`,
+                lineHeight: 1.3,
+                gap: `${inch * 1.23}px`,
                 marginBottom: `${inch * 0.6}px`,
             }}>
                 <p style={{
                     fontSize: `${inch * (72/72)}px`,
                     fontWeight: 'bold',
-                    width: '23%'
+                    width: '26%'
                 }}>Check Out and Maximum Stay</p>
                 <div style={{
                     width: '77%',
-                    fontSize: `${inch * (66/72)}px`,
+                    fontSize: `${inch * (58/72)}px`,
                     marginBottom: `${inch * 0.3}px`,
                     }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -213,17 +216,17 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
                 display: 'flex',
                 justifyContent: 'center',
                 letterSpacing: `-5`,
-                lineHeight: 1,
-                gap: `${inch * 0.5}px`,
+                lineHeight: 1.3,
+                gap: `${inch * 1.23}px`,
             }}>
                 <p style={{
                     fontSize: `${inch * (72/72)}px`,
                     fontWeight: 'bold',
-                    width: '23%'
+                    width: '26%'
                 }}>Rules and Quiet Hours</p>
                 <div style={{
                     width: '77%',
-                    fontSize: `${inch * (66/72)}px`,
+                    fontSize: `${inch * (58/72)}px`,
                     marginBottom: `${inch * 0.4}px`,
                     }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -240,19 +243,19 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
                 width: `${inch * 20}px`,
                 textAlign: 'center',
                 fontWeight: 'bold',
-                marginTop: `${inch * 0.6}px`,
+                marginTop: `${inch * 0.2}px`,
                 lineHeight: 0.8
             }}>
                 <p style={{
-                fontSize: `${inch * (132/72)}px`,
+                fontSize: `${inch * (108/72)}px`,
                 textAlign: 'center',
                 fontWeight: 'bold',
                 lineHeight: 0.8
             }}>Enjoy Your Stay</p>
             </div>
             <div style={{
-                marginTop: `${inch * 1}px`,
-                width: `${inch * 12}px`,
+                marginTop: `${inch * 1.1}px`,
+                width: `${inch * 11}px`,
             }}>
                 <InlineSVG src={logo} width={`${inch * 12}px`} height="auto" />
             </div>

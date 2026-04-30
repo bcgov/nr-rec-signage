@@ -9,13 +9,13 @@ import NewSign from "./pages/NewSign";
 import ExistingSign from "./pages/ExistingSign";
 import SignConfiguration from "./pages/SignConfiguration";
 import SignExport from "./pages/SignExport";
-import SignList from "./pages/backoffice/PictogramList";
+import SignList from "./pages/backoffice/SignList";
 import CategoryList from "./pages/backoffice/CategoryList";
 import SignDetail from "./pages/backoffice/SignDetail";
+import PictogramList from "./pages/backoffice/PictogramList";
 
 import FrontofficeLayout from "./layouts/FrontofficeLayout";
 import BackofficeLayout from "./layouts/BackofficeLayout";
-import PictogramList from "./pages/backoffice/PictogramList";
 
 const App: React.FC = () => {
   return (
@@ -40,6 +40,7 @@ const App: React.FC = () => {
           <Route path="/backoffice/pictograms" element={<PictogramList />} />
           <Route path="/backoffice/categories" element={<CategoryList />} />
           <Route path="/backoffice/categories/:id" element={<SignDetail />} />
+          <Route path="/backoffice/signs" element={<SignList />} />
         </Route>
       </Routes>
     </AuthProvider>

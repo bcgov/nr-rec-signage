@@ -25,12 +25,23 @@ export class PictogramsService {
     };
 
     if (search) {
-      where.name = {
-        contains: search,
-        mode: 'insensitive',
-      };
+      where.OR = [
+        {
+          name: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          description: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+      ];
     }
-    const filteredCategories = category?.filter(c => !!c).map(Number.parseInt);
+    const filteredCategories = category?.filter(c => !isNaN(Number.parseInt(c))).map(Number.parseInt);
+    console.log(filteredCategories);
     if (filteredCategories && filteredCategories.length > 0) {
       where.id_category = {
         in: filteredCategories,
@@ -40,6 +51,9 @@ export class PictogramsService {
     // Get filtered pictograms
     const pictograms = await this.prisma.signPictogram.findMany({
       where,
+      orderBy:{
+        name: 'asc'
+      },
       include: {
         category: {
           select: {
@@ -64,6 +78,7 @@ export class PictogramsService {
         category: {
           id: Number(pic.category.id),
           name: pic.category.name,
+          code: pic.category.name
         },
       })),
     };
@@ -103,6 +118,7 @@ export class PictogramsService {
       category: {
         id: Number(result.category.id),
         name: result.category.name,
+        code: result.category.code
       },
       isArchived: result.is_archived,
     };
@@ -147,6 +163,7 @@ export class PictogramsService {
       category: {
         id: Number(result.category.id),
         name: result.category.name,
+        code: result.category.code
       },
       isArchived: result.is_archived,
     };

@@ -12,13 +12,15 @@ import WelcomeSign from '../components/signs/WelcomeSign';
 import RegulatorySign from '@/components/signs/RegulatorySign';
 import InformationSign from '@/components/signs/InformationSign';
 import NumberPost from '@/components/signs/NumberPost';
+import FacilitySign from '@/components/signs/FacilitySign';
 
 
 const SignExport: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { getSign } = useSignService();
+  const { getSign, saveToLibrary } = useSignService();
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [sign, setSign] = useState<SignDto | null>(null);
   const [fields, setFields] = useState<Map<string, FieldDto>>(new Map());
   const [metadata, setMetadata] = useState<Map<string, string>>(new Map());
@@ -73,6 +75,10 @@ const SignExport: React.FC = () => {
     if (slug.includes('welcome')) {
       return <WelcomeSign fields={fields} metadata={metadata} />;
     }
+    if(slug.includes('facility'))
+    {
+      return <FacilitySign fields={fields} metadata={metadata} />;
+    }
 
     return <div>Unsupported sign type</div>;
   };
@@ -81,6 +87,26 @@ const SignExport: React.FC = () => {
     if (!sign) return;
     exportToSvg(sign, fields, metadata, name);
   };
+
+  const handleSaveToLibrary = async () => {
+    if (!sign) return;
+    setSaving(true);
+    try {
+      await saveToLibrary(sign.id);
+      setSign({ ...sign, is_saved_to_library: true });
+    } catch (error) {
+      console.error('Failed to save sign to library', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  let saveButtonLabel = 'Save to library';
+  if (sign?.is_saved_to_library) {
+    saveButtonLabel = 'Saved';
+  } else if (saving) {
+    saveButtonLabel = 'Saving...';
+  }
 
   if (loading) {
     return (
@@ -98,9 +124,14 @@ const SignExport: React.FC = () => {
             <button className="btn btn-secondary" onClick={()=> navigate(`/sign-configuration/${id}`)} disabled={!sign}>
                     Back
             </button>
-            <button className="btn btn-primary" onClick={handleExport}>
+            <div className="d-flex gap-2">
+              <button className="btn btn-outline-primary" onClick={handleSaveToLibrary} disabled={!sign || saving || sign?.is_saved_to_library}>
+                {saveButtonLabel}
+              </button>
+              <button className="btn btn-primary" onClick={handleExport}>
                     Export
-            </button>
+              </button>
+            </div>
         </div>
         <div className="blue-heading-container mb-4">
             <div className='blue-heading'>

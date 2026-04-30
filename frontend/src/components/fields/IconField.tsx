@@ -16,6 +16,8 @@ import type PictogramCategoryDto from "@/interfaces/PictogramCategoryDto";
 interface IconFieldRestrictions {
   categories?: String[];
   can_upload?: boolean;
+  can_open_library?: boolean;
+  icon_label?: string;
 }
 
 const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
@@ -36,6 +38,7 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
   const fetchPictograms = useCallback(async () => {
     setLoading(true);
     try {
+      console.log(restrictions);
       const categoryIds = category.length> 0 ? category : (restrictions.categories?.map(String) || []);
       const data = await getPictograms(1000, search, categoryIds);
       setPictogramData(data);
@@ -62,6 +65,9 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
     });
   };
 
+  const canOpenLibrary = () =>{
+    return restrictions.can_open_library != undefined ? restrictions.can_open_library : true;
+  }
   const handleSelect = (pictogram: PictogramDto) => {
     const initialValue = field.value ? field.value.split(";") : [];
     updateCallback([...initialValue, pictogram.link].join(";"));
@@ -137,13 +143,14 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
           <input
             type="text"
             readOnly
-            value={`${values.length} pictogram(s) selected`}
+            value={`${values.length} ${restrictions.icon_label ?? 'pictogram'}(s) selected`}
           />
           {restrictions.can_upload && (
             <>
               <button
                 type="button"
                 className="upload-trigger btn-input btn-primary"
+                style={{right: `${canOpenLibrary()? '68px':'4px'}`}}
                 onClick={handleUploadClick}
                 disabled={uploading}
               >
@@ -165,15 +172,16 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
               />
             </>
           )}
-          <button
+          {canOpenLibrary() && <button
             className="icon-picker-trigger btn-input btn-gray"
             onClick={() => setShowPopup(true)}
             disabled={uploading}
           >
             <i className="bi bi-chevron-right"></i>
-          </button>
+          </button>}
         </div>
         {uploadError && <div className="text-danger mt-2">{uploadError}</div>}
+        {restrictions.can_upload && <div className="mt-1 small-text">Accepts .png, .jpg, .svg files</div>}
       </div>
 
       {values.map((picLink: string, index: number) => (
@@ -188,7 +196,7 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
       {showPopup && (
         <div className="popup">
           <div className="icon-picker-header">
-            <p>Select Icon</p>
+            <p>Select Pictogram</p>
             <button
               className="btn btn-transparent btn-white-text"
               onClick={() => setShowPopup(false)}

@@ -42,3 +42,26 @@ export const convertImageFileToSvg = async (file: File): Promise<string> => {
     reader.readAsDataURL(file);
   });
 };
+
+export const getIconWidth = (pictogramCount: number) =>{
+    if(pictogramCount < 3){
+        return '100%';
+    }
+    else if(pictogramCount < 5){
+        return '48%';
+    }
+    else{
+        return '33%';
+    }
+};
+export const getIconHeight = (pictogramCount: number) => {
+    if(pictogramCount < 3){
+        return 100/pictogramCount;
+    }
+    else if(pictogramCount < 5){
+        return 50;
+    }
+    else{
+        return 100/Math.ceil(pictogramCount / 3);
+    }
+}

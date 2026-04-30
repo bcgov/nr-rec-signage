@@ -49,7 +49,7 @@ export default function PictogramList() {
     return (
         <div className="container mt-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1>Sign Library Management</h1>
+                <h1>Pictogram Library Management</h1>
                 <button className="btn btn-primary" onClick={handleNewClick}>
                     <i className="bi bi-plus"></i> New
                 </button>

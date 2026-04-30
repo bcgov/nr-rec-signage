@@ -4,54 +4,18 @@ import { useSignService } from '../service/signService';
 import { useAuth } from '../providers/AuthProvider';
 import RefreshPage from '../components/RefreshPage';
 import SignDto from '../interfaces/SignDto';
-import { renderSignMarkup } from '../utils/SvgUtils';
-import FieldDto from '@/interfaces/FieldDto';
-import BladeSign from '@/components/signs/BladeSign';
-import CautionarySign from '@/components/signs/CautionarySign';
-import RecreationSiteBoundarySign from '@/components/signs/RecreationSiteBoundarySign';
-import WelcomeSign from '@/components/signs/WelcomeSign';
-import InformationSign from '@/components/signs/InformationSign';
-import NumberPost from '@/components/signs/NumberPost';
-import RegulatorySign from '@/components/signs/RegulatorySign';
+import { renderSignPreview } from '../utils/SignPreview';
+import { autoGenerateName } from '@/utils/NameUtils';
+import { sign } from 'crypto';
 
 const ExistingSign: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [signs, setSigns] = useState<SignDto[]>([]);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
-  const { getSigns } = useSignService();
+  const { getSigns, duplicate } = useSignService();
   const { userInfo } = useAuth();
 
-    const renderSignPreview = (sign: SignDto, fields: Map<string, FieldDto>, metadata: Map<string, string>) => {
-    if (!sign) return <div>Unsupported sign type</div>;
-    const slug = sign.category.slug.toLowerCase();
-
-    if(slug?.includes('camp-sign-number-post')) {
-      return <NumberPost fields={fields} metadata={metadata} />;
-    }
-
-    if(slug.includes('regulatory')) {
-      return <RegulatorySign fields={fields} metadata={metadata} />;
-    }
-
-    if(slug.includes('information')) {
-      return <InformationSign fields={fields} metadata={metadata} />;
-    }
-    if (slug.includes('blade')) {
-      return <BladeSign fields={fields} metadata={metadata} />;
-    }
-    if (slug.includes('cautionary')) {
-      return <CautionarySign fields={fields} metadata={metadata} />;
-    }
-    if (slug.includes('boundary')) {
-      return <RecreationSiteBoundarySign fields={fields} metadata={metadata} />;
-    }
-    if (slug.includes('welcome')) {
-      return <WelcomeSign fields={fields} metadata={metadata} />;
-    }
-
-    return <div>Unsupported sign type</div>;
-  };
   useEffect(() => {
     const fetchSigns = async () => {
       try {
@@ -62,7 +26,7 @@ const ExistingSign: React.FC = () => {
           return;
         }
         const fetchedSigns = await getSigns(20);
-        setSigns(fetchedSigns);
+        setSigns(fetchedSigns.signs);
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -73,8 +37,15 @@ const ExistingSign: React.FC = () => {
     fetchSigns();
   }, []);
 
-  const handleSignClick = (sign: SignDto) => {
-    navigate(`/sign-configuration/${sign.id}`);
+  const handleSignClick = async (sign: SignDto) => {
+    setLoading(true);
+    try{
+      const newSign: SignDto = await duplicate(sign.id);
+      navigate(`/sign-configuration/${newSign.id}`);
+    }
+    catch(err){
+
+    }
   };
 
   const handleBack = () => {
@@ -93,19 +64,33 @@ const ExistingSign: React.FC = () => {
     <div className="centered-l-container d-flex flex-column align-items-center justify-content-center mt-5">
       <div className="blue-heading-container mb-4">
         <div className='blue-heading'>
-          <p>Your Existing Signs:</p>
+          <p>Existing signs you can start with:</p>
         </div>
         <div className="container-content">
           <div className='c-row'>
+            {signs.length == 0 &&<div className="mt-5 mb-5 d-flex align-items-center justify-content-center">
+               <p>No existing sign to start off with for now. Create a sign and save it to the library to make it available on this tab.</p>
+            </div>}
             {signs.map((sign) => {
               const fieldsMap = new Map(sign.fields.map(f => [f.slug, f]));
               const metadataMap = new Map(sign.category.metadata?.map(m => [m.meta_key, m.meta_value]) || []);
               return (
-                <div key={`existing-sign-${sign.id}`} className="sign-card" onClick={() => handleSignClick(sign)}>
-                  <div style={{ width: '150px', height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                <div
+                  key={`existing-sign-${sign.id}`}
+                  className="sign-card"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleSignClick(sign)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      handleSignClick(sign);
+                    }
+                  }}
+                >
+                  <div style={{ width: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                     {renderSignPreview(sign, fieldsMap, metadataMap)}
                   </div>
-                  <p>Sign-{new Date(sign.dateCreated).toLocaleDateString()}</p>
+                  <p>{autoGenerateName(sign)}</p>
                 </div>
               );
             })}

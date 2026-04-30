@@ -76,7 +76,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async () => {
     setToken(null);
     setIsAuthenticated(false);
-    window.location.reload();
+    keycloak?.logout();
   };
 
   const hasRole = (role: string) => {

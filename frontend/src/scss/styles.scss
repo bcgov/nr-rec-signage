@@ -27,6 +27,12 @@ $bootstrap-icons-font-src:
   font-weight: bold;
 }
 
+.btn.btn-small{
+  padding: 8px 16px;
+  font-size: 16px;
+
+}
+
 .btn-secondary{
   color: $primary;
 }
@@ -179,13 +185,19 @@ p{
   gap: 120px;
 }
 
-.form-input label{
+.table-primary th{
+  color: white;
+  background-color: $primary;
+  padding: 8px!important;
+}
+
+.form-input label, .form-group label{
   font-weight: bold;
   font-size: 20px;
   color: #1C1C1C;
   margin-bottom: 10px;
 }
-.form-input select{
+.form-input select, .form-group select{
   appearance: none;
   cursor: pointer;
   padding-right: 30px;
@@ -194,7 +206,7 @@ p{
     no-repeat right 4px center;
   background-size: 45px;
 }
-.form-input input[type="text"],.form-input input[type="number"], .form-input select{
+.form-input input[type="text"],.form-input input[type="number"], .form-input select, .form-group select, .form-group input{
   width: 100%;
   padding: 10px;
   border: 1px solid #d9d9d9;
@@ -274,7 +286,7 @@ border: none;
 }
 .upload-trigger{
   position: absolute;
-  right: 68px;
+
   top: 42px;
   background-color: #234075;
   color: white;
@@ -468,6 +480,9 @@ label.small-label{
   width: 80%;
 }
 
+.w-60{
+  width: 60%;
+}
 label.archived-filter-label{
   font-size: 14px;
   color: rgba(0, 0, 0, 0.4);
@@ -481,5 +496,24 @@ label.archived-filter-label{
 
 .icon-picker-body{
   overflow-y: scroll;
-  
+
+}
+
+.start-over-container{
+  position: absolute;
+  bottom: 24px;
+  right: 16px;
+  z-index: 500;
+  gap: 20px;
+  align-items: center;
+  background-color: #FFF;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  box-shadow: inset;
+
+}
+
+.start-over-container div{
+  gap: 16px;
 }

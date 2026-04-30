@@ -62,6 +62,7 @@ model SignMetadata {
 model SignPictogramCategory {
   id   Decimal         @id @default(dbgenerated("nextval('Sq_sign_pictogram_category')")) @db.Decimal
   name String          @db.VarChar(50)
+  code String          @db.VarChar(5)
   pictograms SignPictogram[]
   @@map("sign_pictogram_category")
 }
@@ -100,6 +101,8 @@ model Sign {
   author_display_name  String      @db.VarChar(200)
   id_category          Decimal     @db.Decimal
   id_options           Decimal?    @db.Decimal
+  is_approved          Boolean     @default(false)
+  is_saved_to_library  Boolean     @default(false)
   date_created         DateTime    @db.Timestamp
   date_updated         DateTime    @db.Timestamp
   svg_version          String?     @db.Text

@@ -5,6 +5,7 @@ import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose';
 
 interface AuthenticatedRequest extends Request {
   user?: JWTPayload;
+  hasAdminRole?: boolean;
 }
 
 const getIssuer = (authServerUrl: string, realm: string) => {
@@ -15,7 +16,7 @@ const getIssuer = (authServerUrl: string, realm: string) => {
 };
 
 const hasAdminRole = (payload: JWTPayload, clientId?: string): boolean => {
-  console.log(payload);
+
   const realmRoles = (payload?.client_roles as string[]) || [] as string[];
 
   return realmRoles.includes('admin');
@@ -74,7 +75,9 @@ export class AuthMiddleware implements NestMiddleware {
       return res.status(401).json({ message: error instanceof Error ? error.message : 'Invalid or expired token' });
     }
 
+    const admin = hasAdminRole(payload, config?.clientId);
     req.user = payload;
+    req.hasAdminRole = admin;
 
     const method = req.method.toUpperCase();
     if (method === 'POST' || method === 'PUT') {
@@ -83,7 +86,7 @@ export class AuthMiddleware implements NestMiddleware {
         normalizedPath.startsWith('/api/signs') ||
         normalizedPath.startsWith('/api/upload');
 
-      if (!allowNonAdmin && !hasAdminRole(payload, config?.clientId)) {
+      if (!allowNonAdmin && !admin) {
         return res.status(403).json({ message: 'Admin role required' });
       }
     }

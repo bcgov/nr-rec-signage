@@ -19,8 +19,9 @@ interface FieldConfigurationProps {
 const FieldConfiguration: React.FC<FieldConfigurationProps> = ({ update, fields, category, signId, idOptions }) => {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
-  const { updateSign } = useSignService();
-
+  const { updateSign,reset } = useSignService();
+  const [showStartOver, setShowStartOver] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const renderField = (field: FieldDto) => {
     const updateCallback = (value: any) => update(field.slug, value);
 
@@ -38,6 +39,14 @@ const FieldConfiguration: React.FC<FieldConfigurationProps> = ({ update, fields,
     }
   };
 
+  const handleStartOver = async () =>{
+    setShowStartOver(true);
+  }
+  const  handleStartOverConfirmation = async () =>{
+    setResetting(true);
+    await reset(parseFloat(signId || "0"));
+    window.location.reload();
+  }
   const handleNext = async () => {
     setSaving(true);
     try {
@@ -59,6 +68,24 @@ const FieldConfiguration: React.FC<FieldConfigurationProps> = ({ update, fields,
 
   return (
     <div className="w-100 d-flex flex-column align-items-center justify-content-center">
+      { showStartOver && <div className="start-over-container d-flex">
+        <p>are you sure you want to abandon this sign?</p>
+        <div className='d-flex'>
+          <button className="btn btn-primary" type="button" onClick={handleStartOverConfirmation}>
+              {resetting ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Saving...
+                </>
+              ) : (
+                'Yes'
+              )}
+          </button>
+          <button className="btn btn-secondary" type="button" onClick={() => setShowStartOver(false)}>
+              No
+          </button>
+        </div>
+      </div>}
       <div className="blue-heading-container mb-4">
         <div className='blue-heading'>
           <p>Please fill in the {category.name} information:</p>
@@ -71,6 +98,9 @@ const FieldConfiguration: React.FC<FieldConfigurationProps> = ({ update, fields,
             <button className="btn btn-secondary" type="button" onClick={() => navigate(`/action-choice`)}>
               Back
             </button>
+            <button className="btn btn-secondary" type="button" onClick={handleStartOver} disabled={saving}>
+                Start Over
+            </button>
             <button className="btn btn-primary" type="button" onClick={handleNext} disabled={saving}>
               {saving ? (
                 <>
@@ -78,7 +108,7 @@ const FieldConfiguration: React.FC<FieldConfigurationProps> = ({ update, fields,
                   Saving...
                 </>
               ) : (
-                'Next'
+                'Preview'
               )}
             </button>
           </div>

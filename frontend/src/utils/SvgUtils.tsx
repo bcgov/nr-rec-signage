@@ -11,6 +11,7 @@ import { createRoot } from 'react-dom/client';
 import InformationSign from '@/components/signs/InformationSign';
 import RegulatorySign from '@/components/signs/RegulatorySign';
 import NumberPost from '@/components/signs/NumberPost';
+import FacilitySign from '@/components/signs/FacilitySign';
 export const renderSignMarkup = (
   sign: SignDto,
   fields: Map<string, FieldDto>,
@@ -44,6 +45,9 @@ export const renderSignMarkup = (
 
   if (slug.includes('welcome')) {
     return <WelcomeSign fields={fields} metadata={metadata} isRealSize />;
+  }
+  if(slug.includes('facility')){
+    return <FacilitySign fields={fields} metadata={metadata} isRealSize />
   }
 
   return <div>Unsupported sign type</div>;
@@ -174,7 +178,14 @@ export const exportToSvg = async (
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `${name || "sign"}${exportElements.length > 1 ? `-${index + 1}` : ""}.svg`;
+    let prefix = exportElement.getAttribute("data-prefix");
+    if(prefix) {
+      prefix = prefix+"-";
+    }
+    else{
+      prefix = "";
+    }
+    link.download = `${prefix}${name || "sign"}.svg`;
 
     document.body.appendChild(link);
     link.click();
@@ -239,10 +250,6 @@ export const convertTextToPaths = async (svg: SVGElement) => {
       parseFloat(computed.letterSpacing || "0") ||
       0;
 
-    const lineHeight =
-      parseFloat(text.getAttribute("line-height") || "") * fontSize ||
-      parseFloat(computed.lineHeight || "") * fontSize ||
-      fontSize * 0.9;
 
     const fill =
       text.getAttribute("fill") ||
@@ -269,10 +276,13 @@ export const convertTextToPaths = async (svg: SVGElement) => {
       let y =
         parseFloat(tspan.getAttribute("y") || "0");
 
+        console.log(`${content} ${x} ${y}`);
+
       for (const char of content) {
         const glyph = font.charToGlyph(char);
-
-        const glyphPath = glyph.getPath(x, y, fontSize);
+        const shiftY =  0.325 * fontSize;
+        console.log(`${char} ${fontSize} ${font.unitsPerEm} ${shiftY}`);
+        const glyphPath = glyph.getPath(x, y - shiftY, fontSize);
         const d = glyphPath.toPathData(1);
 
         const pathElement = document.createElementNS(

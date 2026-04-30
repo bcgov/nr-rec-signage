@@ -32,6 +32,10 @@ export class DropdownValuesService {
           },
         },
       },
+      orderBy: [
+      { id_category: 'asc' }, // first sort by category id
+      { value: 'asc' },       // then by value
+    ],
     }) as Promise<DropdownValueWithCategory[]>;
   }
 }
