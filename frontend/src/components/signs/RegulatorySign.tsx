@@ -116,6 +116,7 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                         </p>
                     )}
                     <div style={{
+                        width: '100%',
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
