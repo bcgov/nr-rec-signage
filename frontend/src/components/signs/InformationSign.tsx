@@ -118,6 +118,7 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                     <div style={{
                         width: '100%',
                         display: "flex",
+                        maxHeight: '10%',
                         justifyContent: "space-between",
                         justifySelf: "end",
                     }}>
@@ -135,7 +136,7 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                             marginBottom: `${inch * 0.2}px`,
                             alignSelf: 'end'
                         }}>
-                            <InlineSVG src={logo} width="100%" height="100%"  />
+                            <InlineSVG src={logo} width="fit-content" height="100%"  />
                         </div>
                     </div>
                 </div>
