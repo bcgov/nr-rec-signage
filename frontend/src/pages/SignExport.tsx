@@ -13,6 +13,7 @@ import RegulatorySign from '@/components/signs/RegulatorySign';
 import InformationSign from '@/components/signs/InformationSign';
 import NumberPost from '@/components/signs/NumberPost';
 import FacilitySign from '@/components/signs/FacilitySign';
+import { useAuth } from '@/providers/AuthProvider';
 
 
 const SignExport: React.FC = () => {
@@ -25,6 +26,7 @@ const SignExport: React.FC = () => {
   const [fields, setFields] = useState<Map<string, FieldDto>>(new Map());
   const [metadata, setMetadata] = useState<Map<string, string>>(new Map());
   const [name, setName] = useState('exported-sign');
+  const userInfo = useAuth().userInfo;
 
   useEffect(() => {
     const fetchSign = async () => {
@@ -101,6 +103,18 @@ const SignExport: React.FC = () => {
     }
   };
 
+  const handleBack = () => {
+    if(sign?.is_approved){
+      navigate('/approved-signs');
+      return;
+    }
+    if(sign?.is_saved_to_library){
+      navigate('/existing-signs');
+      return;
+    }
+    navigate(`/sign-configuration/${id}`);
+  }
+
   let saveButtonLabel = 'Save to library';
   if (sign?.is_saved_to_library) {
     saveButtonLabel = 'Saved';
@@ -121,7 +135,7 @@ const SignExport: React.FC = () => {
   return (
     <div className="centered-container d-flex flex-column align-items-center justify-content-center">
         <div className='d-flex mt-5 mb-2 justify-content-between w-100'>
-            <button className="btn btn-secondary" onClick={()=> navigate(`/sign-configuration/${id}`)} disabled={!sign}>
+            <button className="btn btn-secondary" onClick={handleBack} disabled={!sign}>
                     Back
             </button>
             <div className="d-flex gap-2">

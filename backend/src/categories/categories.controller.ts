@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Put, Body } from '@nestjs/common';
+import { Admin } from '../common/decorators/admin.decorator';
 import { CategoriesService } from './categories.service';
 import { CategoryMapper } from './mapper/category.mapper';
 import { CategoryDto } from './dto/category.dto';
@@ -23,6 +24,7 @@ export class CategoriesController {
   }
 
   @Put(':id')
+  @Admin()
   async update(@Param('id') id: string, @Body() dto: CategoryDto) {
     const categoryModel = CategoryMapper.toCategory(dto);
     if (categoryModel.id !== Number(id)) {

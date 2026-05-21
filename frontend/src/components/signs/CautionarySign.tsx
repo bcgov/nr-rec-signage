@@ -5,6 +5,7 @@ import logo from '../../assets/img/RST_logo-Yellow.svg';
 import { ReactSVG } from 'react-svg';
 import { InlineSVG } from '@/utils/SvgUtils';
 import { getIconHeight, getIconWidth } from '@/utils/ImageUtils';
+import { PlotHoleCorners, PlotHoleVertical } from './PlotHole';
 interface CautionarySignProps {
   fields: Map<string, FieldDto>;
   metadata: Map<string, string>;
@@ -67,7 +68,6 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                 <p style={{
                     fontSize: `${inch * (titleFontSize / 72)}px`,
                     fontWeight: 'bold',
-                    textTransform: 'capitalize',
                     textAlign: 'center',
                     lineHeight: 1,
                     letterSpacing: 0
@@ -78,7 +78,6 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                     <p style={{
                         fontSize: `${inch * (subtitleFontSize / 72)}px`,
                         fontWeight: 'bold',
-                        textTransform: 'capitalize',
                         marginTop: `-${inch * scale(width, 0.25)}px`,
                         textAlign: 'center',
                         lineHeight: 1.3,
@@ -107,7 +106,6 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                     <p style={{
                         fontSize: `${inch * (subtitleFontSize / 72)}px`,
                         fontWeight: 'bold',
-                        textTransform: 'capitalize',
                         marginTop: `-${inch * 0.25}px`,
                         textAlign: 'center',
                         lineHeight: 1.3,
@@ -139,6 +137,12 @@ const CautionarySign: React.FC<CautionarySignProps> = ({fields, metadata, isReal
                 </div>
             </div>
             </div>
+            {fields.get('show_pilot_holes') && fields.get('show_pilot_holes')?.value === 'top/bottom' &&
+            <PlotHoleVertical showPilotHoles={fields.get('show_pilot_holes')?.value} inch={inch} width={5/16}
+            containerWidth={containerWidth} color='#FFF'/>}
+            {fields.get('show_pilot_holes') && fields.get('show_pilot_holes')?.value === 'Corners' &&
+            <PlotHoleCorners showPilotHoles={fields.get('show_pilot_holes')?.value} inch={inch} width={5/16}
+            containerWidth={containerWidth} color='#FFF'/>}
         </div>
     </div>
   );

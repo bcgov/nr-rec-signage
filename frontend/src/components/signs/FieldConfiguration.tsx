@@ -7,6 +7,8 @@ import TextField from '../fields/TextField';
 import NumericField from '../fields/NumericField';
 import DropdownField from '../fields/DropdownField';
 import IconField from '../fields/IconField';
+import OptionField from '../fields/OptionField';
+import PercentageField from '../fields/PercentageField';
 
 interface FieldConfigurationProps {
   update: (fieldName: string, value: any) => void;
@@ -34,6 +36,10 @@ const FieldConfiguration: React.FC<FieldConfigurationProps> = ({ update, fields,
         return <DropdownField key={field.id} field={field} updateCallback={updateCallback} />;
       case 'icon_picker':
         return <IconField key={field.id} field={field} updateCallback={updateCallback} />;
+      case 'options':
+        return <OptionField key={field.id} field={field} updateCallback={updateCallback} />;
+      case 'resizer':
+        return <PercentageField key={field.id} field={field} updateCallback={updateCallback} />;
       default:
         return <div key={field.id}>Unknown field type</div>;
     }

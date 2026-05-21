@@ -56,6 +56,11 @@ export class SignsService {
           include: {
             field: true,
           },
+          orderBy: {
+            field: {
+              list_order: 'asc',
+            },
+          },
         },
       },
     });
@@ -85,18 +90,22 @@ export class SignsService {
     skip: number = 0,
     dateStart?: string,
     dateEnd?: string,
-    categoryIds?: number[]
+    categoryIds?: number[],
+    libraryStatus?: string
   ): Promise<{ total: number; signs: SignWithRelations[] }> {
     const whereFilters: any[] = [];
 
     whereFilters.push({ is_saved_to_library: true });
 
-    if (idUserGuid) {
+    if (idUserGuid && libraryStatus !== 'approved') {
       whereFilters.push({
-        OR: [{ idir_user_guid: idUserGuid }, { is_approved: true }],
+        idir_user_guid: idUserGuid,
       });
     }
 
+    if(libraryStatus === 'approved') {
+      whereFilters.push({ is_approved: true });
+    }
     if (dateStart || dateEnd) {
       const dateFilter: Prisma.DateTimeFilter = {};
       if (dateStart) dateFilter.gte = new Date(dateStart);

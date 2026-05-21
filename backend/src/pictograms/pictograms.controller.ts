@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Put, Query, Body, UseInterceptors, UploadedFile, Param, UploadedFiles } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { Multer } from 'multer';
+import { Admin } from '../common/decorators/admin.decorator';
 import { PictogramsService } from './pictograms.service';
 import { UploadService } from '../uploads/upload.service';
 import { PictogramSearchDto } from './dto/pictogram-search.dto';
@@ -25,6 +26,7 @@ export class PictogramsController {
   }
 
   @Post()
+  @Admin()
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @UploadedFile() file: Multer.File,
@@ -47,6 +49,7 @@ export class PictogramsController {
 
 
   @Put(':id')
+  @Admin()
   @UseInterceptors(FileInterceptor('file'))
   async update(
     @Param('id') id: string,

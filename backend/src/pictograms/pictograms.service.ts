@@ -11,6 +11,7 @@ export class PictogramsService {
     category?: string[],
     showArchived: boolean = false
   ): Promise<{ categories: any[]; results: PictogramDto[] }> {
+    console.log('Getting pictograms with filters:', { search, category, showArchived });
     // Get all categories
     const categories = await this.prisma.signPictogramCategory.findMany({
       select: {
@@ -40,8 +41,7 @@ export class PictogramsService {
         },
       ];
     }
-    const filteredCategories = category?.filter(c => !isNaN(Number.parseInt(c))).map(Number.parseInt);
-    console.log(filteredCategories);
+    const filteredCategories = category?.filter(c => !isNaN(Number.parseInt(c))).map(c=> c.trim()).map(c => Number.parseInt(c));
     if (filteredCategories && filteredCategories.length > 0) {
       where.id_category = {
         in: filteredCategories,

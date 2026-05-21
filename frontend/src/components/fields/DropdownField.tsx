@@ -6,7 +6,7 @@ import DropdownValueDto from '../../interfaces/DropdownValueDto';
 const DropdownField: React.FC<FieldProps> = ({ field, updateCallback }) => {
   const [options, setOptions] = useState<Map<string, DropdownValueDto[]>>(new Map());
   const { getDropdownValues } = useDropdownValueService();
-
+  const restrictions: any = field.restriction || {};
   useEffect(() => {
     const fetchOptions = async () => {
       try {
@@ -42,6 +42,7 @@ const DropdownField: React.FC<FieldProps> = ({ field, updateCallback }) => {
         })}
 
       </select>
+            <p className='mt-2 xs-text text-muted'><a href={restrictions.subtext?.href} target="_blank" rel="noopener noreferrer">{restrictions.subtext?.text}</a></p>
     </div>
   );
 };

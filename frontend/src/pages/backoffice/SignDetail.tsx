@@ -5,6 +5,7 @@ import CategoryDto from '../../interfaces/CategoryDto';
 import FieldDto from '../../interfaces/FieldDto';
 import TextField from '../../components/backoffice/fields/TextField';
 import IconPickerField from '../../components/backoffice/fields/IconPickerField';
+import NumericField from '@/components/backoffice/fields/NumericField';
 
 export default function SignDetail() {
   const { id } = useParams();
@@ -109,6 +110,9 @@ export default function SignDetail() {
           }
           if (field.field_type === 'icon_picker') {
             return <IconPickerField key={field.id} field={field} updateCallback={handleFieldUpdate} />;
+          }
+          if (field.field_type === 'number') {
+            return <NumericField key={field.id} field={field} updateCallback={handleFieldUpdate} />;
           }
           return null;
         })}

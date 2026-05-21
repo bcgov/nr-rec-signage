@@ -86,34 +86,59 @@ export const InlineSVG = ({
   const [svg, setSvg] = useState("");
 
   useEffect(() => {
-    fetch(src,{ method: "GET", mode: "cors"})
+    fetch(src, { method: "GET", mode: "cors" })
       .then((res) => res.text())
       .then((data) => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(data, "image/svg+xml");
         const svgEl = doc.querySelector("svg");
 
-        if (svgEl) {
-          if (width) svgEl.setAttribute("width", '100%');
-          if (height) svgEl.setAttribute("height", '100%');
-
-          // Ensure viewBox exists
-          if (!svgEl.getAttribute("viewBox")) {
-            const w = svgEl.getAttribute("width");
-            const h = svgEl.getAttribute("height");
-            if (w && h) {
-              svgEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
-            }
-          }
+        if (!svgEl) {
+          setSvg(data);
+          return;
         }
-        setSvg(svgEl?.outerHTML || data);
+
+        // Make SVG responsive
+        svgEl.setAttribute("width", "100%");
+        svgEl.setAttribute("height", "100%");
+        svgEl.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+        // Dynamically fit SVG to actual content
+        requestAnimationFrame(() => {
+          try {
+            const bbox = svgEl.getBBox();
+
+            // Prevent invalid bbox
+            if (bbox.width && bbox.height) {
+              const padding = 0;
+
+              svgEl.setAttribute(
+                "viewBox",
+                `
+                ${bbox.x - padding}
+                ${bbox.y - padding}
+                ${bbox.width + padding * 2}
+                ${bbox.height + padding * 2}
+              `.replace(/\s+/g, " ").trim()
+              );
+            }
+
+            setSvg(svgEl.outerHTML);
+          } catch (e) {
+            setSvg(svgEl.outerHTML);
+          }
+        });
       });
   }, [src]);
 
   return (
     <span
-        className='svg-container'
-      style={{width, height}}
+      className={`svg-container ${className || ""}`}
+      style={{
+        width,
+        height,
+        display: "inline-block",
+      }}
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );

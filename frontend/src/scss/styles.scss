@@ -521,3 +521,132 @@ label.archived-filter-label{
 .start-over-container div{
   gap: 16px;
 }
+
+.radio-container{
+  display: flex;
+  gap: 8px;
+}
+
+.radio-container label{
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.radio-container label input[type="radio"]{
+  width: 20px;
+  height: 20px;
+}
+
+.radio-container label input[type="radio"]{
+  accent-color: $primary;
+}
+
+.radio-container label{
+  font-weight: normal;
+}
+
+.xs-text{
+  font-weight: 300;
+  font-size: 16px;
+}
+
+.switch-container{
+  display: flex;
+  align-items: center;
+}
+.switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 120px;
+  height: 42px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  cursor: pointer;
+  padding: 4px;
+  transition: background 0.25s ease;
+  user-select: none;
+  margin-bottom: 0px!important;
+}
+
+.switch input {
+  display: none;
+}
+
+.switch-slider {
+  position: absolute;
+  left: 4px;
+  width: 34px;
+  height: 34px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.25s ease;
+}
+
+.switch.yes {
+  background: $primary;
+}
+
+.switch.yes .switch-slider {
+  transform: translateX(38px);
+}
+
+.switch-text {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.percentage-field {
+  gap: 6px;
+
+  label {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  &__range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    outline: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    // track fill effect (modern browsers)
+  }
+
+  // WebKit thumb
+  &__range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: $primary;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    cursor: pointer;
+  }
+
+  // Firefox thumb
+  &__range::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: $primary;
+    border: 2px solid #fff;
+    cursor: pointer;
+  }
+
+  &__value {
+    font-size: 13px;
+    color: #6b7280;
+  }
+}

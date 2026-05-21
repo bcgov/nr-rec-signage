@@ -33,6 +33,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState<any>(null);
+
+  const logout = async () => {
+    setToken(null);
+    setIsAuthenticated(false);
+    keycloak?.logout();
+  };
+
+  const apiFetch = useMemo(
+    () => createApiFetch(() => {
+      void logout();
+    }, () => token),
+    [token],
+  );
+  useEffect( () => {
+
+    const initUserInfo = async () => {
+      if (keycloak && token) {
+        try {
+          const response = await apiFetch('/auth/authenticate');
+          if (response.ok) {
+            const user = await response.json();
+            user.idir_user_guid = keycloak?.idTokenParsed?.idir_user_guid;
+            setUserInfo(user);
+          }
+        } catch (error) {
+          setUserInfo(null);
+        }
+      }
+    };
+    initUserInfo();
+  }, [keycloak,token]);
+
   useEffect(() => {
     let mounted = true;
 
@@ -46,6 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setToken(kc.token ?? null);
             setUserInfo(kc.tokenParsed);
             setIsAuthenticated(true);
+
             kc.onTokenExpired = async () => {
                 try {
                     const refreshed = await kc.updateToken(30);
@@ -56,11 +89,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                     console.error('Keycloak token refresh failed', error);
                     setIsAuthenticated(false);
                     setToken(null);
+                    setUserInfo(null);
                 }
             };
         } else {
             setIsAuthenticated(false);
             setToken(null);
+            setUserInfo(null);
         }
         setLoading(false);
       }
@@ -73,22 +108,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
   }, []);
 
-  const logout = async () => {
-    setToken(null);
-    setIsAuthenticated(false);
-    keycloak?.logout();
-  };
-
   const hasRole = (role: string) => {
+    // Check against user.role from backend first
+    if (userInfo?.role) {
+      return userInfo.role.toLowerCase() === role.toLowerCase();
+    }
+    // Fall back to keycloak roles
     return keycloak?.idTokenParsed?.client_roles?.includes(role) ?? false;
   };
-
-  const apiFetch = useMemo(
-    () => createApiFetch(() => {
-      void logout();
-    }, () => token),
-    [logout, token],
-  );
 
   return (
     <AuthContext.Provider

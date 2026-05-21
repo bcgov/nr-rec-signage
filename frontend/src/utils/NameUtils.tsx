@@ -29,7 +29,7 @@ const getName = (sign: SignDto) =>{
 }
 const getSize = (sign: SignDto) =>{
     if(sign.option){
-        return sign.option.name+"_";
+        return sign.option.name.replaceAll(" ","").toUpperCase()+"_";
     }
     return "";
 }
@@ -41,12 +41,27 @@ const getApprovedStatus = (sign: SignDto) =>{
 }
 const getCategoryCode = (sign: SignDto) =>{
     if(sign.category.name.includes("regulatory")){
-        return "04";
-    }
-    else if(sign.category.name.includes("cautionary")){
         return "01";
     }
-    else{
+    else if(sign.category.name.includes("cautionary")){
+        return "02";
+    }
+    else if(sign.category.name.includes("informational")){
         return "03";
+    }
+    else if(sign.category.name.includes("camp-sign-number-post")){
+        return "05";
+    }
+    else if(sign.category.name.includes("welcome-to-your-rec-site-entrance-sign")){
+        return "06";
+    }
+    else if(sign.category.name.includes("welcome-to-your-rec-site-entrance-sign")){
+        return "07";
+    }
+    else if(sign.category.name.includes("facility")){
+        return "04";
+    }
+    else{
+        return "00";
     }
 }

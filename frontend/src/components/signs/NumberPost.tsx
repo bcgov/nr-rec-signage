@@ -26,7 +26,7 @@ const NumberPost: React.FC<BladeSignProps> = ({ fields, metadata, isRealSize }) 
             backgroundColor: '#4E3629',
         }}>
             <p style={{
-              fontSize: `${inch * parseFloat(metadata?.get('font-size') ??(width * 0.6).toString())/72}px`,
+              fontSize: `${inch * parseFloat(fields.get('resizer_number')?.value || '100')/100 * parseFloat(metadata?.get('font-size') ??(width * 0.6).toString())/72}px`,
               color: 'white'
             }}>{fields.get('camp_number')?.value || '1'}</p>
         </div>

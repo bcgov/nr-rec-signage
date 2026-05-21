@@ -7,6 +7,7 @@ type DropdownValueWithCategory = Prisma.DropdownValueGetPayload<{
     category: {
       include: {
         field: true;
+        list_order: true;
       };
     };
   };
@@ -33,7 +34,7 @@ export class DropdownValuesService {
         },
       },
       orderBy: [
-      { id_category: 'asc' }, // first sort by category id
+      { category: { list_order: 'asc' } }, // first sort by category list order
       { value: 'asc' },       // then by value
     ],
     }) as Promise<DropdownValueWithCategory[]>;

@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { HTTPLoggerMiddleware } from "./common/middleware/req.res.logger";
 import { AuthMiddleware } from "./common/middleware/auth.middleware";
+import { AdminGuard } from "./common/guards/admin.guard";
 import { PrismaService } from "./prisma/prisma.service";
 import { ConfigModule } from "@nestjs/config";
 import { AppService } from "./app.service";
@@ -9,11 +10,12 @@ import { MetricsController } from "./metrics.controller";
 import { TerminusModule } from "@nestjs/terminus";
 import { HealthController } from "./health.controller";
 import { CacheModule } from '@nestjs/cache-manager';
-import { CategoriesModule } from "./categories/categories.module";
-import { SignsModule } from "./signs/signs.module";
-import { PictogramsModule } from "./pictograms/pictograms.module";
-import { DropdownValuesModule } from "./dropdown-values/dropdown-values.module";
+import { CategoriesModule } from './categories/categories.module';
+import { SignsModule } from './signs/signs.module';
+import { PictogramsModule } from './pictograms/pictograms.module';
+import { DropdownValuesModule } from './dropdown-values/dropdown-values.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -29,9 +31,10 @@ import { UploadsModule } from './uploads/uploads.module';
     PictogramsModule,
     UploadsModule,
     DropdownValuesModule,
+    UsersModule,
   ],
   controllers: [AppController, MetricsController, HealthController],
-  providers: [AppService, PrismaService, AuthMiddleware],
+  providers: [AppService, PrismaService, AuthMiddleware, AdminGuard],
 })
 export class AppModule {
   // let's add a middleware on all routes

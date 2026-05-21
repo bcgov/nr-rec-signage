@@ -113,10 +113,10 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
                     }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <BulletItem>
-                        ${fields.get("daily_camping_fee")?.value ??10}/party
+                        ${(parseFloat(fields.get("daily_camping_fee")?.value ?? '10').toFixed(2))}/party
                       </BulletItem>
                       <BulletItem>
-                        ${parseFloat(fields.get("daily_camping_fee")?.value??10)*0.5}/party for seniors 65+ and persons with disabilities
+                        ${(parseFloat(fields.get("daily_camping_fee")?.value ?? 10) * 0.5).toFixed(2)}/party for seniors 65+ and persons with disabilities
                       </BulletItem>
                     </div>
                 </div>
@@ -195,7 +195,7 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
                     fontSize: `${inch * (72/72)}px`,
                     fontWeight: 'bold',
                     width: '26%'
-                }}>Check Out and Maximum Stay</p>
+                }}>Check Out</p>
                 <div style={{
                     width: '77%',
                     fontSize: `${inch * (58/72)}px`,
@@ -205,6 +205,29 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
                       <BulletItem>
                         Check out time is 12 noon.
                       </BulletItem>
+                    </div>
+                </div>
+            </div>
+            <div style={{
+                width: '90%',
+                display: 'flex',
+                justifyContent: 'center',
+                letterSpacing: `-5`,
+                lineHeight: 1.3,
+                gap: `${inch * 1.23}px`,
+                marginBottom: `${inch * 0.6}px`,
+            }}>
+                <p style={{
+                    fontSize: `${inch * (72/72)}px`,
+                    fontWeight: 'bold',
+                    width: '26%'
+                }}>Maximum Stay</p>
+                <div style={{
+                    width: '77%',
+                    fontSize: `${inch * (58/72)}px`,
+                    marginBottom: `${inch * 0.3}px`,
+                    }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <BulletItem>
                         Maximum length of stay is 14 consecutive days.
                       </BulletItem>

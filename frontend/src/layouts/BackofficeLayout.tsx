@@ -19,7 +19,9 @@ const BackofficeLayout= () => {
             <div className='menu-item'>
                 <a onClick={() => navigate('/backoffice/signs')} className='text-white'>Sign Library Management</a>
             </div>
-
+            <div className='menu-item'>
+                <a onClick={() => navigate('/backoffice/users')} className='text-white'>User Management</a>
+            </div>
             <div className='menu-item no-border'>
                 <a onClick={() => navigate('/')} className='text-white'>Go Back to App</a>
             </div>
