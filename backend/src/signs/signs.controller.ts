@@ -5,6 +5,8 @@ import { SignCreationDto } from './dto/sign-creation.dto';
 import { SignUpdateDto } from './dto/sign-update.dto';
 import { SignApprovalDto } from './dto/sign-approval.dto';
 import { SignListDto } from './dto/sign-list.dto';
+import { CustomException } from 'src/common/exceptions/custom.exception';
+import { Q } from 'node_modules/vitest/dist/chunks/reporters.d.CWXNI2jG';
 
 @Controller('signs')
 export class SignsController {
@@ -18,7 +20,8 @@ export class SignsController {
     @Query('view') view: string = 'user_view',
     @Query('dateStart') dateStart?: string,
     @Query('dateEnd') dateEnd?: string,
-    @Query('categoryId') categoryId?: string
+    @Query('categoryId') categoryId?: string,
+    @Query('libraryStatus') libraryStatus?: string
   ): Promise<SignListDto> {
     const idUserGuid = req.user?.idir_user_guid;
     const categoryIds = categoryId
@@ -28,7 +31,7 @@ export class SignsController {
     const useAdminView = req.hasAdminRole && view === 'admin_view';
 
     if (!useAdminView && !idUserGuid) {
-      throw new Error('User GUID not found in token');
+      throw new CustomException('User GUID not found in token', 400);
     }
 
     const pageNumber = Math.max(1, Number(page) || 1);
@@ -41,7 +44,8 @@ export class SignsController {
       skip,
       dateStart,
       dateEnd,
-      categoryIds
+      categoryIds,
+      libraryStatus
     );
 
     return {
@@ -53,6 +57,7 @@ export class SignsController {
   @Get(':id')
   async getSign(@Param('id') id: string) {
     const sign = await this.signsService.getSign(+id);
+    console.log(sign);
     return SignMapper.toSignDetailsDto(sign);
   }
 

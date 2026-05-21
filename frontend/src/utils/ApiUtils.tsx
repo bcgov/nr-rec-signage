@@ -18,7 +18,6 @@ export function createApiFetch(logout: () => void, token: () => string | null) {
     if (response.status === 401) {
       logout();
     }
-
     return response;
   };
 }

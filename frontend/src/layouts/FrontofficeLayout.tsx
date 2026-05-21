@@ -14,7 +14,8 @@ const FrontofficeLayout = () => {
         <div className="logo"><img src={logo} alt="BC Logo" /></div>
         <div className="buttons">
           <button onClick={() => {navigate('/new-sign')}} className="btn btn-primary">Create new</button>
-          <button onClick={() => {navigate('/existing-signs')}}  className="btn btn-primary">Edit Existing Signs</button>
+          <button onClick={() => {navigate('/existing-signs')}}  className="btn btn-primary">My Library</button>
+          <button onClick={() => {navigate('/approved-signs')}}  className="btn btn-primary">Approved Signs</button>
           {hasRole('admin') && (
             <button onClick={() => {navigate('/backoffice/pictograms')}} className="btn btn-primary">Administrator</button>
           )}

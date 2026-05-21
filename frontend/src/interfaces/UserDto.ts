@@ -1,6 +1,7 @@
 export default interface UserDto {
-  id: number;
-  email: string;
+  id?: number;
+  idir_username: string;
   display_name: string;
   role: string;
+  is_active: boolean;
 }

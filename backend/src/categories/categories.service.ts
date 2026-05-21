@@ -33,7 +33,7 @@ export class CategoriesService {
     }
 
     const categories = await this.prisma.signCategory.findMany({
-      orderBy: { id: 'asc' },
+      orderBy: { list_order: 'asc' },
       include: {
         options: {
           include: {

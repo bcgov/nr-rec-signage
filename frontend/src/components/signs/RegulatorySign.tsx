@@ -5,6 +5,7 @@ import logo from '../../assets/img/RST_logo-blue.svg';
 import { ReactSVG } from 'react-svg';
 import { InlineSVG } from '@/utils/SvgUtils';
 import { getIconHeight, getIconWidth } from '@/utils/ImageUtils';
+import { PlotHoleCorners, PlotHoleVertical } from './PlotHole';
 interface RegulatorySignProps {
   fields: Map<string, FieldDto>;
   metadata: Map<string, string>;
@@ -34,7 +35,8 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
             borderRadius: `${inch * (width / 32)}px`,
             height: `${inch * parseFloat(metadata.get('height') || "16")}px`,
             aspectRatio: `${metadata.get('width')} / ${metadata.get('height')}`,
-            color: '#D5004A'
+            color: '#D5004A',
+            position: 'relative',
         }}>
             <div style={{
                 backgroundColor: '#D5004A',
@@ -47,6 +49,7 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                 alignItems: 'center',
                 justifyContent: 'center',
             }}>
+
                 <div style={{
                     backgroundColor: '#FFF',
                     borderRadius: `${inch * scale(width, 0.5)}px`,
@@ -65,7 +68,6 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                     <p style={{
                         fontSize: `${inch * (titleFontSize / 72)}px`,
                         fontWeight: 'bold',
-                        textTransform: 'capitalize',
                         textAlign: 'center',
                         lineHeight: 1,
                         color: '#D5004A',
@@ -77,7 +79,6 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                         <p style={{
                             fontSize: `${inch * (subtitleFontSize / 72)}px`,
                             fontWeight: 'bold',
-                            textTransform: 'capitalize',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
                             lineHeight: 1.3,
@@ -106,7 +107,6 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                         <p style={{
                             fontSize: `${inch * (subtitleFontSize / 72)}px`,
                             fontWeight: 'bold',
-                            textTransform: 'capitalize',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
                             lineHeight: 1.3,
@@ -138,6 +138,12 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                         </div>
                     </div>
                 </div>
+                {fields.get('show_pilot_holes') && fields.get('show_pilot_holes')?.value === 'top/bottom' &&
+                <PlotHoleVertical showPilotHoles={fields.get('show_pilot_holes')?.value} inch={inch} width={5/16}
+                containerWidth={containerWidth} />}
+                {fields.get('show_pilot_holes') && fields.get('show_pilot_holes')?.value === 'Corners' &&
+                <PlotHoleCorners showPilotHoles={fields.get('show_pilot_holes')?.value} inch={inch} width={5/16}
+                containerWidth={containerWidth} />}
             </div>
         </div>
     </div>

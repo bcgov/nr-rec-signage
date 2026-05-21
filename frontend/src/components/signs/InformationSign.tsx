@@ -5,6 +5,7 @@ import logo from '../../assets/img/RST_logo-blue.svg';
 import { ReactSVG } from 'react-svg';
 import { getIconHeight, getIconWidth } from '@/utils/ImageUtils';
 import { InlineSVG } from '@/utils/SvgUtils';
+import { PlotHoleCorners, PlotHoleVertical } from './PlotHole';
 interface InformationSignProps {
   fields: Map<string, FieldDto>;
   metadata: Map<string, string>;
@@ -35,7 +36,8 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
             borderRadius: `${inch * (width / 32)}px`,
             height: `${inch * parseFloat(metadata.get('height') || "16")}px`,
             aspectRatio: `${metadata.get('width')} / ${metadata.get('height')}`,
-            color: '#2D2926'
+            color: '#2D2926',
+            position: 'relative',
         }}>
             <div style={{
                 borderRadius: `${inch * scale(width, 0.5)}px`,
@@ -66,7 +68,6 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                     <p style={{
                         fontSize: `${inch * (titleFontSize / 72)}px`,
                         fontWeight: 'bold',
-                        textTransform: 'capitalize',
                         textAlign: 'center',
                         lineHeight: 1,
                         letterSpacing: 0
@@ -77,7 +78,6 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                         <p style={{
                             fontSize: `${inch * (subtitleFontSize / 72)}px`,
                             fontWeight: 'bold',
-                            textTransform: 'capitalize',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
                             lineHeight: 1.3,
@@ -120,26 +120,32 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                         display: "flex",
                         maxHeight: '10%',
                         justifyContent: "space-between",
+                        marginBottom: `${inch * 0.2}px`,
                         justifySelf: "end",
                     }}>
                         <div style={{
                             width: '40%',
                             display: 'flex',
-                            gap: `${inch * scale(width, 0.05)}px`
+                            gap: `${inch * 0.01}px`
                         }}>
                             {fields.get('partnership_logos')?.value?.split(";").map((link: string, index: number) => {
-                                return <InlineSVG key={`icon-logos-${index}`} width={partnershipLogoWidth} src={link} height="auto" />;
+                                return <InlineSVG key={`icon-logos-${index}`} width={`${partnershipLogoWidth}%`} src={link} height="100%"/>;
                             })}
                         </div>
                         <div style={{
                             width: '30%',
-                            marginBottom: `${inch * 0.2}px`,
                             alignSelf: 'end'
                         }}>
-                            <InlineSVG src={logo} width="fit-content" height="100%"  />
+                            <InlineSVG src={logo} height="100%"  />
                         </div>
                     </div>
                 </div>
+                {fields.get('show_pilot_holes') && fields.get('show_pilot_holes')?.value === 'top/bottom' &&
+                <PlotHoleVertical showPilotHoles={fields.get('show_pilot_holes')?.value} inch={inch} width={5/16}
+                containerWidth={containerWidth} color="#FFD100" />}
+                {fields.get('show_pilot_holes') && fields.get('show_pilot_holes')?.value === 'Corners' &&
+                <PlotHoleCorners showPilotHoles={fields.get('show_pilot_holes')?.value} inch={inch} width={5/16}
+                containerWidth={containerWidth} color="#FFD100" />}
             </div>
         </div>
     </div>

@@ -38,6 +38,7 @@ export const useCategoryService = () => {
     const restrictions = new Map<string, object>([
       ['text', { limit: 100, default: '' }],
       ['dropdown', { limit: 20, default: '' }],
+      ['options', { values: [] }],
     ]);
     return restrictions;
   };

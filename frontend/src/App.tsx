@@ -13,9 +13,11 @@ import SignList from "./pages/backoffice/SignList";
 import CategoryList from "./pages/backoffice/CategoryList";
 import SignDetail from "./pages/backoffice/SignDetail";
 import PictogramList from "./pages/backoffice/PictogramList";
+import UserList from "./pages/backoffice/UserList";
 
 import FrontofficeLayout from "./layouts/FrontofficeLayout";
 import BackofficeLayout from "./layouts/BackofficeLayout";
+import ApprovedSign from "./pages/ApprovedSign";
 
 const App: React.FC = () => {
   return (
@@ -27,6 +29,7 @@ const App: React.FC = () => {
           <Route path="/action-choice" element={<ActionChoice />} />
           <Route path="/new-sign" element={<NewSign />} />
           <Route path="/existing-signs" element={<ExistingSign />} />
+          <Route path="/approved-signs" element={<ApprovedSign />} />
           <Route path="/sign-configuration/:id" element={<SignConfiguration />} />
           <Route path="/export/:id" element={<SignExport />} />
         </Route>
@@ -41,6 +44,7 @@ const App: React.FC = () => {
           <Route path="/backoffice/categories" element={<CategoryList />} />
           <Route path="/backoffice/categories/:id" element={<SignDetail />} />
           <Route path="/backoffice/signs" element={<SignList />} />
+          <Route path="/backoffice/users" element={<UserList />} />
         </Route>
       </Routes>
     </AuthProvider>

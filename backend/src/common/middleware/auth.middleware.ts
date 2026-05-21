@@ -2,9 +2,11 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose';
+import { UsersService } from '../../users/users.service';
 
 interface AuthenticatedRequest extends Request {
   user?: JWTPayload;
+  currentUser?: any;
   hasAdminRole?: boolean;
 }
 
@@ -15,18 +17,18 @@ const getIssuer = (authServerUrl: string, realm: string) => {
   return `${authServerUrl.replace(/\/$/, '')}/realms/${realm}`;
 };
 
-const hasAdminRole = (payload: JWTPayload, clientId?: string): boolean => {
-
-  const realmRoles = (payload?.client_roles as string[]) || [] as string[];
-
-  return realmRoles.includes('admin');
+const getIdirUsername = (payload: JWTPayload): string | undefined => {
+  return (payload as any)?.idir_username || (payload as any)?.preferred_username || undefined;
 };
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
   private jwksUrl?: URL;
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly usersService: UsersService,
+  ) {}
 
   private getConfig() {
     const authServerUrl = this.configService.get<string>('SSO_AUTH_SERVER_URL') || this.configService.get<string>('KEYCLOAK_AUTH_SERVER_URL');
@@ -75,21 +77,20 @@ export class AuthMiddleware implements NestMiddleware {
       return res.status(401).json({ message: error instanceof Error ? error.message : 'Invalid or expired token' });
     }
 
-    const admin = hasAdminRole(payload, config?.clientId);
-    req.user = payload;
-    req.hasAdminRole = admin;
-
-    const method = req.method.toUpperCase();
-    if (method === 'POST' || method === 'PUT') {
-      const normalizedPath = req.path.toLowerCase();
-      const allowNonAdmin =
-        normalizedPath.startsWith('/api/signs') ||
-        normalizedPath.startsWith('/api/upload');
-
-      if (!allowNonAdmin && !admin) {
-        return res.status(403).json({ message: 'Admin role required' });
-      }
+    const idirUsername = getIdirUsername(payload);
+    if (!idirUsername) {
+      return res.status(403).json({ message: 'IDIR username not found in token' });
     }
+
+    const currentUser = await this.usersService.getByIdirUserName(idirUsername);
+    if (!currentUser || !currentUser.is_active) {
+      return res.status(403).json({ message: 'User not found or inactive' });
+    }
+
+    const isAdmin = currentUser.role.toLowerCase() === 'admin';
+    req.user = payload;
+    req.currentUser = currentUser;
+    req.hasAdminRole = isAdmin;
 
     next();
   }

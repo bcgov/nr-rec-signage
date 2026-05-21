@@ -44,8 +44,8 @@ export const useSignService = () => {
     return response.json();
   };
 
-  const getSigns = async (limit: number = 20): Promise<SignListDto> => {
-    const response = await apiFetch(`/signs?limit=${limit}`);
+  const getSigns = async (limit: number = 20, libraryStatus?: string): Promise<SignListDto> => {
+    const response = await apiFetch(`/signs?limit=${limit}&libraryStatus=${libraryStatus}`);
     if (!response.ok) {
       throw new Error('Failed to fetch signs');
     }

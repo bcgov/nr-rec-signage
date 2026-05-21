@@ -5,6 +5,7 @@ import logo from '../../assets/img/RST_logo-White.svg';
 import { ReactSVG } from 'react-svg';
 import { InlineSVG } from '@/utils/SvgUtils';
 import { getIconHeight, getIconWidth } from '@/utils/ImageUtils';
+import { PlotHoleCorners, PlotHoleVertical } from './PlotHole';
 interface FacilitySignProps {
   fields: Map<string, FieldDto>;
   metadata: Map<string, string>;
@@ -34,6 +35,7 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
             borderRadius: `${inch * (width / 32)}px`,
             height: `${inch * parseFloat(metadata.get('height') || "16")}px`,
             aspectRatio: `${metadata.get('width')} / ${metadata.get('height')}`,
+            position: 'relative'
         }}>
             <div style={{
                 backgroundColor: '#FFF',
@@ -130,7 +132,14 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                         </div>
                     </div>
                 </div>
+                {fields.get('show_pilot_holes') && fields.get('show_pilot_holes')?.value === 'top/bottom' &&
+                <PlotHoleVertical showPilotHoles={fields.get('show_pilot_holes')?.value} inch={inch} width={5/16}
+                containerWidth={containerWidth} />}
+                {fields.get('show_pilot_holes') && fields.get('show_pilot_holes')?.value === 'Corners' &&
+                <PlotHoleCorners showPilotHoles={fields.get('show_pilot_holes')?.value} inch={inch} width={5/16}
+                containerWidth={containerWidth} />}
             </div>
+
         </div>
     </div>
   );
