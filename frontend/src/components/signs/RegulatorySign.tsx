@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import FieldDto from '../../interfaces/FieldDto';
-import { useInchScale } from '@/utils/SignUtils';
+import { useInchScale, lineBreakToBr } from '@/utils/SignUtils';
 import logo from '../../assets/img/RST_logo-blue.svg';
 import { ReactSVG } from 'react-svg';
 import { InlineSVG } from '@/utils/SvgUtils';
@@ -14,13 +14,10 @@ interface RegulatorySignProps {
 
 const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
-  const pictogramCount = fields.get('icon')?.value ? fields.get('icon')?.value.split(";").length : 0;
   const inch = isRealSize ? 300: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
   const titleFontSize = metadata.get('title_font_size') ? parseFloat(metadata.get('title_font_size')!) : 104;
   const subtitleFontSize = metadata.get('subtitle_font_size') ? parseFloat(metadata.get('subtitle_font_size')!) : 44;
   const regulationFontSize = metadata.get('regulation_font_size') ? parseFloat(metadata.get('regulation_font_size')!) : 26;
-  const iconWidth = getIconWidth(pictogramCount);
-  const iconHeight = getIconHeight(pictogramCount);
   const width = metadata.get('width') ? parseFloat(metadata.get('width')!) : 16;
   const containerWidth = parseFloat(metadata.get('width') || "16");
   const scale = (width: number, value: number) =>{
@@ -69,11 +66,11 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                         fontSize: `${inch * (titleFontSize / 72)}px`,
                         fontWeight: 'bold',
                         textAlign: 'center',
-                        lineHeight: 1,
+                        lineHeight: 1.2,
                         color: '#D5004A',
+                        whiteSpace: 'pre-wrap',
                         letterSpacing: 0
-                    }}>
-                        {fields.get('title')?.value}
+                    }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('title')?.value) }}>
                     </p>
                     {fields.get('header_sub_text')?.value && (
                         <p style={{
@@ -82,10 +79,9 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
                             lineHeight: 1.3,
+                            whiteSpace: 'pre-wrap',
                             letterSpacing: 0
-                        }}>
-                            {fields.get('header_sub_text')?.value}
-                        </p>
+                        }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('header_sub_text')?.value) }} />
                     )}
                     <div style={{
                         display: 'flex',
@@ -96,10 +92,13 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                         justifyContent: 'center',
                         alignItems: 'center',
                         width: '90%',
-                        gap: `${inch * scale(width, 0.05)}px`
+                        gap: `${inch * scale(width, 0.25)}px`
                     }}>
                         {fields.get('icon')?.value?.split(";").map((link: string, index: number) => {
-                            return <InlineSVG key={`icon-regulatory-${index}`} src={link} width={iconWidth} height={`${iconHeight}%`} />;
+                            return <InlineSVG key={`icon-regulatory-${crypto.randomUUID()}-${index}`} src={link}
+                            width={`${getIconWidth(fields.get('icon')?.value?.split(";").length || 1, inch * scale(width, 0.25))}`}
+                            height={`${getIconHeight(fields.get('icon')?.value?.split(";").length || 1, inch * scale(width, 0.25))}%`}
+                            index={index} total={fields.get('icon')?.value?.split(";").length || 1} />;
                         })}
                     </div>
 
@@ -110,10 +109,9 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
                             lineHeight: 1.3,
+                            whiteSpace: 'pre-wrap',
                             letterSpacing: 0
-                        }}>
-                            {fields.get('sub_text')?.value}
-                        </p>
+                        }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('sub_text')?.value) }} />
                     )}
                     <div style={{
                         width: '100%',
@@ -123,12 +121,17 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                         justifySelf: "end",
                         lineHeight: 1.1,
                     }}>
-                        <div style={{
-                            fontSize: `${inch * (regulationFontSize / 72)}px`,
-                            width: '40%'
-                        }}>
-                        Forest and Range Practices Act Forest Recreation Regulation Section {fields.get("regulations")?.value || 'XX(XX)'}
-                        </div>
+
+                            <div style={{
+                                fontSize: `${inch * (regulationFontSize / 72)}px`,
+                                width: '40%'
+                            }}>
+                            {fields.get('regulation-hide')?.value !== 'true' && (
+                                <span>
+                                    Forest and Range Practices Act Forest Recreation Regulation Section {fields.get("regulations")?.value || 'XX(XX)'}
+                                </span>
+                            )}
+                            </div>
                         <div style={{
                             width: '30%',
                             marginBottom: `${inch * 0.2}px`,

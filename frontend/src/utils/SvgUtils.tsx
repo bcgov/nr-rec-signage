@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SignDto from '../interfaces/SignDto';
 import FieldDto from '../interfaces/FieldDto';
 import BladeSign from '../components/signs/BladeSign';
@@ -12,6 +12,7 @@ import InformationSign from '@/components/signs/InformationSign';
 import RegulatorySign from '@/components/signs/RegulatorySign';
 import NumberPost from '@/components/signs/NumberPost';
 import FacilitySign from '@/components/signs/FacilitySign';
+import ArrowedFacilitySign from '@/components/signs/ArrowedFacilitySign';
 export const renderSignMarkup = (
   sign: SignDto,
   fields: Map<string, FieldDto>,
@@ -21,35 +22,37 @@ export const renderSignMarkup = (
   const slug = sign.category.slug?.toLowerCase();
 
     if(slug?.includes('camp-sign-number-post')) {
-      return <NumberPost fields={fields} metadata={metadata} />;
+      return <NumberPost fields={fields} metadata={metadata} isRealSize={isRealSize} />;
     }
 
   if(slug?.includes('regulatory')) {
-    return <RegulatorySign fields={fields} metadata={metadata} isRealSize />;
+    return <RegulatorySign fields={fields} metadata={metadata} isRealSize={isRealSize} />;
   }
 
   if(slug?.includes('information')) {
-    return <InformationSign fields={fields} metadata={metadata} isRealSize />;
+    return <InformationSign fields={fields} metadata={metadata} isRealSize={isRealSize} />;
   }
   if (slug.includes('blade')) {
-    return <BladeSign fields={fields} metadata={metadata} isRealSize />;
+    return <BladeSign fields={fields} metadata={metadata} isRealSize={isRealSize} />;
   }
 
   if (slug.includes('cautionary')) {
-    return <CautionarySign fields={fields} metadata={metadata} isRealSize />;
+    return <CautionarySign fields={fields} metadata={metadata} isRealSize={isRealSize} />;
   }
 
   if (slug.includes('boundary')) {
-    return <RecreationSiteBoundarySign fields={fields} metadata={metadata} isRealSize />;
+    return <RecreationSiteBoundarySign fields={fields} metadata={metadata} isRealSize={isRealSize} />;
   }
 
   if (slug.includes('welcome')) {
-    return <WelcomeSign fields={fields} metadata={metadata} isRealSize />;
+    return <WelcomeSign fields={fields} metadata={metadata} isRealSize={isRealSize} />;
   }
-  if(slug.includes('facility')){
-    return <FacilitySign fields={fields} metadata={metadata} isRealSize />
+  if(slug.includes('facility-sign-alternative')){
+    return <ArrowedFacilitySign fields={fields} metadata={metadata} isRealSize={isRealSize} />
   }
-
+  if(slug.includes('facility-sign')){
+    return <FacilitySign fields={fields} metadata={metadata} isRealSize={isRealSize} />
+  }
   return <div>Unsupported sign type</div>;
 };
 const waitForAllSvgs = (root: HTMLElement) => {
@@ -72,20 +75,29 @@ const waitForAllSvgs = (root: HTMLElement) => {
     }, 50);
   });
 };
+
 export const InlineSVG = ({
   src,
   width,
   height,
   className,
+  index = 0,
+  total = 1
 }: {
   src: string;
   width?: number | string;
   height?: number | string;
   className?: string;
+  index?: number;
+  total?: number;
 }) => {
   const [svg, setSvg] = useState("");
-
   useEffect(() => {
+    console.log(`width: ${width}, height: ${height}`);
+  }, [width]);
+  useEffect(() => {
+    let mounted = true;
+
     fetch(src, { method: "GET", mode: "cors" })
       .then((res) => res.text())
       .then((data) => {
@@ -94,42 +106,107 @@ export const InlineSVG = ({
         const svgEl = doc.querySelector("svg");
 
         if (!svgEl) {
-          setSvg(data);
+          if (mounted) setSvg(data);
           return;
         }
 
-        // Make SVG responsive
+        // Remove fixed sizing
+        svgEl.removeAttribute("width");
+        svgEl.removeAttribute("height");
+
         svgEl.setAttribute("width", "100%");
         svgEl.setAttribute("height", "100%");
-        svgEl.setAttribute("preserveAspectRatio", "xMidYMid meet");
+        svgEl.setAttribute("preserveAspectRatio", getSvgAlignment(index, total));
+        svgEl.setAttribute("overflow", "visible");
+        console.log(`SVG Alignment: ${getSvgAlignment(index, total)}`);
+        // Create hidden temp SVG in DOM so getBBox works properly
+        const temp = document.createElement("div");
+        temp.style.position = "absolute";
+        temp.style.visibility = "hidden";
+        temp.style.pointerEvents = "none";
+        temp.style.left = "-99999px";
+        temp.style.top = "-99999px";
 
-        // Dynamically fit SVG to actual content
+        const clone = svgEl.cloneNode(true) as SVGSVGElement;
+
+        // Give temporary size for bbox calculation
+        clone.setAttribute("width", "1000");
+        clone.setAttribute("height", "1000");
+
+        temp.appendChild(clone);
+        document.body.appendChild(temp);
+
         requestAnimationFrame(() => {
           try {
-            const bbox = svgEl.getBBox();
+            const graphics = clone.querySelectorAll(
+              "path, rect, circle, ellipse, line, polyline, polygon, text, g, use"
+            );
 
-            // Prevent invalid bbox
-            if (bbox.width && bbox.height) {
+            let minX = Infinity;
+            let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
+
+            graphics.forEach((el) => {
+              try {
+                const bbox = (el as SVGGraphicsElement).getBBox();
+
+                if (!bbox.width && !bbox.height) return;
+
+                minX = Math.min(minX, bbox.x);
+                minY = Math.min(minY, bbox.y);
+                maxX = Math.max(maxX, bbox.x + bbox.width);
+                maxY = Math.max(maxY, bbox.y + bbox.height);
+              } catch {
+                // Ignore invalid elements
+              }
+            });
+
+            if (
+              Number.isFinite(minX) &&
+              Number.isFinite(minY) &&
+              Number.isFinite(maxX) &&
+              Number.isFinite(maxY)
+            ) {
               const padding = 0;
 
-              svgEl.setAttribute(
-                "viewBox",
-                `
-                ${bbox.x - padding}
-                ${bbox.y - padding}
-                ${bbox.width + padding * 2}
-                ${bbox.height + padding * 2}
-              `.replace(/\s+/g, " ").trim()
-              );
+              const viewBox = [
+                minX - padding,
+                minY - padding,
+                maxX - minX + padding * 2,
+                maxY - minY + padding * 2,
+              ].join(" ");
+
+              svgEl.setAttribute("viewBox", viewBox);
             }
 
-            setSvg(svgEl.outerHTML);
-          } catch (e) {
-            setSvg(svgEl.outerHTML);
+            if (mounted) {
+              setSvg(svgEl.outerHTML);
+            }
+          } catch {
+            if (mounted) {
+              setSvg(svgEl.outerHTML);
+            }
+          } finally {
+            document.body.removeChild(temp);
           }
         });
       });
+
+    return () => {
+      mounted = false;
+    };
   }, [src]);
+
+  useEffect(() => {
+    if (!svg) return;
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svg, "image/svg+xml");
+    const svgEl = doc.querySelector("svg");
+    svgEl?.setAttribute("preserveAspectRatio", getSvgAlignment(index, total));
+    setSvg(svgEl?.outerHTML || svg);
+  }, [index, total]);
 
   return (
     <span
@@ -138,15 +215,52 @@ export const InlineSVG = ({
         width,
         height,
         display: "inline-block",
+        lineHeight: 0,
       }}
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
 };
+
+const getSvgAlignment = (index: number, total: number) => {
+  if(total > 9) return "xMidYMid meet";
+  if(total > 4 ){
+    let x = "Mid";
+    let y = "Min";
+    if(index < 3){
+      y = "Max";
+    }
+    if(index % 3 === 0 && index !== total - 1){
+      x = "Max";
+    }
+    else  if((index + 1) % 3 === 0 || (index === total - 1 && total % 3 != 1)){
+      x = "Min";
+    }
+
+    return `x${x}Y${y} meet`;
+  }
+  if(total > 2){
+    let x = "Min";
+    let y = "Min";
+    if(index < 2){
+      y = "Max";
+    }
+    if(index === 2 && total === 3){
+      x = "Mid";
+    }
+    else if (index % 2 === 0) {
+      x = "Max";
+    }
+    return `x${x}Y${y} meet`;
+  }
+  return "xMidYMid meet";
+}
+
 export const loadSvg = async (src: string) => {
   const res = await fetch(src);
   return await res.text();
 };
+
 export const exportToSvg = async (
   sign: SignDto,
   fields: Map<string, FieldDto>,
@@ -235,6 +349,7 @@ const loadFont = (url: string): Promise<opentype.Font> => {
     });
   });
 };
+
 export const convertTextToPaths = async (svg: SVGElement) => {
   const textElements = svg.querySelectorAll("text");
 

@@ -42,7 +42,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const apiFetch = useMemo(
     () => createApiFetch(() => {
-      void logout();
+      if(keycloak){
+        keycloak.login();
+      }
     }, () => token),
     [token],
   );

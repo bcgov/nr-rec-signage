@@ -39,3 +39,8 @@ export function useInchScale(
 
   return inch;
 }
+
+export const lineBreakToBr = (text: string | undefined) => {
+    if (!text) return '';
+    return text.replace(/\r?\n/g, '<br/>');
+};

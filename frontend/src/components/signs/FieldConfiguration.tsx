@@ -9,6 +9,7 @@ import DropdownField from '../fields/DropdownField';
 import IconField from '../fields/IconField';
 import OptionField from '../fields/OptionField';
 import PercentageField from '../fields/PercentageField';
+import ToggleField from '../fields/toggleField';
 
 interface FieldConfigurationProps {
   update: (fieldName: string, value: any) => void;
@@ -40,6 +41,8 @@ const FieldConfiguration: React.FC<FieldConfigurationProps> = ({ update, fields,
         return <OptionField key={field.id} field={field} updateCallback={updateCallback} />;
       case 'resizer':
         return <PercentageField key={field.id} field={field} updateCallback={updateCallback} />;
+      case 'toggle':
+        return <ToggleField key={field.id} field={field} updateCallback={updateCallback} />;
       default:
         return <div key={field.id}>Unknown field type</div>;
     }
@@ -92,7 +95,7 @@ const FieldConfiguration: React.FC<FieldConfigurationProps> = ({ update, fields,
           </button>
         </div>
       </div>}
-      <div className="blue-heading-container mb-4">
+      <div className="blue-heading-container field-configuration-container mb-4">
         <div className='blue-heading'>
           <p>Please fill in the {category.name} information:</p>
         </div>

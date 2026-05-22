@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import FieldDto from '../../interfaces/FieldDto';
-import { useInchScale } from '@/utils/SignUtils';
+import { lineBreakToBr, useInchScale } from '@/utils/SignUtils';
 import logo from '../../assets/img/RST_logo-blue.svg';
 import { ReactSVG } from 'react-svg';
 import { getIconHeight, getIconWidth } from '@/utils/ImageUtils';
@@ -71,9 +71,8 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                         textAlign: 'center',
                         lineHeight: 1,
                         letterSpacing: 0
-                    }}>
-                        {fields.get('title')?.value}
-                    </p>
+                    }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('title')?.value) }} />
+
                     {fields.get('header_sub_text')?.value && (
                         <p style={{
                             fontSize: `${inch * (subtitleFontSize / 72)}px`,
@@ -82,9 +81,7 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                             textAlign: 'center',
                             lineHeight: 1.3,
                             letterSpacing: 0
-                        }}>
-                            {fields.get('header_sub_text')?.value}
-                        </p>
+                        }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('header_sub_text')?.value) }} />
                     )}
                     <div style={{
                         display: 'flex',
@@ -96,14 +93,17 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                         justifyContent: 'center',
                         alignItems: 'center',
                         width: '90%',
-                        gap: `${inch * scale(width, 0.05)}px`
+                        gap: `${inch * scale(width, 0.25)}px`
                     }}>
                         {fields.get('main_pictogram')?.value?.split(";").map((link: string, index: number) => {
-                            return <InlineSVG key={`icon-information-${index}`} src={link} width={iconWidth} height={`${iconHeight}%`} />;
+                                            return <InlineSVG key={`icon--${crypto.randomUUID()}-${index}`} src={link}
+                                            width={`${getIconWidth(fields.get('main_pictogram')?.value?.split(";").length || 1, inch * scale(width, 0.25))}`}
+                                            height={`${getIconHeight(fields.get('main_pictogram')?.value?.split(";").length || 1, inch * scale(width, 0.25))}%`}
+                                            index={index} total={fields.get('main_pictogram')?.value?.split(";").length || 1} />;
                         })}
                     </div>
 
-                    {fields.get('header_sub_text')?.value && (
+                    {fields.get('sub_text')?.value && (
                         <p style={{
                             fontSize: `${inch * (subtitleFontSize / 72)}px`,
                             fontWeight: 'bold',
@@ -111,9 +111,7 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                             textAlign: 'center',
                             lineHeight: 1.3,
                             letterSpacing: 0
-                        }}>
-                            {fields.get('sub_text')?.value}
-                        </p>
+                        }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('sub_text')?.value) }} />
                     )}
                     <div style={{
                         width: '100%',

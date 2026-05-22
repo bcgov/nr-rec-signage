@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSignService } from '../service/signService';
 import { toDictionaryMap } from '../utils/SignUtils';
-import { exportToSvg } from '../utils/SvgUtils';
+import { exportToSvg, renderSignMarkup } from '../utils/SvgUtils';
 import SignDto from '../interfaces/SignDto';
 import FieldDto from '../interfaces/FieldDto';
 import BladeSign from '../components/signs/BladeSign';
@@ -54,35 +54,7 @@ const SignExport: React.FC = () => {
 
   const renderSignPreview = () => {
     if (!sign) return <div>Unsupported sign type</div>;
-    const slug = sign.category.slug.toLowerCase();
-    if(slug?.includes('camp-sign-number-post')) {
-      return <NumberPost fields={fields} metadata={metadata} />;
-    }
-
-    if(slug.includes('regulatory')) {
-      return <RegulatorySign fields={fields} metadata={metadata} />;
-    }
-    if(slug.includes('information')) {
-      return <InformationSign fields={fields} metadata={metadata} />;
-    }
-    if (slug.includes('blade')) {
-      return <BladeSign fields={fields} metadata={metadata} />;
-    }
-    if (slug.includes('cautionary')) {
-      return <CautionarySign fields={fields} metadata={metadata} />;
-    }
-    if (slug.includes('boundary')) {
-      return <RecreationSiteBoundarySign fields={fields} metadata={metadata} />;
-    }
-    if (slug.includes('welcome')) {
-      return <WelcomeSign fields={fields} metadata={metadata} />;
-    }
-    if(slug.includes('facility'))
-    {
-      return <FacilitySign fields={fields} metadata={metadata} />;
-    }
-
-    return <div>Unsupported sign type</div>;
+    return renderSignMarkup(sign, fields,metadata,false);
   };
 
   const handleExport = () => {
@@ -106,10 +78,6 @@ const SignExport: React.FC = () => {
   const handleBack = () => {
     if(sign?.is_approved){
       navigate('/approved-signs');
-      return;
-    }
-    if(sign?.is_saved_to_library){
-      navigate('/existing-signs');
       return;
     }
     navigate(`/sign-configuration/${id}`);

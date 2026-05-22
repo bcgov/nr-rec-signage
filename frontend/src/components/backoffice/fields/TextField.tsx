@@ -23,7 +23,7 @@ const TextField: React.FC<TextFieldProps> = ({ field, updateCallback }) => {
       restriction: {
         ...(field.restriction || {}),
         limit: Number.isNaN(newLimit) ? 0 : newLimit,
-        default: defaultValue,
+        default_value: defaultValue,
       },
     });
   };
@@ -36,7 +36,7 @@ const TextField: React.FC<TextFieldProps> = ({ field, updateCallback }) => {
       restriction: {
         ...(field.restriction || {}),
         limit,
-        default: newDefault,
+        default_value: newDefault,
       },
     });
   };

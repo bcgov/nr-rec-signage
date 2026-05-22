@@ -10,7 +10,6 @@ export const usePictogramService = () => {
     const params = new URLSearchParams();
     params.append('limit', limit.toString());
     if (search) params.append('search', search);
-    console.log(showArchived)
     if(showArchived) params.append('archived', 'true');
     if (category) {
         params.append('category', category.join(';')); // Join multiple categories with a delimiter (e.g., ';')

@@ -142,7 +142,7 @@ const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize 
                     }}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <BulletItem>
-                        Individuals who together form a group of not more than six persons, or
+                        Individuals who together form a group of no more than six persons, or
                       </BulletItem>
                       <BulletItem>
                         Parents or guardians and their unmarried children or wards who are under the age of 19.
