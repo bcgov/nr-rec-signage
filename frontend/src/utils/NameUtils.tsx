@@ -3,7 +3,7 @@ import SignDto from "@/interfaces/SignDto"
 import { toDictionaryMap } from "./SignUtils";
 
 export const autoGenerateName = (sign: SignDto) =>{
-    return `${getApprovedStatus(sign)}_${getSize(sign)}${getName(sign)+getDate(sign)}`;
+    return `${getCategoryCode(sign)}_${getApprovedStatus(sign)}_${getSize(sign)}${getName(sign)+getDate(sign)}`;
 };
 
 
@@ -40,22 +40,23 @@ const getApprovedStatus = (sign: SignDto) =>{
     return "C";
 }
 const getCategoryCode = (sign: SignDto) =>{
-    if(sign.category.name.includes("regulatory")){
+    console.log(sign.category.slug);
+    if(sign.category.slug.includes("regulatory")){
         return "01";
     }
-    else if(sign.category.name.includes("cautionary")){
+    else if(sign.category.slug.includes("cautionary")){
         return "02";
     }
-    else if(sign.category.name.includes("informational")){
+    else if(sign.category.slug.includes("informational")){
         return "03";
     }
-    else if(sign.category.name.includes("camp-sign-number-post")){
+    else if(sign.category.slug.includes("camp-sign-number-post")){
         return "05";
     }
-    else if(sign.category.name.includes("welcome-to-your-rec-site-entrance-sign")){
+    else if(sign.category.slug.includes("blade")){
         return "06";
     }
-    else if(sign.category.name.includes("welcome-to-your-rec-site-entrance-sign")){
+    else if(sign.category.slug.includes("welcome-to-your-rec-site-entrance-sign")){
         return "07";
     }
     else if(sign.category.name.includes("facility")){

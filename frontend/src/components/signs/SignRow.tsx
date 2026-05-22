@@ -1,6 +1,7 @@
 import React from 'react';
 import SignDto from '../../interfaces/SignDto';
 import { renderSignPreview } from '../../utils/SignPreview';
+import { autoGenerateName } from '@/utils/NameUtils';
 
 interface SignRowProps {
   sign: SignDto;
@@ -14,12 +15,12 @@ const SignRow: React.FC<SignRowProps> = ({ sign, onToggleApproval, onDelete }) =
 
   return (
     <tr>
-      <td style={{ width: 180, padding: '0.75rem' }}>
-        <div style={{ width: 140, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <td style={{ width: '350px',padding: '0.75rem' }}>
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {renderSignPreview(sign, fieldsMap, metadataMap)}
         </div>
       </td>
-      <td>{sign.category.name}</td>
+      <td>{autoGenerateName(sign)}</td>
       <td>{new Date(sign.dateCreated).toLocaleDateString()}</td>
       <td>{sign.is_approved ? 'Approved' : 'Pending'}</td>
       <td>
