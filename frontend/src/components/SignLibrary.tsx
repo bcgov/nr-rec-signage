@@ -88,7 +88,7 @@ const SignLibrary: React.FC<SignLibraryProps> = ({libraryStatus}) => {
                     }
                   }}
                 >
-                  <div style={{ width: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                  <div style={{ width: '350px', zoom: '0.4', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                     {renderSignPreview(sign, fieldsMap, metadataMap)}
                   </div>
                   <p>{autoGenerateName(sign)}</p>
