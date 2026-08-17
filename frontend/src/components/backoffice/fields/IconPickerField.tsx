@@ -15,6 +15,7 @@ const IconPickerField: React.FC<IconPickerFieldProps> = ({ field, updateCallback
   const [canUpload, setCanUpload] = useState<boolean>(field.restriction?.can_upload ?? false);
   const [iconLabel, setIconLabel] = useState<string>(field.restriction?.icon_label ?? 'pictogram');
   const [canOpenLibrary, setCanOpenLibrary] = useState(field.restriction?.can_open_library !== undefined ?field.restriction?.can_open_library:true);
+  const [limitChoice, setLimitChoice] = useState(field.restriction?.limit_choice !== undefined ?field.restriction?.limit_choice:12);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -44,10 +45,11 @@ const IconPickerField: React.FC<IconPickerFieldProps> = ({ field, updateCallback
         categories: selectedCategories,
         ...(canUpload !== undefined ? { can_upload: canUpload } : {}),
         icon_label: iconLabel,
-        can_open_library: canOpenLibrary
+        can_open_library: canOpenLibrary,
+        limit_choice: limitChoice
       },
     });
-  },[canUpload,selectedCategories,iconLabel, canOpenLibrary]);
+  },[canUpload,selectedCategories,iconLabel, canOpenLibrary,limitChoice]);
 
 
   const handleCategoryToggle = (id: number) => {
@@ -77,9 +79,15 @@ const IconPickerField: React.FC<IconPickerFieldProps> = ({ field, updateCallback
           />
           Allow upload
         </label>
-        <div className='d-flex align-items-center gap-3'>
+        <div className='d-flex align-items-center gap-5'>
+          <div className='d-flex align-items-center gap-3'>
             <label className='small-label'>Alternative Label</label>
-            <input style={{width: '500px'}} type="text" value={iconLabel} onChange={(e)=> setIconLabel(e.target.value)} />
+            <input style={{width: '350px'}} type="text" value={iconLabel} onChange={(e)=> setIconLabel(e.target.value)} />
+          </div>
+          <div className='d-flex align-items-center gap-3'>
+            <label className='small-label'>Pictogram Limits</label>
+            <input style={{width: '150px'}} type="number" value={limitChoice} onChange={(e)=> setLimitChoice(parseInt(e.target.value))} />
+          </div>
         </div>
         <label className="checkbox-label">
           <input

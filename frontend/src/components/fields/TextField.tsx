@@ -9,13 +9,13 @@ interface TextFieldRestrictions {
 const TextField: React.FC<FieldProps> = ({ field, updateCallback }) => {
 
   const restrictions: TextFieldRestrictions = field.restriction || {limit: 0, default: ''};
+
   const toSentenceCase = (text: string | undefined) => {
     if (!text) return '';
     return text
-      .toLowerCase()
       .replace(/(^\s*\w|[.!?]\s*\w)/g, (char) => char.toUpperCase());
   }
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if(restrictions.limit && e.target.value.length > restrictions.limit){
         updateCallback(toSentenceCase(e.target.value.slice(0, restrictions.limit)));
         return;
@@ -29,7 +29,7 @@ const TextField: React.FC<FieldProps> = ({ field, updateCallback }) => {
             <label>{field.name}</label>
             {restrictions.limit ? <small className='text-muted'>{restrictions.limit} character limit ({`${field.value ? field.value.length : 0}/${restrictions.limit}`})</small> : null}
       </div>
-      <input type="text" value={field.value || ''} onChange={handleChange} />
+      <textarea className="form-control" value={field.value || ''} onChange={handleChange} rows={3}></textarea>
     </div>
   );
 };

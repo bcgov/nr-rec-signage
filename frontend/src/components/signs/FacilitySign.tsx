@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import FieldDto from '../../interfaces/FieldDto';
-import { useInchScale } from '@/utils/SignUtils';
+import { lineBreakToBr, useInchScale } from '@/utils/SignUtils';
 import logo from '../../assets/img/RST_logo-White.svg';
 import { ReactSVG } from 'react-svg';
 import { InlineSVG } from '@/utils/SvgUtils';
@@ -71,9 +71,7 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                         lineHeight: 1,
                         color: '#FFF',
                         letterSpacing: 0
-                    }}>
-                        {fields.get('title')?.value}
-                    </p>
+                    }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('title')?.value)}} />
                     {fields.get('header_sub_text')?.value && (
                         <p style={{
                             fontSize: `${inch * (subtitleFontSize / 72)}px`,
@@ -83,8 +81,7 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                             textAlign: 'center',
                             lineHeight: 1.3,
                             letterSpacing: 0
-                        }}>
-                            {fields.get('header_sub_text')?.value}
+                        }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('header_sub_text')?.value) }}>
                         </p>
                     )}
                     <div style={{
@@ -99,7 +96,10 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                         gap: `${inch * scale(width, 0.05)}px`
                     }}>
                         {fields.get('icon')?.value?.split(";").map((link: string, index: number) => {
-                            return <InlineSVG key={`icon-regulatory-${index}`} src={link} width={iconWidth} height={`${iconHeight}%`} />;
+                            return <InlineSVG key={`icon-facility-${crypto.randomUUID()}-${index}`} src={link}
+                            width={`${getIconWidth(fields.get('icon')?.value?.split(";").length || 1, inch * scale(width, 0.25))}`}
+                            height={`${getIconHeight(fields.get('icon')?.value?.split(";").length || 1, inch * scale(width, 0.25))}%`}
+                            index={index} total={fields.get('icon')?.value?.split(";").length || 1} />;
                         })}
                     </div>
 
@@ -112,8 +112,7 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                             textAlign: 'center',
                             lineHeight: 1.3,
                             letterSpacing: 0
-                        }}>
-                            {fields.get('sub_text')?.value}
+                        }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('sub_text')?.value) }}>
                         </p>
                     )}
                     <div style={{

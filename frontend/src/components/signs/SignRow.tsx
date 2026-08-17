@@ -1,7 +1,7 @@
 import React from 'react';
 import SignDto from '../../interfaces/SignDto';
-import { renderSignPreview } from '../../utils/SignPreview';
 import { autoGenerateName } from '@/utils/NameUtils';
+import { renderSignMarkup } from '@/utils/SvgUtils';
 
 interface SignRowProps {
   sign: SignDto;
@@ -17,7 +17,7 @@ const SignRow: React.FC<SignRowProps> = ({ sign, onToggleApproval, onDelete }) =
     <tr>
       <td style={{ width: '350px',padding: '0.75rem' }}>
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {renderSignPreview(sign, fieldsMap, metadataMap)}
+          {renderSignMarkup(sign, fieldsMap, metadataMap,false)}
         </div>
       </td>
       <td>{autoGenerateName(sign)}</td>

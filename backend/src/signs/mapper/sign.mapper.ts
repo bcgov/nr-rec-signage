@@ -50,7 +50,7 @@ export class SignMapper {
         slug: v.field.slug,
         name: v.field.name,
         restriction: v.field.restriction,
-        value: v.value,
+        value: v.value?.trim() || v.field.restriction?.default_value || undefined
       })),
     };
   }

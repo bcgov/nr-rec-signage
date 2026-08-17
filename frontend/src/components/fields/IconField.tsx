@@ -18,6 +18,7 @@ interface IconFieldRestrictions {
   can_upload?: boolean;
   can_open_library?: boolean;
   icon_label?: string;
+  limit_choice?: number;
 }
 
 const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
@@ -38,7 +39,6 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
   const fetchPictograms = useCallback(async () => {
     setLoading(true);
     try {
-      console.log(restrictions);
       const categoryIds = category.length> 0 ? category : (restrictions.categories?.map(String) || []);
       const data = await getPictograms(1000, search, categoryIds);
       setPictogramData(data);
@@ -68,9 +68,17 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
   const canOpenLibrary = () =>{
     return restrictions.can_open_library != undefined ? restrictions.can_open_library : true;
   }
+  const addPictogramLink = (newPictogramLink: string) => {
+    const initialValue = field.value ? field.value.split(";") : [];
+    if (restrictions.limit_choice && initialValue.length >= restrictions.limit_choice) {
+      initialValue.shift();
+    }
+    return [...initialValue, newPictogramLink].join(";");
+  }
   const handleSelect = (pictogram: PictogramDto) => {
     const initialValue = field.value ? field.value.split(";") : [];
-    updateCallback([...initialValue, pictogram.link].join(";"));
+
+    updateCallback(addPictogramLink(pictogram.link));
     setShowPopup(false);
   };
 
@@ -122,7 +130,7 @@ const IconField: React.FC<FieldProps> = ({ field, updateCallback }) => {
 
       const url = await uploadFile(uploadCandidate);
       const initialValue = field.value ? field.value.split(";") : [];
-      updateCallback([...initialValue, url].join(";"));
+      updateCallback(addPictogramLink(url));
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "Upload failed");
     } finally {

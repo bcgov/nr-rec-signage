@@ -4,9 +4,8 @@ import { useSignService } from '../service/signService';
 import { useAuth } from '../providers/AuthProvider';
 import RefreshPage from '../components/RefreshPage';
 import SignDto from '../interfaces/SignDto';
-import { renderSignPreview } from '../utils/SignPreview';
 import { autoGenerateName } from '@/utils/NameUtils';
-import { sign } from 'crypto';
+import { renderSignMarkup } from '@/utils/SvgUtils';
 
 interface SignLibraryProps{
     libraryStatus: string
@@ -42,10 +41,16 @@ const SignLibrary: React.FC<SignLibraryProps> = ({libraryStatus}) => {
   const handleSignClick = async (sign: SignDto) => {
     setLoading(true);
     try{
-      navigate(`/export/${sign.id}`);
+      if(libraryStatus != 'custom'){
+        navigate(`/export/${sign.id}`);
+        return;
+      }
+      let newSign = await duplicate(sign.id);
+      navigate(`/export/${newSign.id}`);
     }
     catch(err){
-
+        setError(true);
+        setLoading(false);
     }
   };
 
@@ -89,7 +94,7 @@ const SignLibrary: React.FC<SignLibraryProps> = ({libraryStatus}) => {
                   }}
                 >
                   <div style={{ width: '350px', zoom: '0.4', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                    {renderSignPreview(sign, fieldsMap, metadataMap)}
+                    {renderSignMarkup(sign, fieldsMap, metadataMap,false)}
                   </div>
                   <p>{autoGenerateName(sign)}</p>
                 </div>

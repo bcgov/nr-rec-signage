@@ -650,3 +650,87 @@ label.archived-filter-label{
     color: #6b7280;
   }
 }
+
+  .toggle {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background-color: #ccc;
+  border-radius: 24px;
+  transition: 0.2s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.toggle input:checked + .toggle-slider {
+  background-color: $primary;
+}
+
+.toggle input:checked + .toggle-slider::before {
+  transform: translateX(22px);
+}
+
+.toggle input:focus-visible + .toggle-slider {
+  outline: 2px solid $primary;
+  outline-offset: 2px;
+}
+
+@mixin modern-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba($primary, 0.8) transparent;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba($primary, 0.8);
+    border-radius: 10px;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: $primary;
+    }
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+.field-configuration-container .form-input-container{
+  height: 50vh;
+  margin-bottom: 20px;
+  overflow-y: scroll;
+  @include modern-scrollbar;
+}

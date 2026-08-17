@@ -14,7 +14,7 @@ const _kc = new Keycloak({
 });
 
 const loginOptions: CustomLoginOptions = {
-  redirectUri: window.location.href,
+  redirectUri: window.location.origin + window.location.pathname,
   idpHint: "",
   pres_req_conf_id: import.meta.env.VITE_PRES_REQ_CONF_ID,
 };

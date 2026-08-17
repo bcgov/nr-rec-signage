@@ -43,25 +43,31 @@ export const convertImageFileToSvg = async (file: File): Promise<string> => {
   });
 };
 
-export const getIconWidth = (pictogramCount: number) =>{
+export const getIconWidth = (pictogramCount: number, gap: number = 0) =>{
     if(pictogramCount < 3){
-        return '100%';
+        return `100%`;
     }
-    else if(pictogramCount < 5){
-        return '48%';
+    else if(pictogramCount <= 4){
+        return `calc(50% - ((${gap}px) / 2))`;
+    }
+    else if(pictogramCount <= 9){
+        return `calc(33.33% - ((2 * ${gap}px) / 3))`;
     }
     else{
-        return '33%';
+        return `calc(25% - ((3 *${gap}px) / 4))`;
     }
 };
-export const getIconHeight = (pictogramCount: number) => {
+export const getIconHeight = (pictogramCount: number, gap: number = 0) => {
     if(pictogramCount < 3){
         return 100/pictogramCount;
     }
-    else if(pictogramCount < 5){
+    else if(pictogramCount < 7){
         return 50;
     }
+    else if(pictogramCount < 10){
+        return 33.33;
+    }
     else{
-        return 100/Math.ceil(pictogramCount / 3);
+        return 25;
     }
 }
