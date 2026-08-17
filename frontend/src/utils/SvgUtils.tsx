@@ -93,9 +93,6 @@ export const InlineSVG = ({
 }) => {
   const [svg, setSvg] = useState("");
   useEffect(() => {
-    console.log(`width: ${width}, height: ${height}`);
-  }, [width]);
-  useEffect(() => {
     let mounted = true;
 
     fetch(src, { method: "GET", mode: "cors" })
@@ -118,7 +115,6 @@ export const InlineSVG = ({
         svgEl.setAttribute("height", "100%");
         svgEl.setAttribute("preserveAspectRatio", getSvgAlignment(index, total));
         svgEl.setAttribute("overflow", "visible");
-        console.log(`SVG Alignment: ${getSvgAlignment(index, total)}`);
         // Create hidden temp SVG in DOM so getBBox works properly
         const temp = document.createElement("div");
         temp.style.position = "absolute";
