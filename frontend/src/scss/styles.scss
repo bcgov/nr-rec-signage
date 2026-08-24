@@ -728,9 +728,4 @@ label.archived-filter-label{
     height: 0;
   }
 }
-.field-configuration-container .form-input-container{
-  height: 50vh;
-  margin-bottom: 20px;
-  overflow-y: scroll;
-  @include modern-scrollbar;
-}
+
