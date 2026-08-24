@@ -8,6 +8,7 @@
 # 🚀 AWS SQL Quickstart
 ### ⚡ Aurora Serverless v2 + ECS Fargate + CloudFront
 
+
 > 🎯 **Ready-to-deploy containerized app stack for AWS!** Built by BC Government developers, for developers.
 
 ## 🌟 What's Inside?
