@@ -14,11 +14,13 @@ permissions:
   pull-requests: write
   security-events: write
   attestations: write # This is required for uploading attestations to the Security tab
+
 jobs:
   # https://github.com/bcgov/action-builder-ghcr
   builds:
     name: Builds
     runs-on: ubuntu-24.04
+    
     strategy:
       matrix:
         # Only building frontend containers to run PR based e2e tests
@@ -31,3 +33,5 @@ jobs:
           tags: ${{ inputs.tags }}
           triggers: ('${{ matrix.package }}/' '.github/workflows/.builds.yml')
           tag_fallback: test
+          secrets: |
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
