@@ -111,6 +111,7 @@ main{
 
 .centered-l-container{
   width: min(1440px, 90%);
+  justify-content: space-between;
 }
 
 .blue-heading-container{
@@ -729,8 +730,6 @@ label.archived-filter-label{
   }
 }
 .field-configuration-container .form-input-container{
-  height: 50vh;
   margin-bottom: 20px;
-  overflow-y: scroll;
   @include modern-scrollbar;
 }
