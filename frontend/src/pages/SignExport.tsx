@@ -5,14 +5,6 @@ import { toDictionaryMap } from '../utils/SignUtils';
 import { exportToSvg, renderSignMarkup } from '../utils/SvgUtils';
 import SignDto from '../interfaces/SignDto';
 import FieldDto from '../interfaces/FieldDto';
-import BladeSign from '../components/signs/BladeSign';
-import CautionarySign from '../components/signs/CautionarySign';
-import RecreationSiteBoundarySign from '../components/signs/RecreationSiteBoundarySign';
-import WelcomeSign from '../components/signs/WelcomeSign';
-import RegulatorySign from '@/components/signs/RegulatorySign';
-import InformationSign from '@/components/signs/InformationSign';
-import NumberPost from '@/components/signs/NumberPost';
-import FacilitySign from '@/components/signs/FacilitySign';
 import { useAuth } from '@/providers/AuthProvider';
 
 
@@ -104,7 +96,7 @@ const SignExport: React.FC = () => {
     <div className="centered-container d-flex flex-column align-items-center justify-content-center">
         <div className='d-flex mt-5 mb-2 justify-content-between w-100'>
             <button className="btn btn-secondary" onClick={handleBack} disabled={!sign}>
-                    Back
+                    Edit
             </button>
             <div className="d-flex gap-2">
               <button className="btn btn-outline-primary" onClick={handleSaveToLibrary} disabled={!sign || saving || sign?.is_saved_to_library}>
