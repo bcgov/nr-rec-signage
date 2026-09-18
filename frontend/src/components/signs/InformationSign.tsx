@@ -14,13 +14,10 @@ interface InformationSignProps {
 
 const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
-  const pictogramCount = fields.get('main_pictogram')?.value ? fields.get('main_pictogram')?.value.split(";").length : 0;
   const partnershipLogoCount = fields.get('partnership_logos')?.value ? fields.get('partnership_logos')?.value.split(";").length : 0;
   const inch = isRealSize ? 40: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
   const titleFontSize = metadata.get('title_font_size') ? parseFloat(metadata.get('title_font_size')!) : 104;
   const subtitleFontSize = metadata.get('subtitle_font_size') ? parseFloat(metadata.get('subtitle_font_size')!) : 44;
-  const iconWidth = getIconWidth(pictogramCount);
-  const iconHeight = getIconHeight(pictogramCount);
   const containerWidth = parseFloat(metadata.get('width') || "16");
   const partnershipLogoWidth = partnershipLogoCount > 2 ? `${100 / partnershipLogoCount - 5}%` : partnershipLogoCount === 2 ? '45%' : '100%';
   const width = metadata.get('width') ? parseFloat(metadata.get('width')!) : 16;
@@ -66,7 +63,7 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
                     gap: `${inch * scale(width, 0.5)}px`
                 }}>
                     <p style={{
-                        fontSize: `${inch * (titleFontSize / 72)}px`,
+                        fontSize: `${inch * ((titleFontSize * parseFloat(fields.get('title_resizer')?.value || '100') / 100) / 72)}px`,
                         fontWeight: 'bold',
                         textAlign: 'center',
                         lineHeight: 1,
@@ -75,7 +72,7 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
 
                     {fields.get('header_sub_text')?.value && (
                         <p style={{
-                            fontSize: `${inch * (subtitleFontSize / 72)}px`,
+                            fontSize: `${inch * ((subtitleFontSize * parseFloat(fields.get('subheader_resizer')?.value || '100') / 100) / 72)}px`,
                             fontWeight: 'bold',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
@@ -105,7 +102,7 @@ const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRe
 
                     {fields.get('sub_text')?.value && (
                         <p style={{
-                            fontSize: `${inch * (subtitleFontSize / 72)}px`,
+                            fontSize: `${inch * ((subtitleFontSize * parseFloat(fields.get('text_resizer')?.value || '100') / 100) / 72)}px`,
                             fontWeight: 'bold',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',

@@ -63,7 +63,7 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                     gap: `${inch * scale(width, 0.5)}px`
                 }}>
                     <p style={{
-                        fontSize: `${inch * (titleFontSize / 72)}px`,
+                        fontSize: `${inch * ((titleFontSize* parseFloat(fields.get('title_resizer')?.value || '100')/100) / 72)}px`,
                         fontWeight: 'bold',
                         textAlign: 'center',
                         lineHeight: 1.2,
@@ -74,7 +74,7 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                     </p>
                     {fields.get('header_sub_text')?.value && (
                         <p style={{
-                            fontSize: `${inch * (subtitleFontSize / 72)}px`,
+                            fontSize: `${inch * ((subtitleFontSize* parseFloat(fields.get('subheader_resizer')?.value || '100')/100) / 72)}px`,
                             fontWeight: 'bold',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
@@ -104,7 +104,7 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
 
                     {fields.get('sub_text')?.value && (
                         <p style={{
-                            fontSize: `${inch * (subtitleFontSize / 72)}px`,
+                            fontSize: `${inch * ((subtitleFontSize * parseFloat(fields.get('text_resizer')?.value || '100') / 100) / 72)}px`,
                             fontWeight: 'bold',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',

@@ -18,9 +18,6 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
   const inch = isRealSize ? 300: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
   const titleFontSize = metadata.get('title_font_size') ? parseFloat(metadata.get('title_font_size')!) : 104;
   const subtitleFontSize = metadata.get('subtitle_font_size') ? parseFloat(metadata.get('subtitle_font_size')!) : 44;
-  const regulationFontSize = metadata.get('regulation_font_size') ? parseFloat(metadata.get('regulation_font_size')!) : 26;
-  const iconWidth = getIconWidth(pictogramCount);
-  const iconHeight = getIconHeight(pictogramCount);
   const width = metadata.get('width') ? parseFloat(metadata.get('width')!) : 16;
   const containerWidth = parseFloat(metadata.get('width') || "16");
   const scale = (width: number, value: number) =>{
@@ -64,7 +61,7 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                     gap: `${inch * scale(width, 0.5)}px`
                 }}>
                     <p style={{
-                        fontSize: `${inch * (titleFontSize / 72)}px`,
+                        fontSize: `${inch * ((titleFontSize * parseFloat(fields.get('title_resizer')?.value || '100') / 100) / 72)}px`,
                         fontWeight: 'bold',
                         textTransform: 'capitalize',
                         textAlign: 'center',
@@ -74,7 +71,7 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                     }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('title')?.value)}} />
                     {fields.get('header_sub_text')?.value && (
                         <p style={{
-                            fontSize: `${inch * (subtitleFontSize / 72)}px`,
+                            fontSize: `${inch * ((subtitleFontSize * parseFloat(fields.get('subheader_resizer')?.value || '100') / 100) / 72)}px`,
                             fontWeight: 'bold',
                             textTransform: 'capitalize',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
@@ -105,7 +102,7 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
 
                     {fields.get('sub_text')?.value && (
                         <p style={{
-                            fontSize: `${inch * (subtitleFontSize / 72)}px`,
+                            fontSize: `${inch * ((subtitleFontSize * parseFloat(fields.get('text_resizer')?.value || '100') / 100) / 72)}px`,
                             fontWeight: 'bold',
                             textTransform: 'capitalize',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
