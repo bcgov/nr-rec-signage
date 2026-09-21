@@ -182,7 +182,11 @@ p{
 }
 
 .gx-120{
-  gap: 120px;
+  gap: 80px;
+}
+
+.preview-window{
+  margin-top: 32px;
 }
 
 .table-primary th{
@@ -699,6 +703,9 @@ label.archived-filter-label{
   outline-offset: 2px;
 }
 
+.preview-window{
+}
+
 @mixin modern-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgba($primary, 0.8) transparent;
@@ -729,3 +736,11 @@ label.archived-filter-label{
   }
 }
 
+
+.text-muted{
+  z-index: 0;
+}
+
+.form-input{
+  z-index: 1;
+}

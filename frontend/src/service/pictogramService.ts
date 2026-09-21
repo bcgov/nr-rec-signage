@@ -60,5 +60,28 @@ export const usePictogramService = () => {
     return response.json();
   };
 
-  return {  getPictograms, create, update };
+  const bulkCreate = async (files: FileList | File[])=>{
+      const formData = new FormData();
+      Array.from(files).forEach((file) => {
+        formData.append('files', file); // IMPORTANT: same key "files"
+      });
+
+      const res = await apiFetch('/pictograms/bulk', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+          if (res.status === 400) {
+              const errorData = await res.json();
+              throw new Error(errorData.message || 'Invalid filename format. All Filenames should be in the format of categoryCode_descriptionCode_order_name.svg');
+          }
+
+          throw new Error('An error occurred while uploading the pictograms. Please try again or contact the administrator.');
+      }
+
+      return await res.json();
+  }
+
+  return {  getPictograms, create, update, bulkCreate };
 };

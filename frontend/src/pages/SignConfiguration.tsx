@@ -101,9 +101,11 @@ const SignConfiguration: React.FC = () => {
           />
         )}
       </div>
-      <div style={{ flex: 1, zIndex: 1}} className="d-flex flex-column align-items-center justify-content-center">
-        <p className="mb-3">Preview</p>
-        {renderPreview()}
+      <div style={{width: '560px',zIndex: 1}}>
+        <div  className="d-flex preview-window flex-column align-items-center ">
+          <p className="mb-3">Preview</p>
+          {renderPreview()}
+        </div>
       </div>
     </div>
   );

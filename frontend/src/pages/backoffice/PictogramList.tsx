@@ -11,9 +11,9 @@ export default function PictogramList() {
     const [category, setCategory] = useState([] as string[]);
     const [showModal, setShowModal] = useState(false);
     const [showArchived, setShowArchived] = useState(false);
+    const [globalError, setGlobalError] = useState<string | null>(null);
     const [selectedPictogram, setSelectedPictogram] = useState<PictogramDto | undefined>(undefined);
-    const { getPictograms } = usePictogramService();
-    const [files, setFiles] = useState<FileList | null>(null);
+    const { getPictograms, bulkCreate } = usePictogramService();
     const [bulkLoading, setBulkLoading] = useState(false);
     const fetchPictograms = async () => {
         setLoading(true);
@@ -47,13 +47,46 @@ export default function PictogramList() {
         fetchPictograms(); // Refresh after creating/updating
     };
 
+    const handleBulkUpload = async (files: FileList | null) => {
+        if (!files) return;
+        setBulkLoading(true);
+        try{
+            await bulkCreate(files);
+            setGlobalError(null); // Clear any previous error
+            fetchPictograms(); // Refresh after bulk upload
+        }
+        catch(error){
+            setGlobalError(error instanceof Error ? error.message : 'An unexpected error occurred during bulk upload.');
+        }
+        finally{
+            setBulkLoading(false);
+        }
+
+    }
+
     return (
         <div className="container mt-4">
+            <div className="alert alert-danger" role="alert" style={{ display: globalError ? 'block' : 'none' }}>
+                {globalError}
+            </div>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1>Pictogram Library Management</h1>
-                <button className="btn btn-primary" onClick={handleNewClick}>
-                    <i className="bi bi-plus"></i> New
-                </button>
+                <div className="d-flex gap-2">
+                    <button className="btn btn-primary" onClick={handleNewClick}>
+                        <i className="bi bi-plus"></i> New
+                    </button>
+                    <input
+                        type="file"
+                        multiple
+                        accept=".svg"
+                        id="bulk-upload"
+                        style={{ display: 'none' }}
+                        onChange={(e) => handleBulkUpload(e.target.files)}
+                    />
+                    <button className="btn btn-primary" onClick={() => document.getElementById('bulk-upload')?.click()} disabled={bulkLoading}>
+                        {bulkLoading ? "Uploading..." : "Bulk New"}
+                    </button>
+                </div>
             </div>
             <div className="row mb-4">
                 <div className="col-md-12">

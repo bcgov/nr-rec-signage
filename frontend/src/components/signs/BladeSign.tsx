@@ -1,6 +1,6 @@
 import React, { useRef, useState, useLayoutEffect } from 'react';
 import FieldDto from '../../interfaces/FieldDto';
-import logo from '../../assets/img/RST_logo-White.svg';
+import logo from '../../assets/img/BCID_RecSitesTrailsBC_H_Solid_rev_OneLine.svg';
 import { useInchScale } from '../../utils/SignUtils';
 import { InlineSVG } from '@/utils/SvgUtils';
 interface BladeSignProps {
@@ -37,7 +37,7 @@ const BladeSign: React.FC<BladeSignProps> = ({ fields, metadata, isRealSize }) =
         , fontSize: `${inch * 3}px`,display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textAlign: 'center', textTransform: 'uppercase',letterSpacing: `${inch * 0.5}px`, marginBottom: `${inch * 0.5}px`
         }}
         >
-            <InlineSVG src={logo} width={`${inch * 22}px`} height={`${inch * 4}px`} />
+            <InlineSVG src={logo} width={`${inch * 33}px`} height={``} />
         </div>}
         {fields.get("blade_4_hide")?.value !== 'true' && <div data-prefix="Blade 4" className='exportable' style={{aspectRatio: `48 / 5.5`,width: `${inch * 48}px`, backgroundColor: '#4E3629', borderRadius: `${inch * 0.5}px`,
             marginBottom: `${inch * 0.5}px`, fontSize: `${inch * 3}px`,display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', textAlign: 'center', textTransform: 'uppercase',letterSpacing: `${inch * 0.5}px`
