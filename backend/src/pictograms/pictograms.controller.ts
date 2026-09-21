@@ -8,6 +8,7 @@ import { PictogramSearchDto } from './dto/pictogram-search.dto';
 import { PictogramCreateDto } from './dto/pictogram-create.dto';
 import { PictogramUpdateDto } from './dto/pictogram-update.dto';
 import { PictogramDto } from './dto/pictogram.dto';
+import { CustomException } from 'src/common/exceptions/custom.exception';
 
 @Controller('pictograms')
 export class PictogramsController {
@@ -74,4 +75,46 @@ export class PictogramsController {
 
     return pictogram;
   }
+
+  @Admin()
+  @Post('bulk')
+  @UseInterceptors(FilesInterceptor('files'))
+  async createBulk(
+    @UploadedFiles() files: Multer.File[],
+  ): Promise<PictogramDto[]> {
+    const results: PictogramDto[] = [];
+    for (const file of files) {
+      // Example filename: 01_02_01_Attention!.svg
+      const parsed = this.pictogramsService.parseFilename(file.originalname);
+
+      if (!parsed) {
+        throw new CustomException(`Invalid filename format: ${file.originalname} and should be in the format of categoryCode_descriptionCode_order_name.svg`,400);
+      }// or throw if you want strict validation
+
+      const { categoryCode, descriptionCode, name } = parsed;
+
+      // 1. Upload file
+      const uploadResult = await this.uploadService.uploadSvg(file);
+
+      // 2. Get category ID
+      const category = await this.pictogramsService.getCategory(categoryCode);
+      if (!category) continue;
+
+      // 3. Map description
+      const description = this.pictogramsService.mapDescription(descriptionCode);
+
+      // 4. Create pictogram
+      const pictogram = await this.pictogramsService.create({
+        name,
+        description,
+        id_category: category.id.toNumber(),
+        link: uploadResult.url,
+      });
+
+      results.push(pictogram);
+    }
+
+    return results;
+  }
+
 }
