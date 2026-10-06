@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./providers/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -32,6 +32,7 @@ const App: React.FC = () => {
           <Route path="/approved-signs" element={<ApprovedSign />} />
           <Route path="/sign-configuration/:id" element={<SignConfiguration />} />
           <Route path="/export/:id" element={<SignExport />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Route>
 
         {/* BACK OFFICE - Protected for admin role */}
