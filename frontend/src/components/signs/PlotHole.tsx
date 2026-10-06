@@ -1,5 +1,5 @@
 export interface PlotHoleProps {
-    showPilotHoles: string | undefined;
+    showPilotHoles?: string | undefined;
     inch: number;
     width: number;
     containerWidth?: number;
@@ -55,8 +55,7 @@ export const PlotHoleCorners = ({ showPilotHoles, inch, width, containerWidth, c
     </div>
   );
 };
-export const PlotHoleVertical = ({ showPilotHoles, inch, width, containerWidth, color = '#000' }: PlotHoleProps) => {
-  if(!showPilotHoles || showPilotHoles === 'No') return '';
+export const PlotHoleVertical = ({ inch, width, containerWidth, color = '#000' }: PlotHoleProps) => {
   return (
     <div className="plot-hole" style={{
         width: '100%',
@@ -83,6 +82,60 @@ export const PlotHoleVertical = ({ showPilotHoles, inch, width, containerWidth, 
             left: '50%',
             backgroundColor: color,
             transform: 'translateX(-50%)'}}
+            ></div>
+    </div>
+  );
+};
+
+export const PlotHoleCenter = ({ inch, width, color = '#000' }: PlotHoleProps) => {
+  return (
+    <div className="plot-hole" style={{
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        zIndex: 2,
+    }}>
+        <div style={{
+            position: 'absolute',
+            top: `50%`,
+            width: `${inch * width}px`,
+            height: `${inch * width}px`,
+            borderRadius: '50%',
+            left: '50%',
+            backgroundColor: color,
+            transform: 'translateX(-50%)'}}
+            ></div>
+    </div>
+  );
+};
+
+export const PlotHoleOffset = ({ inch, width, containerWidth, color = '#000' }: PlotHoleProps) => {
+  return (
+    <div className="plot-hole" style={{
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        zIndex: 2,
+    }}>
+        <div style={{
+            position: 'absolute',
+            top: `${inch * ((containerWidth || 16) * 0.025)}px`,
+            width: `${inch * width}px`,
+            height: `${inch * width}px`,
+            borderRadius: '50%',
+            left: '45%',
+            backgroundColor: color,
+            transform: 'translateX(-50%)'}}
+            ></div>
+        <div style={{
+            position: 'absolute',
+            bottom: `${inch * ((containerWidth || 16) * 0.025)}px`,
+            width: `${inch * width}px`,
+            height: `${inch * width}px`,
+            borderRadius: '50%',
+            right: '45%',
+            backgroundColor: color,
+            transform: 'translateX(50%)'}}
             ></div>
     </div>
   );

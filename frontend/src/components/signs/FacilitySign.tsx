@@ -63,7 +63,6 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                     <p style={{
                         fontSize: `${inch * ((titleFontSize * parseFloat(fields.get('title_resizer')?.value || '100') / 100) / 72)}px`,
                         fontWeight: 'bold',
-                        textTransform: 'capitalize',
                         textAlign: 'center',
                         lineHeight: 1,
                         color: '#FFF',
@@ -73,7 +72,6 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                         <p style={{
                             fontSize: `${inch * ((subtitleFontSize * parseFloat(fields.get('subheader_resizer')?.value || '100') / 100) / 72)}px`,
                             fontWeight: 'bold',
-                            textTransform: 'capitalize',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
                             lineHeight: 1.3,
@@ -104,7 +102,6 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                         <p style={{
                             fontSize: `${inch * ((subtitleFontSize * parseFloat(fields.get('text_resizer')?.value || '100') / 100) / 72)}px`,
                             fontWeight: 'bold',
-                            textTransform: 'capitalize',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
                             lineHeight: 1.3,

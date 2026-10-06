@@ -10,17 +10,12 @@ const TextField: React.FC<FieldProps> = ({ field, updateCallback }) => {
 
   const restrictions: TextFieldRestrictions = field.restriction || {limit: 0, default: ''};
 
-  const toSentenceCase = (text: string | undefined) => {
-    if (!text) return '';
-    return text
-      .replace(/(^\s*\w|[.!?]\s*\w)/g, (char) => char.toUpperCase());
-  }
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if(restrictions.limit && e.target.value.length > restrictions.limit){
-        updateCallback(toSentenceCase(e.target.value.slice(0, restrictions.limit)));
+        updateCallback(e.target.value.slice(0, restrictions.limit));
         return;
     }
-    updateCallback(toSentenceCase(e.target.value));
+    updateCallback(e.target.value);
   };
 
   return (
