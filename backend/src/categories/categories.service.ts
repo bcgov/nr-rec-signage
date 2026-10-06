@@ -36,6 +36,7 @@ export class CategoriesService {
       orderBy: { list_order: 'asc' },
       include: {
         options: {
+          orderBy: { list_order: 'asc' },
           include: {
             metadatas: {
               orderBy: {
