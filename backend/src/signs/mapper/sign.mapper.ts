@@ -20,7 +20,10 @@ export class SignMapper {
     return {
       id: dto.id,
       id_category: dto.id_category,
+      id_options: dto.id_options,
       date_updated: new Date(),
+      name: dto.name ?? '',
+      is_custom_name: dto.is_custom_name ?? false,
       values: dto.values,
     };
   }
@@ -40,6 +43,8 @@ export class SignMapper {
       authorDisplayName: sign.author_display_name,
       is_approved: sign.is_approved,
       is_saved_to_library: sign.is_saved_to_library,
+      name: sign.name,
+      is_custom_name: sign.is_custom_name,
       dateCreated: sign.date_created.toISOString(),
       category: CategoryMapper.toCategoryDto(sign.category),
       option: sign.option?CategoryMapper.toSignCategoryOptionDto(sign.option):undefined,

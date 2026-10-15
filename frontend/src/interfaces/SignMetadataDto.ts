@@ -1,5 +1,5 @@
 export default interface SignMetadataDto {
-  id?: number;
+  id: number;
   meta_key: string;
   meta_value: string;
   id_category: number;

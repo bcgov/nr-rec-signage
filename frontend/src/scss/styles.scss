@@ -744,3 +744,73 @@ label.archived-filter-label{
 .form-input{
   z-index: 1;
 }
+
+.sign-card{
+  position: relative;
+}
+.sign-card .action-icon{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.sign-card .action-icon:hover{
+  color: $primary;
+  cursor: pointer;
+}
+
+.action-popup-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.65);
+}
+
+.action-popup {
+    width: min(100%, 480px);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+.action-popup p{
+  text-align: center;
+}
+.action-popup-buttons{
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+
+.icon-error{
+  color: $danger;
+  font-size: 48px;
+  text-align: center;
+}
+
+.search-bar{
+  padding: 8px;
+  border: 0px;
+  border-bottom: 4px solid $primary;
+}
+
+.search-bar:focus, .search-bar:active{
+      outline: none !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-top: 0 !important;
+    box-shadow: none !important;
+  border-bottom: 4px solid $primary;
+}

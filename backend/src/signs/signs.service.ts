@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { CustomException } from 'src/common/exceptions/custom.exception';
@@ -31,10 +31,32 @@ type SignCreateInput = {
 type SignUpdateInput = {
   id: number;
   id_category: number;
+  id_options?: number | null;
   date_updated: Date;
+  name: string;
+  is_custom_name: boolean;
   values: Array<{
     id_field: number;
     value: string;
+  }>;
+};
+
+type SignNameInput = {
+  date_created: Date;
+  is_approved: boolean;
+  category: {
+    slug: string;
+    name: string;
+  };
+  option: {
+    name: string;
+  } | null;
+  values: Array<{
+    value: string | null;
+    field: {
+      slug: string;
+      restriction: Prisma.JsonValue | null;
+    };
   }>;
 };
 
@@ -91,7 +113,8 @@ export class SignsService {
     dateStart?: string,
     dateEnd?: string,
     categoryIds?: number[],
-    libraryStatus?: string
+    libraryStatus?: string,
+    name?: string
   ): Promise<{ total: number; signs: SignWithRelations[] }> {
     const whereFilters: any[] = [];
 
@@ -101,6 +124,7 @@ export class SignsService {
       whereFilters.push({
         idir_user_guid: idUserGuid,
       });
+      whereFilters.push({ is_approved: false });
     }
 
     if(libraryStatus === 'approved') {
@@ -116,6 +140,12 @@ export class SignsService {
     if (categoryIds?.length) {
       whereFilters.push({
         id_category: { in: categoryIds.map(id => new Prisma.Decimal(id)) },
+      });
+    }
+
+    if (name?.trim()) {
+      whereFilters.push({
+        name: { contains: name.trim(), mode: 'insensitive' },
       });
     }
 
@@ -196,10 +226,34 @@ export class SignsService {
   }
 
   async update(sign: SignUpdateInput): Promise<void> {
+    if (sign.is_custom_name && !sign.name.trim()) {
+      throw new CustomException('A custom sign name cannot be empty.', 400);
+    }
+    if (sign.is_custom_name && sign.name.length > 100) {
+      throw new CustomException('A sign name cannot exceed 100 characters.', 400);
+    }
+
+    const currentSign = await this.prisma.sign.findUnique({
+        where: { id: sign.id },
+        include: {
+          category: true,
+          option: true,
+          values: {
+            include: { field: true },
+          },
+        },
+    });
+
+    if (!currentSign) {
+        throw new CustomException('Sign could not be found to generate its name.', 404);
+    }
+
     await this.prisma.sign.update({
       where: { id: sign.id },
       data: {
         id_category: sign.id_category,
+        is_custom_name: sign.is_custom_name,
+        ...(sign.is_custom_name ? { name: sign.name } : {name: this.generateName(currentSign)}),
         date_updated: new Date(),
       },
     });
@@ -219,6 +273,79 @@ export class SignsService {
         },
       });
     }
+  }
+
+  private generateName(sign: SignNameInput): string {
+    const values = new Map(
+      sign.values.map(({ value, field }) => {
+        const restriction = field.restriction;
+        const defaultValue =
+          restriction && typeof restriction === 'object' && !Array.isArray(restriction)
+            ? restriction.default_value
+            : undefined;
+        return [field.slug, value?.trim() || (typeof defaultValue === 'string' ? defaultValue : undefined)];
+      })
+    );
+
+    let categoryCode = '00';
+    if (sign.category.slug.includes('regulatory')) {
+      categoryCode = '01';
+    } else if (sign.category.slug.includes('cautionary')) {
+      categoryCode = '02';
+    } else if (sign.category.slug.includes('informational')) {
+      categoryCode = '03';
+    } else if (sign.category.slug.includes('camp-sign-number-post')) {
+      categoryCode = '05';
+    } else if (sign.category.slug.includes('blade')) {
+      categoryCode = '06';
+    } else if (sign.category.slug.includes('welcome-to-your-rec-site-entrance-sign')) {
+      categoryCode = '07';
+    } else if (sign.category.name.includes('facility')) {
+      categoryCode = '04';
+    }
+
+    const headerSubText = values.get('header_sub_text');
+    const bladeText = values.get('blade_1_text');
+    const campNumber = values.get('camp_number');
+    const name = headerSubText
+      ? `${headerSubText}_`
+      : bladeText
+        ? `${bladeText}_`
+        : campNumber
+          ? `Camp Number ${campNumber}_`
+          : '';
+    const size = sign.option
+      ? `${sign.option.name.replaceAll(' ', '').toUpperCase()}_`
+      : '';
+    const date = `${String(sign.date_created.getMonth() + 1).padStart(2, '0')}-${String(sign.date_created.getDate()).padStart(2, '0')}-${String(sign.date_created.getFullYear()).slice(-2)}`;
+    const approvalStatus = sign.is_approved ? 'A' : 'C';
+
+    return `${categoryCode}_${approvalStatus}_${size}${name}${date}`.slice(0, 100);
+  }
+
+  async generateAllNames(): Promise<void> {
+    const signs = await this.prisma.sign.findMany({
+      where: {
+        is_custom_name: false,
+        OR: [{ name: null }, { name: '' }],
+      },
+      include: {
+        category: true,
+        option: true,
+        values: {
+          include: { field: true },
+        },
+      },
+    });
+
+    await Promise.all(
+      signs.map(sign =>
+        this.prisma.sign.update({
+          where: { id: sign.id },
+          data: { name: this.generateName(sign) },
+        })
+      )
+    );
   }
 
   async approve(signs: SignApprovalInput[]): Promise<void> {
@@ -300,7 +427,18 @@ export class SignsService {
     return newSign;
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number, hasAdminRole: boolean, idUserGuid: string): Promise<void> {
+
+    if(!hasAdminRole){
+      const sign = await this.prisma.sign.findUnique({
+        where: { id, idir_user_guid: idUserGuid },
+      });
+
+      if(!sign){
+        throw new ForbiddenException("This sign does not exist or does not belong to the current user.");
+      }
+    }
+
     await this.prisma.$transaction([
       this.prisma.signValue.deleteMany({
         where: { id_sign: id },

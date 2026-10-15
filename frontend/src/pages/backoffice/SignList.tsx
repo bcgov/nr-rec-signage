@@ -5,10 +5,78 @@ import SignDto from '../../interfaces/SignDto';
 import CategoryDto from '../../interfaces/CategoryDto';
 import SignRow from '../../components/signs/SignRow';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 1;
 
+const RenameModal: React.FC<{ sign: SignDto; onClose: () => void; onRename: (name: string) => void }> = ({ sign, onClose, onRename }) => {
+  const [newName, setNewName] = useState(sign.name);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleRename = async () => {
+    try{
+          await onRename(newName || '');
+          reset();
+    }
+    catch(err: any){
+      setError(err.message || 'An error occurred');
+    }
+  };
+
+  const reset = () => {
+    setError(null);
+    setLoading(false);
+    onClose();
+  }
+  return (
+		<div className="action-popup-overlay">
+			{! error && (
+				<div className="action-popup" role="dialog" aria-modal="true">
+					<p>Rename Sign {sign.name}:</p>
+					{loading && (
+						<div className="d-flex justify-content-center align-items-center my-3">
+							<div className="spinner-border text-primary" role="status">
+								<span className="sr-only">Loading...</span>
+							</div>
+						</div>
+					)}
+
+          {!loading && (
+            <>
+            <div className="form-group">
+              <input
+                type="text"
+                className="form-control"
+                value={newName || ''}
+                onChange={(e) => setNewName(e.target.value)}
+              />
+            </div>
+            <div className="action-popup-buttons">
+              <button className="btn btn-primary" type="button" onClick={handleRename} disabled={loading}>
+                  Rename
+              </button>
+              <button className="btn btn-secondary" type="button" onClick={reset} disabled={loading}>
+                Cancel
+              </button>
+            </div>
+            </>
+          )}
+			</div>)}
+			{error && (
+				<div className="action-popup" role="dialog" aria-modal="true">
+					<p><i className="icon-error bi bi-exclamation-circle"></i></p>
+					<p>{error}</p>
+					<div className="action-popup-buttons">
+						<button className="btn btn-secondary" type="button" onClick={reset}>
+							Cancel
+						</button>
+          </div>
+				</div>
+			)}
+		</div>
+	);
+}
 const SignList: React.FC = () => {
-  const { getAllAdmin, approve, deleteSign } = useSignService();
+  const { getAllAdmin, approve, updateSign, deleteSign } = useSignService();
   const { getCategories } = useCategoryService();
   const [signs, setSigns] = useState<SignDto[]>([]);
   const [categories, setCategories] = useState<CategoryDto[]>([]);
@@ -19,7 +87,20 @@ const SignList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
   const [error, setError] = useState(false);
+  const [name, setName] = useState('');
+  const [openRenameModal, setOpenRenameModal] = useState(false);
+  const [renamingSign, setRenamingSign] = useState<SignDto | null>(null);
 
+  const handleOpenRenameModal = (sign: SignDto) => {
+    setRenamingSign(sign);
+    setOpenRenameModal(true);
+  };
+
+  const handleCloseRenameModal = async () => {
+    setRenamingSign(null);
+    setOpenRenameModal(false);
+    await fetchSigns(currentPage);
+  };
   const fetchCategories = async () => {
     try {
       const result = await getCategories();
@@ -34,8 +115,7 @@ const SignList: React.FC = () => {
     setError(false);
     try {
       const categoryIds = categoryId ? [Number(categoryId)] : undefined;
-      const results = await getAllAdmin(PAGE_SIZE, page, dateStart || undefined, dateEnd || undefined, categoryIds);
-      setCurrentPage(page);
+      const results = await getAllAdmin(PAGE_SIZE, page, dateStart || undefined, dateEnd || undefined, categoryIds, name);
       setTotalRows(results.total);
       setSigns(results.signs);
     } catch (err) {
@@ -48,11 +128,14 @@ const SignList: React.FC = () => {
 
   useEffect(() => {
     fetchCategories();
-    fetchSigns();
   }, []);
 
+  useEffect(() => {
+   fetchSigns(currentPage);
+  }, [currentPage]);
+
   const handleSearch = async () => {
-    await fetchSigns(1);
+    currentPage === 1 ? fetchSigns(1) : setCurrentPage(1);
   };
 
   const handleToggleApproval = async (id: number, isApproved: boolean) => {
@@ -71,6 +154,13 @@ const SignList: React.FC = () => {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleRename = async (sign: SignDto, newName: string) => {
+      await updateSign(sign.id+'', sign.category.id,
+        sign.id_options,
+         sign.fields.map((f) => { return { id_field: f.id, value: f.value }; }),
+          newName || '', true);
   };
 
   const totalPages = Math.max(1, Math.ceil(totalRows / PAGE_SIZE));
@@ -108,6 +198,7 @@ const SignList: React.FC = () => {
                   sign={sign}
                   onToggleApproval={handleToggleApproval}
                   onDelete={handleDelete}
+                  onRename={handleOpenRenameModal}
                 />
               ))}
             </tbody>
@@ -131,6 +222,13 @@ const SignList: React.FC = () => {
             Next
           </button>
         </div>
+      {openRenameModal && renamingSign && (
+        <RenameModal
+          sign={renamingSign}
+          onRename={(name: string) => handleRename(renamingSign, name)}
+          onClose={handleCloseRenameModal}
+        />
+      )}
       </>
     );
   }
@@ -158,6 +256,10 @@ const SignList: React.FC = () => {
               <option key={category.id} value={category.id}>{category.name}</option>
             ))}
           </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="name">Name</label>
+          <input id="name" type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="d-flex align-items-end">
           <button className="btn btn-primary" onClick={handleSearch}>Search</button>

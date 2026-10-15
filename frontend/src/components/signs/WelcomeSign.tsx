@@ -12,7 +12,7 @@ interface WelcomeSignProps {
 
 const WelcomeSign: React.FC<WelcomeSignProps> = ({ fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
-  const inch = isRealSize ? 40 : useInchScale(bannerRef, 32);
+  const inch = isRealSize ? 72 : useInchScale(bannerRef, 32);
 
   const BulletItem = ({ children }: { children: React.ReactNode }) => (
     <div

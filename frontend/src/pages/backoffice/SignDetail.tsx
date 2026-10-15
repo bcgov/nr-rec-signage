@@ -122,7 +122,7 @@ export default function SignDetail() {
         <div key={option.id} className="mb-4">
           <p className='form-subtitle'>{option.name} metadata</p>
           <div className="d-flex gap-3">
-            {option.metadata?.map((meta) => (
+            {option.metadata?.sort((a, b) => a.id - b.id).map((meta) => (
                 <div className="form-input d-flex flex-column mb-3" key={meta.id ?? meta.meta_key}>
                 <label className='small-label'>{meta.human_label}</label>
                 <div className="d-flex gap-2 align-items-center">

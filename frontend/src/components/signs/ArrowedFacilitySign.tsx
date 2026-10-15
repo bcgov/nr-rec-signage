@@ -15,7 +15,7 @@ interface ArrowedFacilitySignProps {
 
 const ArrowedFacilitySign: React.FC<ArrowedFacilitySignProps> = ({ fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
-  const inch = isRealSize? 40 : useInchScale(bannerRef, 24);
+  const inch = isRealSize? 72 : useInchScale(bannerRef, 24);
   const initialFontSize = inch * 2.5;
 
   const getIcon = (arrowDirection: string | undefined) => {

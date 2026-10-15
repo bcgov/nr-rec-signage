@@ -7,9 +7,10 @@ interface SignRowProps {
   sign: SignDto;
   onToggleApproval: (id: number, isApproved: boolean) => void;
   onDelete: (id: number) => void;
+  onRename: (sign: SignDto) => void;
 }
 
-const SignRow: React.FC<SignRowProps> = ({ sign, onToggleApproval, onDelete }) => {
+const SignRow: React.FC<SignRowProps> = ({ sign, onToggleApproval, onDelete, onRename }) => {
   const fieldsMap = new Map(sign.fields.map(f => [f.slug, f]));
   const metadataMap = new Map(sign.category.metadata?.map(m => [m.meta_key, m.meta_value]) || []);
 
@@ -20,7 +21,7 @@ const SignRow: React.FC<SignRowProps> = ({ sign, onToggleApproval, onDelete }) =
           {renderSignMarkup(sign, fieldsMap, metadataMap,false)}
         </div>
       </td>
-      <td>{autoGenerateName(sign)}</td>
+      <td>{sign.name}</td>
       <td>{new Date(sign.dateCreated).toLocaleDateString()}</td>
       <td>{sign.is_approved ? 'Approved' : 'Pending'}</td>
       <td>
@@ -30,8 +31,11 @@ const SignRow: React.FC<SignRowProps> = ({ sign, onToggleApproval, onDelete }) =
         >
           {sign.is_approved ? 'Disapprove' : 'Approve'}
         </button>
-        <button className="btn btn-small btn-sm btn-danger" onClick={() => onDelete(sign.id)}>
+        <button className="btn btn-small btn-sm btn-danger me-2" onClick={() => onDelete(sign.id)}>
           Delete
+        </button>
+        <button className="btn btn-small btn-outline-primary" onClick={() => onRename(sign)}>
+          Rename
         </button>
       </td>
     </tr>

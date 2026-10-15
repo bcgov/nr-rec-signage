@@ -34,7 +34,7 @@ const PlotHole : React.FC<PlotHoleProps> = ({ showPilotHoles,inch, color }) => {
 
 const BladeSign: React.FC<BladeSignProps> = ({ fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
-  const inch = isRealSize? 40 : useInchScale(bannerRef, 48);
+  const inch = isRealSize? 72 : useInchScale(bannerRef, 48);
   const blade1Ref = useRef<HTMLDivElement>(null);
   const initialFontSize = inch * 3;
   const [fontSize, setFontSize] = useState(initialFontSize);

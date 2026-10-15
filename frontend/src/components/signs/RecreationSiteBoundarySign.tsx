@@ -11,7 +11,7 @@ interface RecreationSiteBoundarySignProps {
 
 const RecreationSiteBoundarySign: React.FC<RecreationSiteBoundarySignProps> = ({ fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
-  const inch = isRealSize? 40 : useInchScale(bannerRef, 12);
+  const inch = isRealSize? 72 : useInchScale(bannerRef, 12);
 
   return (
     <div ref={bannerRef} className="recreation-site-boundary-sign w-50
