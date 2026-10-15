@@ -68,7 +68,6 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                         textAlign: 'center',
                         lineHeight: 1.2,
                         color: '#D5004A',
-                        whiteSpace: 'pre-wrap',
                         letterSpacing: 0
                     }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('title')?.value) }}>
                     </p>
@@ -79,7 +78,6 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
                             lineHeight: 1.3,
-                            whiteSpace: 'pre-wrap',
                             letterSpacing: 0
                         }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('header_sub_text')?.value) }} />
                     )}
@@ -109,7 +107,6 @@ const RegulatorySign: React.FC<RegulatorySignProps> = ({fields, metadata, isReal
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
                             lineHeight: 1.3,
-                            whiteSpace: 'pre-wrap',
                             letterSpacing: 0
                         }} dangerouslySetInnerHTML={{ __html: lineBreakToBr(fields.get('sub_text')?.value) }} />
                     )}
