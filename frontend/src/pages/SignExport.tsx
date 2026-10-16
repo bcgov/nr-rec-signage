@@ -18,6 +18,7 @@ const SignExport: React.FC = () => {
   const [fields, setFields] = useState<Map<string, FieldDto>>(new Map());
   const [metadata, setMetadata] = useState<Map<string, string>>(new Map());
   const [name, setName] = useState('exported-sign');
+  const [showType, setShowType] = useState(false);
   const userInfo = useAuth().userInfo;
 
   useEffect(() => {
@@ -49,9 +50,9 @@ const SignExport: React.FC = () => {
     return renderSignMarkup(sign, fields,metadata,false);
   };
 
-  const handleExport = () => {
+  const handleExport = (type: string) => {
     if (!sign) return;
-    exportToSvg(sign, fields, metadata, name);
+    exportToSvg(sign, fields, metadata, name,type);
   };
 
   const handleSaveToLibrary = async () => {
@@ -94,7 +95,7 @@ const SignExport: React.FC = () => {
 
   return (
     <div className="centered-container d-flex flex-column align-items-center justify-content-center">
-        <div className='d-flex mt-5 mb-2 justify-content-between w-100'>
+        <div className='d-flex mt-5 mb-2 justify-content-between w-100 btn-header'>
             <button className="btn btn-secondary" onClick={handleBack} disabled={!sign}>
                     Edit
             </button>
@@ -102,9 +103,19 @@ const SignExport: React.FC = () => {
               <button className="btn btn-outline-primary" onClick={handleSaveToLibrary} disabled={!sign || saving || sign?.is_saved_to_library}>
                 {saveButtonLabel}
               </button>
-              <button className="btn btn-primary" onClick={handleExport}>
-                    Export
-              </button>
+              <div className='export-btn-container'>
+                <button className="btn btn-primary" onClick={() => setShowType(!showType)}>
+                    Export <i className=" caret bi bi-caret-down-fill"></i>
+                </button>
+                { showType && (<div className="export-options">
+                    <button className="btn btn-dropdown" onClick={() => handleExport('pdf')}>
+                        PDF
+                    </button>
+                    <button className="btn btn-dropdown" onClick={() => handleExport('svg')}>
+                        SVG
+                    </button>
+                </div>)}
+              </div>
             </div>
         </div>
         <div className="blue-heading-container mb-4">

@@ -13,6 +13,7 @@ import RegulatorySign from '@/components/signs/RegulatorySign';
 import NumberPost from '@/components/signs/NumberPost';
 import FacilitySign from '@/components/signs/FacilitySign';
 import ArrowedFacilitySign from '@/components/signs/ArrowedFacilitySign';
+import { downloadPdf } from './PdfUtils';
 export const renderSignMarkup = (
   sign: SignDto,
   fields: Map<string, FieldDto>,
@@ -261,7 +262,8 @@ export const exportToSvg = async (
   sign: SignDto,
   fields: Map<string, FieldDto>,
   metadata: Map<string, string>,
-  name: string
+  name: string,
+  exportType: string = 'svg'
 ) => {
   // 1. Create real DOM container
   const element = document.createElement("div");
@@ -291,19 +293,34 @@ export const exportToSvg = async (
     throw new Error("Export element not found");
   }
 
-  const serializer = new XMLSerializer();
 
-  for (let index = 0; index < exportElements.length; index += 1) {
-    const exportElement = exportElements[index] as HTMLElement;
+  for (const element of exportElements) {
+    const exportElement = element as HTMLElement;
 
     // 5. Convert DOM → SVG
     const svg = elementToSVG(exportElement);
 
+    console.log(svg);
     // 6. Convert text → paths
     await convertTextToPaths(svg as unknown as SVGElement);
 
+    if(exportType === 'svg'){
+      downloadSvg(svg as unknown as SVGElement,exportElement,name);
+    }
+    if(exportType === 'pdf'){
+      downloadPdf(svg.querySelector('svg') as SVGSVGElement, exportElement,name);
+    }
+  }
+
+  // 9. Cleanup React + DOM
+  root.unmount();
+  document.body.removeChild(element);
+};
+
+const downloadSvg = (svgElement: SVGElement,exportElement: HTMLElement, name: string) =>{
+    const serializer = new XMLSerializer();
     // 7. Serialize SVG
-    const svgString = serializer.serializeToString(svg);
+    const svgString = serializer.serializeToString(svgElement);
 
     // 8. Download
     const blob = new Blob([svgString], {
@@ -326,12 +343,8 @@ export const exportToSvg = async (
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
-  }
 
-  // 9. Cleanup React + DOM
-  root.unmount();
-  document.body.removeChild(element);
-};
+}
 
 const loadFont = (url: string): Promise<opentype.Font> => {
   return new Promise((resolve, reject) => {
@@ -412,12 +425,10 @@ export const convertTextToPaths = async (svg: SVGElement) => {
       let y =
         parseFloat(tspan.getAttribute("y") || "0");
 
-        console.log(`${content} ${x} ${y}`);
 
       for (const char of content) {
         const glyph = font.charToGlyph(char);
         const shiftY =  0.325 * fontSize;
-        console.log(`${char} ${fontSize} ${font.unitsPerEm} ${shiftY}`);
         const glyphPath = glyph.getPath(x, y - shiftY, fontSize);
         const d = glyphPath.toPathData(1);
 
