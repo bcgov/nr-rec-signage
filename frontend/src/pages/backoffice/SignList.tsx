@@ -5,7 +5,7 @@ import SignDto from '../../interfaces/SignDto';
 import CategoryDto from '../../interfaces/CategoryDto';
 import SignRow from '../../components/signs/SignRow';
 
-const PAGE_SIZE = 1;
+const PAGE_SIZE = 8;
 
 const RenameModal: React.FC<{ sign: SignDto; onClose: () => void; onRename: (name: string) => void }> = ({ sign, onClose, onRename }) => {
   const [newName, setNewName] = useState(sign.name);

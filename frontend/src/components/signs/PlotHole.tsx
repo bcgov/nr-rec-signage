@@ -100,6 +100,8 @@ export const PlotHoleCenter = ({ inch, width, color = '#000' }: PlotHoleProps) =
         width: '100%',
         height: '100%',
         position: 'absolute',
+        left: 0,
+        top: 0,
         zIndex: 2,
     }}>
         <div style={{
@@ -122,6 +124,8 @@ export const PlotHoleOffset = ({ inch, width, containerWidth, color = '#000' }: 
         width: '100%',
         height: '100%',
         position: 'absolute',
+        left: 0,
+        top: 0,
         zIndex: 2,
     }}>
         <div style={{
@@ -154,6 +158,8 @@ export const DoublePlotHoleCenter = ({ inch, distance, width, color = '#000' }: 
         width: '100%',
         height: '100%',
         position: 'absolute',
+        left: 0,
+        top: 0,
         zIndex: 2,
     }}>
         <div style={{
@@ -187,6 +193,8 @@ export const DoublePlotHoleTopBottom = ({ inch, distance, width, color = '#000' 
         width: '100%',
         height: '100%',
         position: 'absolute',
+        left: 0,
+        top: 0,
         zIndex: 2,
     }}>
         <div style={{
@@ -240,6 +248,8 @@ export const DoublePlotHoleOffset = ({ inch, distance, offset = 0, width, color 
         height: '100%',
         position: 'absolute',
         zIndex: 2,
+        left: 0,
+        top: 0,
     }}>
         <div style={{
             position: 'absolute',
