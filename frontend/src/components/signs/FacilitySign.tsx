@@ -15,7 +15,7 @@ interface FacilitySignProps {
 const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const pictogramCount = fields.get('icon')?.value ? fields.get('icon')?.value.split(";").length : 0;
-  const inch = isRealSize ? 300: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
+  const inch = isRealSize ? 72 : useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
   const titleFontSize = metadata.get('title_font_size') ? parseFloat(metadata.get('title_font_size')!) : 104;
   const subtitleFontSize = metadata.get('subtitle_font_size') ? parseFloat(metadata.get('subtitle_font_size')!) : 44;
   const width = metadata.get('width') ? parseFloat(metadata.get('width')!) : 16;
@@ -63,7 +63,6 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                     <p style={{
                         fontSize: `${inch * ((titleFontSize * parseFloat(fields.get('title_resizer')?.value || '100') / 100) / 72)}px`,
                         fontWeight: 'bold',
-                        textTransform: 'capitalize',
                         textAlign: 'center',
                         lineHeight: 1,
                         color: '#FFF',
@@ -73,7 +72,6 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                         <p style={{
                             fontSize: `${inch * ((subtitleFontSize * parseFloat(fields.get('subheader_resizer')?.value || '100') / 100) / 72)}px`,
                             fontWeight: 'bold',
-                            textTransform: 'capitalize',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
                             lineHeight: 1.3,
@@ -104,7 +102,6 @@ const FacilitySign: React.FC<FacilitySignProps> = ({fields, metadata, isRealSize
                         <p style={{
                             fontSize: `${inch * ((subtitleFontSize * parseFloat(fields.get('text_resizer')?.value || '100') / 100) / 72)}px`,
                             fontWeight: 'bold',
-                            textTransform: 'capitalize',
                             marginTop: `-${inch * scale(width, 0.25)}px`,
                             textAlign: 'center',
                             lineHeight: 1.3,

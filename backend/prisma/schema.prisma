@@ -30,6 +30,7 @@ model SignCategoryOption {
   category    SignCategory @relation(fields: [id_category], references: [id])
   signs       Sign[]
   metadatas SignMetadata[]
+  list_order    Int?
   @@map("sign_category_options")
 }
 
@@ -106,6 +107,8 @@ model Sign {
   id_options           Decimal?    @db.Decimal
   is_approved          Boolean     @default(false)
   is_saved_to_library  Boolean     @default(false)
+  name                 String?     @db.VarChar(100)
+  is_custom_name       Boolean     @default(false)
   date_created         DateTime    @db.Timestamp
   date_updated         DateTime    @db.Timestamp
   svg_version          String?     @db.Text

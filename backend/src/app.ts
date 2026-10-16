@@ -7,6 +7,7 @@ import helmet from "helmet";
 import { VersioningType } from "@nestjs/common";
 import { metricsMiddleware } from "src/common/middleware/prom";
 import { CustomExceptionFilter } from "./common/filters/custom-exception.filter";
+import { SignsService } from "./signs/signs.service";
 
 /**
  *
@@ -36,5 +37,7 @@ export async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("/api/docs", app, document);
+  await app.init();
+  await app.get(SignsService).generateAllNames();
   return app;
 }

@@ -7,5 +7,7 @@ export class SignValueDto {
 
 export class SignUpdateDto extends SignCreationDto {
   id: number;
+  name?: string;
+  is_custom_name?: boolean;
   values: SignValueDto[];
 }

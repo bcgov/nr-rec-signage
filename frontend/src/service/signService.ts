@@ -44,8 +44,14 @@ export const useSignService = () => {
     return response.json();
   };
 
-  const getSigns = async (limit: number = 20, libraryStatus?: string): Promise<SignListDto> => {
-    const response = await apiFetch(`/signs?limit=${limit}&libraryStatus=${libraryStatus}`);
+  const getSigns = async (limit: number = 20, libraryStatus?: string, page?: number, name: string = ''): Promise<SignListDto> => {
+    const params = new URLSearchParams();
+    params.set('limit', String(limit));
+    if (libraryStatus) params.set('libraryStatus', libraryStatus);
+    if (page) params.set('page', String(page));
+    if (name) params.set('name', name);
+
+    const response = await apiFetch(`/signs?${params.toString()}`);
     if (!response.ok) {
       throw new Error('Failed to fetch signs');
     }
@@ -57,7 +63,8 @@ export const useSignService = () => {
     page: number = 1,
     dateStart?: string,
     dateEnd?: string,
-    categoryIds?: number[]
+    categoryIds?: number[],
+    name: string = ''
   ): Promise<SignListDto> => {
     const params = new URLSearchParams();
     params.set('view', 'admin_view');
@@ -67,6 +74,7 @@ export const useSignService = () => {
     if (dateStart) params.set('dateStart', dateStart);
     if (dateEnd) params.set('dateEnd', dateEnd);
     if (categoryIds?.length) params.set('categoryId', categoryIds.join(','));
+    if (name) params.set('name', name);
 
     const response = await apiFetch(`/signs?${params.toString()}`);
     if (!response.ok) {
@@ -108,12 +116,14 @@ export const useSignService = () => {
     id: string,
     id_category: number,
     id_options: number | null,
-    values: Array<{ id_field: number; value: string }>
+    values: Array<{ id_field: number; value: string }>,
+    name: string = '',
+    is_custom_name: boolean = false
   ): Promise<void> => {
     const response = await apiFetch(`/signs/`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, id_category, id_options, values }),
+      body: JSON.stringify({ id, id_category, id_options, values, name, is_custom_name }),
     });
     if (!response.ok) {
       throw new Error('Failed to update sign');

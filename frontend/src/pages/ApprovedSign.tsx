@@ -2,7 +2,7 @@ import React from 'react';
 import SignLibrary from '@/components/SignLibrary';
 
 const ApprovedSign: React.FC = () => {
-  return <SignLibrary libraryStatus='approved' />;
+  return <SignLibrary libraryStatus='approved' searchEnabled={true} />;
 };
 
 export default ApprovedSign;

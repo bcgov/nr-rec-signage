@@ -15,7 +15,7 @@ interface InformationSignProps {
 const InformationSign: React.FC<InformationSignProps> = ({fields, metadata, isRealSize }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const partnershipLogoCount = fields.get('partnership_logos')?.value ? fields.get('partnership_logos')?.value.split(";").length : 0;
-  const inch = isRealSize ? 40: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
+  const inch = isRealSize ? 72: useInchScale(bannerRef, metadata.get('width') ? parseFloat(metadata.get('width')!) : 16);
   const titleFontSize = metadata.get('title_font_size') ? parseFloat(metadata.get('title_font_size')!) : 104;
   const subtitleFontSize = metadata.get('subtitle_font_size') ? parseFloat(metadata.get('subtitle_font_size')!) : 44;
   const containerWidth = parseFloat(metadata.get('width') || "16");

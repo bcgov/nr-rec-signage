@@ -21,7 +21,8 @@ export class SignsController {
     @Query('dateStart') dateStart?: string,
     @Query('dateEnd') dateEnd?: string,
     @Query('categoryId') categoryId?: string,
-    @Query('libraryStatus') libraryStatus?: string
+    @Query('libraryStatus') libraryStatus?: string,
+    @Query('name') name?: string
   ): Promise<SignListDto> {
     const idUserGuid = req.user?.idir_user_guid;
     const categoryIds = categoryId
@@ -45,7 +46,8 @@ export class SignsController {
       dateStart,
       dateEnd,
       categoryIds,
-      libraryStatus
+      libraryStatus,
+      name
     );
 
     return {
@@ -85,10 +87,7 @@ export class SignsController {
 
   @Delete(':id')
   async delete(@Param('id') id: string, @Req() req: any) {
-    if (!req.hasAdminRole) {
-      throw new ForbiddenException('Admin role required');
-    }
-    await this.signsService.delete(+id);
+    await this.signsService.delete(+id, req.hasAdminRole, req.user?.idir_user_guid);
     return { status: 200 };
   }
 
