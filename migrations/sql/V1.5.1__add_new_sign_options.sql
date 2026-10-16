@@ -62,10 +62,9 @@ BEGIN
     (v_metadata_id + 1, 'height', '12', v_category_id, v_option_id, 'Height', false, 'inch'),
     (v_metadata_id + 2, 'title_font_size', '114', v_category_id, v_option_id, 'Title Font Size', false, 'pt'),
     (v_metadata_id + 3, 'subtitle_font_size', '60', v_category_id, v_option_id, 'Subtitle Font Size', false, 'pt'),
-    (v_metadata_id + 4, 'regulation_font_size', '24', v_category_id, v_option_id, 'Regulation Font Size', false, 'pt'),
-    (v_metadata_id + 5, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
+    (v_metadata_id + 4, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
     -- RESET METADATA ID FOR NEXT OPTION
-    v_metadata_id := v_metadata_id + 6;
+    v_metadata_id := v_metadata_id + 5;
     v_option_id := v_option_id + 1;
     -- CREATE 16 x 12 OPTION FOR CAUTIONARY CATEGORY
     insert into sign_category_options (id, name, id_category, list_order)
@@ -75,10 +74,9 @@ BEGIN
     (v_metadata_id + 1, 'height', '12', v_category_id, v_option_id, 'Height', false, 'inch'),
     (v_metadata_id + 2, 'title_font_size', '114', v_category_id, v_option_id, 'Title Font Size', false, 'pt'),
     (v_metadata_id + 3, 'subtitle_font_size', '60', v_category_id, v_option_id, 'Subtitle Font Size', false, 'pt'),
-    (v_metadata_id + 4, 'regulation_font_size', '24', v_category_id, v_option_id, 'Regulation Font Size', false, 'pt'),
-    (v_metadata_id + 5, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
+    (v_metadata_id + 4, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
     -- RESET METADATA ID FOR NEXT OPTION
-    v_metadata_id := v_metadata_id + 6;
+    v_metadata_id := v_metadata_id + 5;
     v_option_id := v_option_id + 1;
     -- CREATE 12 x 12 OPTION FOR INFORMATIONAL CATEGORY
     select id into v_category_id from sign_category where slug = 'informational';
@@ -90,10 +88,9 @@ BEGIN
     (v_metadata_id + 1, 'height', '12', v_category_id, v_option_id, 'Height', false, 'inch'),
     (v_metadata_id + 2, 'title_font_size', '114', v_category_id, v_option_id, 'Title Font Size', false, 'pt'),
     (v_metadata_id + 3, 'subtitle_font_size', '60', v_category_id, v_option_id, 'Subtitle Font Size', false, 'pt'),
-    (v_metadata_id + 4, 'regulation_font_size', '24', v_category_id, v_option_id, 'Regulation Font Size', false, 'pt'),
-    (v_metadata_id + 5, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
+    (v_metadata_id + 4, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
     -- RESET METADATA ID FOR NEXT OPTION
-    v_metadata_id := v_metadata_id + 6;
+    v_metadata_id := v_metadata_id + 5;
     v_option_id := v_option_id + 1;
     -- CREATE 16 x 12 OPTION FOR INFORMATIONAL CATEGORY
     insert into sign_category_options (id, name, id_category, list_order)
@@ -103,10 +100,9 @@ BEGIN
     (v_metadata_id + 1, 'height', '12', v_category_id, v_option_id, 'Height', false, 'inch'),
     (v_metadata_id + 2, 'title_font_size', '114', v_category_id, v_option_id, 'Title Font Size', false, 'pt'),
     (v_metadata_id + 3, 'subtitle_font_size', '60', v_category_id, v_option_id, 'Subtitle Font Size', false, 'pt'),
-    (v_metadata_id + 4, 'regulation_font_size', '24', v_category_id, v_option_id, 'Regulation Font Size', false, 'pt'),
-    (v_metadata_id + 5, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
+    (v_metadata_id + 4, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
         -- RESET METADATA ID FOR NEXT OPTION
-    v_metadata_id := v_metadata_id + 6;
+    v_metadata_id := v_metadata_id + 5;
     v_option_id := v_option_id + 1;
     -- CREATE 12 x 12 OPTION FOR FACILITY CATEGORY
     select id into v_category_id from sign_category where slug = 'facility-sign';
@@ -118,10 +114,9 @@ BEGIN
     (v_metadata_id + 1, 'height', '12', v_category_id, v_option_id, 'Height', false, 'inch'),
     (v_metadata_id + 2, 'title_font_size', '114', v_category_id, v_option_id, 'Title Font Size', false, 'pt'),
     (v_metadata_id + 3, 'subtitle_font_size', '60', v_category_id, v_option_id, 'Subtitle Font Size', false, 'pt'),
-    (v_metadata_id + 4, 'regulation_font_size', '24', v_category_id, v_option_id, 'Regulation Font Size', false, 'pt'),
-    (v_metadata_id + 5, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
+    (v_metadata_id + 4, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
         -- RESET METADATA ID FOR NEXT OPTION
-    v_metadata_id := v_metadata_id + 6;
+    v_metadata_id := v_metadata_id + 5;
     v_option_id := v_option_id + 1;
     -- CREATE 16 x 12 OPTION FOR FACILITY CATEGORY
     insert into sign_category_options (id, name, id_category, list_order)
@@ -131,6 +126,5 @@ BEGIN
     (v_metadata_id + 1, 'height', '12', v_category_id, v_option_id, 'Height', false, 'inch'),
     (v_metadata_id + 2, 'title_font_size', '114', v_category_id, v_option_id, 'Title Font Size', false, 'pt'),
     (v_metadata_id + 3, 'subtitle_font_size', '60', v_category_id, v_option_id, 'Subtitle Font Size', false, 'pt'),
-    (v_metadata_id + 4, 'regulation_font_size', '24', v_category_id, v_option_id, 'Regulation Font Size', false, 'pt'),
-    (v_metadata_id + 5, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
+    (v_metadata_id + 4, 'border-width', '0.4', v_category_id, v_option_id, 'Border Width', false, 'inch');
 END $$;
