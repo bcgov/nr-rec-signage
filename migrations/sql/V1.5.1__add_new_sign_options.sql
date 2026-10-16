@@ -26,6 +26,7 @@ BEGIN
     into v_metadata_id
     from sign_metadata;
     select id into v_category_id from sign_category where slug = 'regulatory';
+    delete from sign_metadata where meta_key = 'regulation_font_size' and id_category != v_category_id;
     UPDATE sign_category_options set list_order = list_order + 2 where id_category = v_category_id AND list_order >= 3;
     insert into sign_category_options (id, name, id_category,list_order)
     values (v_option_id, '12 x 12', v_category_id, 3);
